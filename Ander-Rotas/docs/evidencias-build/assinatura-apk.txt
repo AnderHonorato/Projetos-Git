@@ -1,0 +1,17 @@
+Verifies
+Verified using v1 scheme (JAR signing): false
+Verified using v2 scheme (APK Signature Scheme v2): true
+Verified using v3 scheme (APK Signature Scheme v3): false
+Verified using v3.1 scheme (APK Signature Scheme v3.1): false
+Verified using v4 scheme (APK Signature Scheme v4): false
+Verified for SourceStamp: false
+Number of signers: 1
+Signer #1 certificate DN: CN=Ander Rotas Debug, O=Ander, C=BR
+Signer #1 certificate SHA-256 digest: 65a0bdbc46677d33a4dc15a664608db39e4c918698aeecd2995bb0c4b3ef7fb7
+Signer #1 certificate SHA-1 digest: 471df0bb5fe2f307c6b9a8d8fd3b9bc18127b232
+Signer #1 certificate MD5 digest: 6c83c38950d0ec4d153a2e0b1f726526
+Signer #1 key algorithm: RSA
+Signer #1 key size (bits): 2048
+Signer #1 public key SHA-256 digest: 8319279108b8493e4cc21dbfea304d0cbbbd5848435427fbe392761780a46012
+Signer #1 public key SHA-1 digest: a325163c984fcf4b1911cf8f50923783af777cfe
+Signer #1 public key MD5 digest: 167ed0ab9112a417e8c82adc33b8a835

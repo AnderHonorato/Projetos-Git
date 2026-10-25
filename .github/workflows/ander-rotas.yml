@@ -1,0 +1,128 @@
+name: Ander Rotas Android
+on:
+  push:
+    paths: ['Ander-Rotas/**', '.github/workflows/ander-rotas.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Ander-Rotas
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Compilar e verificar
+        run: chmod +x gradlew && ./gradlew assembleDebug testDebugUnitTest lintDebug
+      - name: Publicar resultados de testes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ander-rotas-verificacoes
+          path: |
+            Ander-Rotas/app/build/reports/
+            Ander-Rotas/app/build/test-results/
+  apk-atualizacao:
+    if: github.event_name == 'workflow_dispatch'
+    needs: verificar
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Ander-Rotas
+    env:
+      ANDER_KEYSTORE_BASE64: ${{ secrets.ANDER_KEYSTORE_BASE64 }}
+      ANDER_KEYSTORE_PASSWORD: ${{ secrets.ANDER_KEYSTORE_PASSWORD }}
+      ANDER_KEY_ALIAS: ${{ secrets.ANDER_KEY_ALIAS }}
+      ANDER_KEY_PASSWORD: ${{ secrets.ANDER_KEY_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Preparar assinatura preservada
+        run: |
+          test -n "$ANDER_KEYSTORE_BASE64" && test -n "$ANDER_KEYSTORE_PASSWORD" && test -n "$ANDER_KEY_ALIAS" && test -n "$ANDER_KEY_PASSWORD" || { echo 'Configure os Secrets da chave original para publicar uma atualização.'; exit 1; }
+          printf '%s' "$ANDER_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/ander.keystore"
+          chmod 600 "$RUNNER_TEMP/ander.keystore"
+          echo "ANDER_KEYSTORE_PATH=$RUNNER_TEMP/ander.keystore" >> "$GITHUB_ENV"
+      - name: Gerar APK assinado
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+          mkdir -p entrega
+          cp app/build/outputs/apk/debug/app-debug.apk entrega/Ander-Rotas-atualizacao.apk
+          cd entrega
+          sha256sum Ander-Rotas-atualizacao.apk > SHA256SUMS.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ander-rotas-apk-assinado
+          path: Ander-Rotas/entrega/
+      - name: Remover chave temporária
+        if: always()
+        run: rm -f "$RUNNER_TEMP/ander.keystore"
+  interface-emulada:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Recuperar APK original e conferir integridade
+        run: python3 Ander-Rotas/tools/restaurar_apk.py
+      - name: Habilitar aceleração do emulador descartável
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none
+          script: python3 Ander-Rotas/tools/smoke_android.py
+      - name: Guardar capturas e resultados reais
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ander-rotas-capturas-emulador
+          path: Ander-Rotas/entrega/capturas/
+  publicar-versao-inicial:
+    if: github.event_name == 'push'
+    needs: [verificar, interface-emulada]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Recuperar o mesmo APK assinado entregue ao usuário
+        run: python3 Ander-Rotas/tools/restaurar_apk.py
+      - name: Publicar APK e checksum
+        run: |
+          if gh release view ander-rotas-v1.0.0 >/dev/null 2>&1; then
+            gh release upload ander-rotas-v1.0.0 Ander-Rotas/entrega/Ander-Rotas-v1.0.0.apk Ander-Rotas/entrega/SHA256SUMS.txt --clobber
+          else
+            gh release create ander-rotas-v1.0.0 Ander-Rotas/entrega/Ander-Rotas-v1.0.0.apk Ander-Rotas/entrega/SHA256SUMS.txt --title 'Ander Rotas v1.0.0 — teste' --notes-file Ander-Rotas/docs/RELEASE.md --target "$GITHUB_SHA"
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Ander-Rotas-v1.0.0
+          path: |
+            Ander-Rotas/entrega/Ander-Rotas-v1.0.0.apk
+            Ander-Rotas/entrega/SHA256SUMS.txt

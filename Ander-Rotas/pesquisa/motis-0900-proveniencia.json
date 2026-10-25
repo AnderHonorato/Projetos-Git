@@ -1,0 +1,14 @@
+{
+  "url": "https://api.transitous.org/api/v6/plan?fromPlace=-23.4771421%2C-46.567436&toPlace=-23.341389%2C-46.8411005&time=2026-10-26T09%3A00%3A00Z&numItineraries=3&maxPreTransitTime=1800&maxPostTransitTime=1800&directModes=WALK&preTransitModes=WALK&postTransitModes=WALK&detailedTransfers=true&detailedLegs=true",
+  "statusCode": 200,
+  "verificadoEm": "2026-10-25T03:59:35.863Z",
+  "dataServico": "2026-10-26",
+  "arquivoResposta": "motis-0900-raw.json",
+  "sha256": "64eb2edda47fb6ec89501b3e220298db1e3e84ec599f0de72ed8ffea83bec468",
+  "itinerarios": [
+    {"indice": 0, "partida": "2026-10-26T09:20:00Z", "cancelamentos": [{"etapa": 4, "modo": "WALK"}], "aceitoPeloApp": false},
+    {"indice": 1, "partida": "2026-10-26T09:40:00Z", "cancelamentos": [{"etapa": 4, "modo": "WALK"}, {"etapa": 6, "modo": "WALK"}], "aceitoPeloApp": false},
+    {"indice": 2, "partida": "2026-10-26T09:46:00Z", "chegada": "2026-10-26T12:05:00Z", "cancelamentos": [], "aceitoPeloApp": true, "linhas": ["566", "049", "426"]}
+  ],
+  "observacao": "Não se inferiu motivo operacional do cancelamento WALK. O servidor retornou cancelled:true; parser descarta. Pontos de ruas públicos e aproximados, sem GPS privado."
+}

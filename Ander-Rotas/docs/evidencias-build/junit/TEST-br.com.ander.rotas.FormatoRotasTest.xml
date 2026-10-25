@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="br.com.ander.rotas.FormatoRotasTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-10-25T04:02:30" hostname="2a0e9badeda9" time="0.158">
+  <properties/>
+  <testcase name="polilinha respeita precisao declarada" classname="br.com.ander.rotas.FormatoRotasTest" time="0.008"/>
+  <testcase name="transferencia cancelada real tambem impede oferta da rota" classname="br.com.ander.rotas.FormatoRotasTest" time="0.024"/>
+  <testcase name="resposta sem contrato nao vira rota inventada" classname="br.com.ander.rotas.FormatoRotasTest" time="0.001"/>
+  <testcase name="viagem cancelada nao e oferecida" classname="br.com.ander.rotas.FormatoRotasTest" time="0.032"/>
+  <testcase name="polilinha truncada e rejeitada" classname="br.com.ander.rotas.FormatoRotasTest" time="0.0"/>
+  <testcase name="numero ausente fica explicitamente aproximado" classname="br.com.ander.rotas.FormatoRotasTest" time="0.01"/>
+  <testcase name="salvamento JSON preserva rota para consulta offline" classname="br.com.ander.rotas.FormatoRotasTest" time="0.056"/>
+  <testcase name="realTime representa previsao e nao posicao de veiculo" classname="br.com.ander.rotas.FormatoRotasTest" time="0.012"/>
+  <testcase name="plano real preserva geometria sentido paradas e horario UTC" classname="br.com.ander.rotas.FormatoRotasTest" time="0.007"/>
+  <testcase name="geometria ausente nao vira reta ficticia" classname="br.com.ander.rotas.FormatoRotasTest" time="0.008"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

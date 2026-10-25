@@ -1,0 +1,1121 @@
+{
+  "descricao": "Consultas GET reais reexecutadas após manutenção automática. Pontos públicos aproximados de ruas; números não confirmados; sem GPS privado. Não são rotas fixas.",
+  "fonte": "https://transitous.org/sources/",
+  "contrato": "https://github.com/motis-project/motis/blob/v2.10.2/openapi.yaml",
+  "politica": "https://transitous.org/api/",
+  "transporteEventoData": "2026-10-26",
+  "consultas": [
+    {
+      "caso": "ida_ruas_aproximadas",
+      "origem": "-23.4771045,-46.5668804",
+      "destino": "-23.3410193,-46.8413569",
+      "time": "2026-10-26T12:00:00Z",
+      "url": "https://api.transitous.org/api/v6/plan?fromPlace=-23.4771045%2C-46.5668804&toPlace=-23.3410193%2C-46.8413569&time=2026-10-26T12%3A00%3A00Z&numItineraries=3&maxPreTransitTime=1800&maxPostTransitTime=1800&directModes=WALK&preTransitModes=WALK&postTransitModes=WALK&transitModes=TRANSIT&detailedTransfers=true&detailedLegs=true&language=pt",
+      "verificadoEm": "2026-10-25T03:55:01.223Z",
+      "statusCode": 200,
+      "itineraries": [
+        {
+          "partida": "2026-10-26T12:20:00Z",
+          "chegada": "2026-10-26T14:53:00Z",
+          "etapas": [
+            {
+              "modo": "WALK",
+              "origem": "START",
+              "destino": "R. Cap. Busse, 391 - Parque Edu Chaves, São Paulo - SP, 02232-050, Brasil",
+              "partida": "2026-10-26T12:20:00Z",
+              "chegada": "2026-10-26T12:31:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 53,
+              "precisao": 6
+            },
+            {
+              "modo": "BUS",
+              "linha": "566",
+              "agencia": "ARTESP",
+              "sentido": "SAO PAULO (TERMINAL RODOVIARIO TIETE)",
+              "origem": "R. Cap. Busse, 391 - Parque Edu Chaves, São Paulo - SP, 02232-050, Brasil",
+              "destino": "Avenida Cruzeiro do Sul, 808",
+              "partida": "2026-10-26T12:31:00Z",
+              "chegada": "2026-10-26T12:58:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 13,
+              "pontosGeometria": 400,
+              "precisao": 6
+            },
+            {
+              "modo": "WALK",
+              "origem": "Avenida Cruzeiro do Sul, 808",
+              "destino": "R. Paulino Guimarães, 35 - Luz, São Paulo - SP, 01109-020, Brasil",
+              "partida": "2026-10-26T12:58:00Z",
+              "chegada": "2026-10-26T13:02:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 36,
+              "precisao": 6
+            },
+            {
+              "modo": "BUS",
+              "linha": "818",
+              "agencia": "ARTESP",
+              "sentido": "BARUERI (ALPHAVILLE)",
+              "origem": "R. Paulino Guimarães, 35 - Luz, São Paulo - SP, 01109-020, Brasil",
+              "destino": "Av. Otaviano Alves de Lima - Vila Jaguara, São Paulo - SP, 02675-031, Brasil",
+              "partida": "2026-10-26T13:10:00Z",
+              "chegada": "2026-10-26T13:51:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 22,
+              "pontosGeometria": 270,
+              "precisao": 6
+            },
+            {
+              "modo": "WALK",
+              "origem": "Av. Otaviano Alves de Lima - Vila Jaguara, São Paulo - SP, 02675-031, Brasil",
+              "destino": "Ramo 500 do Complexo Anhanguera (saída do Viaduto Domingos de Moraes)",
+              "partida": "2026-10-26T13:51:00Z",
+              "chegada": "2026-10-26T13:55:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 0,
+              "precisao": 6
+            },
+            {
+              "modo": "BUS",
+              "linha": "054",
+              "agencia": "ARTESP",
+              "sentido": "CAJAMAR (JORDANESIA)",
+              "origem": "Ramo 500 do Complexo Anhanguera (saída do Viaduto Domingos de Moraes)",
+              "destino": "Av. Antonio Cândido Machado, 96 - Vila Uniao, Cajamar - SP, 07776-415, Brasil",
+              "partida": "2026-10-26T14:10:00Z",
+              "chegada": "2026-10-26T14:50:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 27,
+              "pontosGeometria": 1271,
+              "precisao": 6
+            },
+            {
+              "modo": "WALK",
+              "origem": "Av. Antonio Cândido Machado, 96 - Vila Uniao, Cajamar - SP, 07776-415, Brasil",
+              "destino": "END",
+              "partida": "2026-10-26T14:50:00Z",
+              "chegada": "2026-10-26T14:53:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 10,
+              "precisao": 6
+            }
+          ]
+        },
+        {
+          "partida": "2026-10-26T12:20:00Z",
+          "chegada": "2026-10-26T14:23:00Z",
+          "etapas": [
+            {
+              "modo": "WALK",
+              "origem": "START",
+              "destino": "R. Cap. Busse, 391 - Parque Edu Chaves, São Paulo - SP, 02232-050, Brasil",
+              "partida": "2026-10-26T12:20:00Z",
+              "chegada": "2026-10-26T12:31:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 53,
+              "precisao": 6
+            },
+            {
+              "modo": "BUS",
+              "linha": "566",
+              "agencia": "ARTESP",
+              "sentido": "SAO PAULO (TERMINAL RODOVIARIO TIETE)",
+              "origem": "R. Cap. Busse, 391 - Parque Edu Chaves, São Paulo - SP, 02232-050, Brasil",
+              "destino": "Av. Cruzeiro do Sul, 1762 - Santana, São Paulo - SP, 02030-000, Brasil",
+              "partida": "2026-10-26T12:31:00Z",
+              "chegada": "2026-10-26T13:00:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 14,
+              "pontosGeometria": 419,
+              "precisao": 6
+            },
+            {
+              "modo": "WALK",
+              "origem": "Av. Cruzeiro do Sul, 1762 - Santana, São Paulo - SP, 02030-000, Brasil",
+              "destino": "Portuguesa-tietê",
+              "partida": "2026-10-26T13:00:00Z",
+              "chegada": "2026-10-26T13:02:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 17,
+              "precisao": 6
+            },
+            {
+              "modo": "SUBWAY",
+              "linha": "METRÔ L1",
+              "agencia": "SPTRANS",
+              "sentido": "JABAQUARA",
+              "origem": "Portuguesa-tietê",
+              "destino": "Luz",
+              "partida": "2026-10-26T13:05:00Z",
+              "chegada": "2026-10-26T13:10:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 2,
+              "pontosGeometria": 57,
+              "precisao": 6
+            },
+            {
+              "modo": "WALK",
+              "origem": "Luz",
+              "destino": "Luz",
+              "partida": "2026-10-26T13:10:00Z",
+              "chegada": "2026-10-26T13:13:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 61,
+              "precisao": 6
+            },
+            {
+              "modo": "REGIONAL_RAIL",
+              "linha": "CPTM L11",
+              "agencia": "SPTRANS",
+              "sentido": "BARRA FUNDA",
+              "origem": "Luz",
+              "destino": "Palmeiras - Barra Funda",
+              "partida": "2026-10-26T13:14:00Z",
+              "chegada": "2026-10-26T13:20:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 32,
+              "precisao": 6
+            },
+            {
+              "modo": "WALK",
+              "origem": "Palmeiras - Barra Funda",
+              "destino": "Palmeiras - Barra Funda",
+              "partida": "2026-10-26T13:20:00Z",
+              "chegada": "2026-10-26T13:22:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 6,
+              "precisao": 6
+            },
+            {
+              "modo": "REGIONAL_RAIL",
+              "linha": "CPTM L08",
+              "agencia": "SPTRANS",
+              "sentido": "AMADOR BUENO",
+              "origem": "Palmeiras - Barra Funda",
+              "destino": "Domingos De Moraes",
+              "partida": "2026-10-26T13:23:00Z",
+              "chegada": "2026-10-26T13:37:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 1,
+              "pontosGeometria": 64,
+              "precisao": 6
+            },
+            {
+              "modo": "WALK",
+              "origem": "Domingos De Moraes",
+              "destino": "Rua Monte Pascal (oposto à saída da Rua Belmonte)",
+              "partida": "2026-10-26T13:37:00Z",
+              "chegada": "2026-10-26T13:39:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 31,
+              "precisao": 6
+            },
+            {
+              "modo": "BUS",
+              "linha": "054",
+              "agencia": "ARTESP",
+              "sentido": "CAJAMAR (JORDANESIA)",
+              "origem": "Rua Monte Pascal (oposto à saída da Rua Belmonte)",
+              "destino": "Av. Antonio Cândido Machado, 96 - Vila Uniao, Cajamar - SP, 07776-415, Brasil",
+              "partida": "2026-10-26T13:39:00Z",
+              "chegada": "2026-10-26T14:20:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 28,
+              "pontosGeometria": 1330,
+              "precisao": 6
+            },
+            {
+              "modo": "WALK",
+              "origem": "Av. Antonio Cândido Machado, 96 - Vila Uniao, Cajamar - SP, 07776-415, Brasil",
+              "destino": "END",
+              "partida": "2026-10-26T14:20:00Z",
+              "chegada": "2026-10-26T14:23:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 10,
+              "precisao": 6
+            }
+          ]
+        },
+        {
+          "partida": "2026-10-26T12:25:00Z",
+          "chegada": "2026-10-26T15:11:00Z",
+          "etapas": [
+            {
+              "modo": "WALK",
+              "origem": "START",
+              "destino": "Av. Edu Chaves, 847",
+              "partida": "2026-10-26T12:25:00Z",
+              "chegada": "2026-10-26T12:33:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 41,
+              "precisao": 6
+            },
+            {
+              "modo": "BUS",
+              "linha": "172P-10",
+              "agencia": "SPTRANS",
+              "sentido": "Vl. Zilda",
+              "origem": "Av. Edu Chaves, 847",
+              "destino": "Av. Luís Stamatis, 716",
+              "partida": "2026-10-26T12:33:00Z",
+              "chegada": "2026-10-26T12:42:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 4,
+              "pontosGeometria": 25,
+              "precisao": 6
+            },
+            {
+              "modo": "WALK",
+              "origem": "Av. Luís Stamatis, 716",
+              "destino": "Rua Doutor Carlos Bastos Aranha, 190 - Guapira, São Paulo - SP, 02278-010, Brasil",
+              "partida": "2026-10-26T12:42:00Z",
+              "chegada": "2026-10-26T12:50:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 52,
+              "precisao": 6
+            },
+            {
+              "modo": "BUS",
+              "linha": "042",
+              "agencia": "ARTESP",
+              "sentido": "MAIRIPORA (DIVISA)",
+              "origem": "Rua Doutor Carlos Bastos Aranha, 190 - Guapira, São Paulo - SP, 02278-010, Brasil",
+              "destino": "Terminal Rodoviário Siguemi Aiacyda - Mairiporã, SP, 07600-000, Brasil",
+              "partida": "2026-10-26T12:50:00Z",
+              "chegada": "2026-10-26T13:26:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 21,
+              "pontosGeometria": 1063,
+              "precisao": 6
+            },
+            {
+              "modo": "WALK",
+              "origem": "Terminal Rodoviário Siguemi Aiacyda - Mairiporã, SP, 07600-000, Brasil",
+              "destino": "Terminal Rodoviário Siguemi Aiacyda - Mairiporã, SP, 07600-000, Brasil",
+              "partida": "2026-10-26T13:26:00Z",
+              "chegada": "2026-10-26T13:28:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 2,
+              "precisao": 6
+            },
+            {
+              "modo": "BUS",
+              "linha": "049",
+              "agencia": "ARTESP",
+              "sentido": "FRANCO DA ROCHA (CENTRO)",
+              "origem": "Terminal Rodoviário Siguemi Aiacyda - Mairiporã, SP, 07600-000, Brasil",
+              "destino": "Estr. do Governo, 3231-3281 - Vila Ramos - Centro, Franco da Rocha - SP, 07850-310, Brasil",
+              "partida": "2026-10-26T13:30:00Z",
+              "chegada": "2026-10-26T14:02:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 23,
+              "pontosGeometria": 1055,
+              "precisao": 6
+            },
+            {
+              "modo": "WALK",
+              "origem": "Estr. do Governo, 3231-3281 - Vila Ramos - Centro, Franco da Rocha - SP, 07850-310, Brasil",
+              "destino": "Rua Eng. João Batista Garcez - Vila Francisco de Tulio, Franco da Rocha - SP, 07803-045, Brasil",
+              "partida": "2026-10-26T14:02:00Z",
+              "chegada": "2026-10-26T14:07:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 71,
+              "precisao": 6
+            },
+            {
+              "modo": "BUS",
+              "linha": "426",
+              "agencia": "ARTESP",
+              "sentido": "CAJAMAR (POLVILHO)",
+              "origem": "Rua Eng. João Batista Garcez - Vila Francisco de Tulio, Franco da Rocha - SP, 07803-045, Brasil",
+              "destino": "Av. Antônio Cândido Machado, 91 - Vila Uniao, Cajamar - SP, 07750-000, Brasil",
+              "partida": "2026-10-26T14:10:00Z",
+              "chegada": "2026-10-26T15:08:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 41,
+              "pontosGeometria": 1181,
+              "precisao": 6
+            },
+            {
+              "modo": "WALK",
+              "origem": "Av. Antônio Cândido Machado, 91 - Vila Uniao, Cajamar - SP, 07750-000, Brasil",
+              "destino": "END",
+              "partida": "2026-10-26T15:08:00Z",
+              "chegada": "2026-10-26T15:11:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 11,
+              "precisao": 6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "caso": "volta_ruas_aproximadas",
+      "origem": "-23.3410193,-46.8413569",
+      "destino": "-23.4771045,-46.5668804",
+      "time": "2026-10-26T18:00:00Z",
+      "url": "https://api.transitous.org/api/v6/plan?fromPlace=-23.3410193%2C-46.8413569&toPlace=-23.4771045%2C-46.5668804&time=2026-10-26T18%3A00%3A00Z&numItineraries=3&maxPreTransitTime=1800&maxPostTransitTime=1800&directModes=WALK&preTransitModes=WALK&postTransitModes=WALK&transitModes=TRANSIT&detailedTransfers=true&detailedLegs=true&language=pt",
+      "verificadoEm": "2026-10-25T03:55:04.659Z",
+      "statusCode": 200,
+      "itineraries": [
+        {
+          "partida": "2026-10-26T18:15:00Z",
+          "chegada": "2026-10-26T20:35:00Z",
+          "etapas": [
+            {
+              "modo": "WALK",
+              "origem": "START",
+              "destino": "Av. Antônio Cândido Machado, 91 - Vila Uniao, Cajamar - SP, 07750-000, Brasil",
+              "partida": "2026-10-26T18:15:00Z",
+              "chegada": "2026-10-26T18:18:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 11,
+              "precisao": 6
+            },
+            {
+              "modo": "BUS",
+              "linha": "426",
+              "agencia": "ARTESP",
+              "sentido": "CAJAMAR (POLVILHO)",
+              "origem": "Av. Antônio Cândido Machado, 91 - Vila Uniao, Cajamar - SP, 07750-000, Brasil",
+              "destino": "Av. Tenente Marques, 50 - Vila Granipavi, São Paulo - SP, Brasil",
+              "partida": "2026-10-26T18:18:00Z",
+              "chegada": "2026-10-26T18:32:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 9,
+              "pontosGeometria": 415,
+              "precisao": 6
+            },
+            {
+              "modo": "WALK",
+              "origem": "Av. Tenente Marques, 50 - Vila Granipavi, São Paulo - SP, Brasil",
+              "destino": "Av. Bento da Silva Bueno, 65 - Jardim Nova Cajamar, Cajamar - SP, 07793-665, Brasil",
+              "partida": "2026-10-26T18:32:00Z",
+              "chegada": "2026-10-26T18:36:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 25,
+              "precisao": 6
+            },
+            {
+              "modo": "BUS",
+              "linha": "310",
+              "agencia": "ARTESP",
+              "sentido": "SAO PAULO (LAPA)",
+              "origem": "Av. Bento da Silva Bueno, 65 - Jardim Nova Cajamar, Cajamar - SP, 07793-665, Brasil",
+              "destino": "R. Bartolomeu Paes, 741 - Lapa, São Paulo - SP, 02675-031, Brasil",
+              "partida": "2026-10-26T18:37:00Z",
+              "chegada": "2026-10-26T19:05:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 21,
+              "pontosGeometria": 757,
+              "precisao": 6
+            },
+            {
+              "modo": "WALK",
+              "origem": "R. Bartolomeu Paes, 741 - Lapa, São Paulo - SP, 02675-031, Brasil",
+              "destino": "Av. Emb. Macedo Soares, 3901 - Vila Leopoldina, São Paulo - SP, 05095-035, Brasil",
+              "partida": "2026-10-26T19:05:00Z",
+              "chegada": "2026-10-26T19:13:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 93,
+              "precisao": 6
+            },
+            {
+              "modo": "BUS",
+              "linha": "818",
+              "agencia": "ARTESP",
+              "sentido": "SAO PAULO (METRO ARMENIA)",
+              "origem": "Av. Emb. Macedo Soares, 3901 - Vila Leopoldina, São Paulo - SP, 05095-035, Brasil",
+              "destino": "Av. do Estado, 704 - Bom Retiro, São Paulo - SP, 01121, Brasil",
+              "partida": "2026-10-26T19:15:00Z",
+              "chegada": "2026-10-26T19:48:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 9,
+              "pontosGeometria": 230,
+              "precisao": 6
+            },
+            {
+              "modo": "WALK",
+              "origem": "Av. do Estado, 704 - Bom Retiro, São Paulo - SP, 01121, Brasil",
+              "destino": "Rua Guaporé, 117 - Ponto Final das Linhas 219 e 820 - Luz, São Paulo - SP, 01109-030, Brasil",
+              "partida": "2026-10-26T19:48:00Z",
+              "chegada": "2026-10-26T19:53:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 59,
+              "precisao": 6
+            },
+            {
+              "modo": "BUS",
+              "linha": "219",
+              "agencia": "ARTESP",
+              "sentido": "SANTA ISABEL (MONTE SERRAT)",
+              "origem": "Rua Guaporé, 117 - Ponto Final das Linhas 219 e 820 - Luz, São Paulo - SP, 01109-030, Brasil",
+              "destino": "R. Srg. Rodoval Cabral Trindade, 184 - Parque Novo Mundo, São Paulo - SP, 02190-040, Brasil",
+              "partida": "2026-10-26T20:00:00Z",
+              "chegada": "2026-10-26T20:18:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 14,
+              "pontosGeometria": 508,
+              "precisao": 6
+            },
+            {
+              "modo": "WALK",
+              "origem": "R. Srg. Rodoval Cabral Trindade, 184 - Parque Novo Mundo, São Paulo - SP, 02190-040, Brasil",
+              "destino": "R. Srg. Rodoval Cabral Trindade, 184 - Parque Novo Mundo, São Paulo - SP, 02190-040, Brasil",
+              "partida": "2026-10-26T20:18:00Z",
+              "chegada": "2026-10-26T20:20:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 2,
+              "precisao": 6
+            },
+            {
+              "modo": "BUS",
+              "linha": "240",
+              "agencia": "ARTESP",
+              "sentido": "MAIRIPORA (TERMINAL RODOVIARIO CIDADE BONITA SIGUEMI AIACYDA)",
+              "origem": "R. Srg. Rodoval Cabral Trindade, 184 - Parque Novo Mundo, São Paulo - SP, 02190-040, Brasil",
+              "destino": "BR-381 Rod. Fernão Dias, km 87,2 norte - Vila Itapegica, Guarulhos - SP, Brasil",
+              "partida": "2026-10-26T20:20:00Z",
+              "chegada": "2026-10-26T20:24:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 1,
+              "pontosGeometria": 189,
+              "precisao": 6
+            },
+            {
+              "modo": "WALK",
+              "origem": "BR-381 Rod. Fernão Dias, km 87,2 norte - Vila Itapegica, Guarulhos - SP, Brasil",
+              "destino": "R. Cap. Rubens, 805",
+              "partida": "2026-10-26T20:24:00Z",
+              "chegada": "2026-10-26T20:26:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 0,
+              "precisao": 6
+            },
+            {
+              "modo": "BUS",
+              "linha": "1767-10",
+              "agencia": "SPTRANS",
+              "sentido": "Metrô Tucuruvi",
+              "origem": "R. Cap. Rubens, 805",
+              "destino": "Pça. Cte. Eduardo De Oliveira",
+              "partida": "2026-10-26T20:28:00Z",
+              "chegada": "2026-10-26T20:30:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 8,
+              "precisao": 6
+            },
+            {
+              "modo": "WALK",
+              "origem": "Pça. Cte. Eduardo De Oliveira",
+              "destino": "END",
+              "partida": "2026-10-26T20:30:00Z",
+              "chegada": "2026-10-26T20:35:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 27,
+              "precisao": 6
+            }
+          ]
+        },
+        {
+          "partida": "2026-10-26T18:20:00Z",
+          "chegada": "2026-10-26T20:42:00Z",
+          "etapas": [
+            {
+              "modo": "WALK",
+              "origem": "START",
+              "destino": "Av. Antônio Cândido Machado, 1010-1098 - Vila Uniao, Cajamar - Sp, 07750-000, Brasil - Jardim Nova Jordanésia, Cajamar - SP, 07750-000, Brasil",
+              "partida": "2026-10-26T18:20:00Z",
+              "chegada": "2026-10-26T18:24:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 22,
+              "precisao": 6
+            },
+            {
+              "modo": "BUS",
+              "linha": "426",
+              "agencia": "ARTESP",
+              "sentido": "FRANCO DA ROCHA (CENTRO)",
+              "origem": "Av. Antônio Cândido Machado, 1010-1098 - Vila Uniao, Cajamar - Sp, 07750-000, Brasil - Jardim Nova Jordanésia, Cajamar - SP, 07750-000, Brasil",
+              "destino": "Rua Eng. João Batista Garcez - Vila Francisco de Tulio, Franco da Rocha - SP, 07803-045, Brasil",
+              "partida": "2026-10-26T18:24:00Z",
+              "chegada": "2026-10-26T19:15:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 34,
+              "pontosGeometria": 852,
+              "precisao": 6
+            },
+            {
+              "modo": "WALK",
+              "origem": "Rua Eng. João Batista Garcez - Vila Francisco de Tulio, Franco da Rocha - SP, 07803-045, Brasil",
+              "destino": "Rua Gentil Rocha",
+              "partida": "2026-10-26T19:15:00Z",
+              "chegada": "2026-10-26T19:19:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 74,
+              "precisao": 6
+            },
+            {
+              "modo": "BUS",
+              "linha": "049",
+              "agencia": "ARTESP",
+              "sentido": "MAIRIPORA (TERMINAL RODOVIARIO CIDADE BONITA SIGUEMI AIACYDA)",
+              "origem": "Rua Gentil Rocha",
+              "destino": "Terminal Rodoviário Siguemi Aiacyda - Mairiporã, SP, 07600-000, Brasil",
+              "partida": "2026-10-26T19:20:00Z",
+              "chegada": "2026-10-26T19:55:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 24,
+              "pontosGeometria": 935,
+              "precisao": 6
+            },
+            {
+              "modo": "WALK",
+              "origem": "Terminal Rodoviário Siguemi Aiacyda - Mairiporã, SP, 07600-000, Brasil",
+              "destino": "Terminal Rodoviário Siguemi Aiacyda - Mairiporã, SP, 07600-000, Brasil",
+              "partida": "2026-10-26T19:55:00Z",
+              "chegada": "2026-10-26T19:57:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 2,
+              "precisao": 6
+            },
+            {
+              "modo": "BUS",
+              "linha": "566",
+              "agencia": "ARTESP",
+              "sentido": "SAO PAULO (TERMINAL RODOVIARIO TIETE)",
+              "origem": "Terminal Rodoviário Siguemi Aiacyda - Mairiporã, SP, 07600-000, Brasil",
+              "destino": "R. Cap. Busse, 391 - Parque Edu Chaves, São Paulo - SP, 02232-050, Brasil",
+              "partida": "2026-10-26T20:00:00Z",
+              "chegada": "2026-10-26T20:31:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 16,
+              "pontosGeometria": 855,
+              "precisao": 6
+            },
+            {
+              "modo": "WALK",
+              "origem": "R. Cap. Busse, 391 - Parque Edu Chaves, São Paulo - SP, 02232-050, Brasil",
+              "destino": "END",
+              "partida": "2026-10-26T20:31:00Z",
+              "chegada": "2026-10-26T20:42:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 53,
+              "precisao": 6
+            }
+          ]
+        },
+        {
+          "partida": "2026-10-26T18:22:00Z",
+          "chegada": "2026-10-26T21:32:00Z",
+          "etapas": [
+            {
+              "modo": "WALK",
+              "origem": "START",
+              "destino": "Av. Antônio Cândido Machado, 91 - Vila Uniao, Cajamar - SP, 07750-000, Brasil",
+              "partida": "2026-10-26T18:22:00Z",
+              "chegada": "2026-10-26T18:25:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 11,
+              "precisao": 6
+            },
+            {
+              "modo": "BUS",
+              "linha": "054",
+              "agencia": "ARTESP",
+              "sentido": "SAO PAULO (LAPA)",
+              "origem": "Av. Antônio Cândido Machado, 91 - Vila Uniao, Cajamar - SP, 07750-000, Brasil",
+              "destino": "Viaduto Domingos de Morais - Vila Leopoldina, São Paulo - SP, 05078-010, Brasil",
+              "partida": "2026-10-26T18:25:00Z",
+              "chegada": "2026-10-26T19:25:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 38,
+              "pontosGeometria": 1302,
+              "precisao": 6
+            },
+            {
+              "modo": "WALK",
+              "origem": "Viaduto Domingos de Morais - Vila Leopoldina, São Paulo - SP, 05078-010, Brasil",
+              "destino": "Av. Emb. Macedo Soares, 3901 - Vila Leopoldina, São Paulo - SP, 05095-035, Brasil",
+              "partida": "2026-10-26T19:25:00Z",
+              "chegada": "2026-10-26T19:29:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 35,
+              "precisao": 6
+            },
+            {
+              "modo": "BUS",
+              "linha": "818",
+              "agencia": "ARTESP",
+              "sentido": "SAO PAULO (METRO ARMENIA)",
+              "origem": "Av. Emb. Macedo Soares, 3901 - Vila Leopoldina, São Paulo - SP, 05095-035, Brasil",
+              "destino": "R. Dom Rodo, 130 - Luz, São Paulo - SP, 01109-080, Brasil",
+              "partida": "2026-10-26T19:40:00Z",
+              "chegada": "2026-10-26T20:16:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 10,
+              "pontosGeometria": 253,
+              "precisao": 6
+            },
+            {
+              "modo": "WALK",
+              "origem": "R. Dom Rodo, 130 - Luz, São Paulo - SP, 01109-080, Brasil",
+              "destino": "Av. Pres. Castelo Branco, 2660 - Pte. Pequena, São Paulo - SP, 01142-300, Brasil",
+              "partida": "2026-10-26T20:16:00Z",
+              "chegada": "2026-10-26T20:22:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 41,
+              "precisao": 6
+            },
+            {
+              "modo": "BUS",
+              "linha": "240",
+              "agencia": "ARTESP",
+              "sentido": "MAIRIPORA (TERMINAL RODOVIARIO CIDADE BONITA SIGUEMI AIACYDA)",
+              "origem": "Av. Pres. Castelo Branco, 2660 - Pte. Pequena, São Paulo - SP, 01142-300, Brasil",
+              "destino": "BR-381 Rod. Fernão Dias, km 36,5 norte - Parque Edu Chaves, São Paulo - SP, 02284-000, Brasil",
+              "partida": "2026-10-26T20:46:00Z",
+              "chegada": "2026-10-26T21:16:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 16,
+              "pontosGeometria": 628,
+              "precisao": 6
+            },
+            {
+              "modo": "WALK",
+              "origem": "BR-381 Rod. Fernão Dias, km 36,5 norte - Parque Edu Chaves, São Paulo - SP, 02284-000, Brasil",
+              "destino": "END",
+              "partida": "2026-10-26T21:16:00Z",
+              "chegada": "2026-10-26T21:32:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 81,
+              "precisao": 6
+            }
+          ]
+        },
+        {
+          "partida": "2026-10-26T18:22:00Z",
+          "chegada": "2026-10-26T20:35:00Z",
+          "etapas": [
+            {
+              "modo": "WALK",
+              "origem": "START",
+              "destino": "Av. Antônio Cândido Machado, 91 - Vila Uniao, Cajamar - SP, 07750-000, Brasil",
+              "partida": "2026-10-26T18:22:00Z",
+              "chegada": "2026-10-26T18:25:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 11,
+              "precisao": 6
+            },
+            {
+              "modo": "BUS",
+              "linha": "054",
+              "agencia": "ARTESP",
+              "sentido": "SAO PAULO (LAPA)",
+              "origem": "Av. Antônio Cândido Machado, 91 - Vila Uniao, Cajamar - SP, 07750-000, Brasil",
+              "destino": "SP-330 Rodovia Anhanguera, km 24,6 sul - Jardim Santa Fé, São Paulo - SP, 02675-031, Brasil",
+              "partida": "2026-10-26T18:25:00Z",
+              "chegada": "2026-10-26T18:46:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 13,
+              "pontosGeometria": 727,
+              "precisao": 6
+            },
+            {
+              "modo": "WALK",
+              "origem": "SP-330 Rodovia Anhanguera, km 24,6 sul - Jardim Santa Fé, São Paulo - SP, 02675-031, Brasil",
+              "destino": "Rod. Anhanguera",
+              "partida": "2026-10-26T18:46:00Z",
+              "chegada": "2026-10-26T18:48:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 2,
+              "precisao": 6
+            },
+            {
+              "modo": "BUS",
+              "linha": "8055-10",
+              "agencia": "SPTRANS",
+              "sentido": "Lapa",
+              "origem": "Rod. Anhanguera",
+              "destino": "R. Monte Pascal",
+              "partida": "2026-10-26T18:49:00Z",
+              "chegada": "2026-10-26T19:18:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 16,
+              "pontosGeometria": 271,
+              "precisao": 6
+            },
+            {
+              "modo": "WALK",
+              "origem": "R. Monte Pascal",
+              "destino": "Domingos De Moraes",
+              "partida": "2026-10-26T19:18:00Z",
+              "chegada": "2026-10-26T19:22:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 32,
+              "precisao": 6
+            },
+            {
+              "modo": "REGIONAL_RAIL",
+              "linha": "CPTM L08",
+              "agencia": "SPTRANS",
+              "sentido": "JULIO PRESTES",
+              "origem": "Domingos De Moraes",
+              "destino": "Palmeiras - Barra Funda",
+              "partida": "2026-10-26T19:22:00Z",
+              "chegada": "2026-10-26T19:36:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 1,
+              "pontosGeometria": 64,
+              "precisao": 6
+            },
+            {
+              "modo": "WALK",
+              "origem": "Palmeiras - Barra Funda",
+              "destino": "Palmeiras - Barra Funda",
+              "partida": "2026-10-26T19:36:00Z",
+              "chegada": "2026-10-26T19:38:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 6,
+              "precisao": 6
+            },
+            {
+              "modo": "REGIONAL_RAIL",
+              "linha": "CPTM L11",
+              "agencia": "SPTRANS",
+              "sentido": "ESTUDANTES",
+              "origem": "Palmeiras - Barra Funda",
+              "destino": "Luz",
+              "partida": "2026-10-26T19:40:00Z",
+              "chegada": "2026-10-26T19:46:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 32,
+              "precisao": 6
+            },
+            {
+              "modo": "WALK",
+              "origem": "Luz",
+              "destino": "R. Ribeiro De Lima, 158",
+              "partida": "2026-10-26T19:46:00Z",
+              "chegada": "2026-10-26T19:51:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 63,
+              "precisao": 6
+            },
+            {
+              "modo": "BUS",
+              "linha": "178A-10",
+              "agencia": "SPTRANS",
+              "sentido": "Metrô Santana",
+              "origem": "R. Ribeiro De Lima, 158",
+              "destino": "Av. Tiradentes, 1026",
+              "partida": "2026-10-26T19:53:00Z",
+              "chegada": "2026-10-26T19:58:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 1,
+              "pontosGeometria": 24,
+              "precisao": 6
+            },
+            {
+              "modo": "WALK",
+              "origem": "Av. Tiradentes, 1026",
+              "destino": "Terminal do Metrô Armênia",
+              "partida": "2026-10-26T19:58:00Z",
+              "chegada": "2026-10-26T20:00:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 17,
+              "precisao": 6
+            },
+            {
+              "modo": "BUS",
+              "linha": "354",
+              "agencia": "ARTESP",
+              "sentido": "GUARULHOS (BAIRRO DOS LAVRAS)",
+              "origem": "Terminal do Metrô Armênia",
+              "destino": "R. Srg. Rodoval Cabral Trindade, 184 - Parque Novo Mundo, São Paulo - SP, 02190-040, Brasil",
+              "partida": "2026-10-26T20:00:00Z",
+              "chegada": "2026-10-26T20:18:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 16,
+              "pontosGeometria": 513,
+              "precisao": 6
+            },
+            {
+              "modo": "WALK",
+              "origem": "R. Srg. Rodoval Cabral Trindade, 184 - Parque Novo Mundo, São Paulo - SP, 02190-040, Brasil",
+              "destino": "R. Srg. Rodoval Cabral Trindade, 184 - Parque Novo Mundo, São Paulo - SP, 02190-040, Brasil",
+              "partida": "2026-10-26T20:18:00Z",
+              "chegada": "2026-10-26T20:20:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 2,
+              "precisao": 6
+            },
+            {
+              "modo": "BUS",
+              "linha": "240",
+              "agencia": "ARTESP",
+              "sentido": "MAIRIPORA (TERMINAL RODOVIARIO CIDADE BONITA SIGUEMI AIACYDA)",
+              "origem": "R. Srg. Rodoval Cabral Trindade, 184 - Parque Novo Mundo, São Paulo - SP, 02190-040, Brasil",
+              "destino": "BR-381 Rod. Fernão Dias, km 87,2 norte - Vila Itapegica, Guarulhos - SP, Brasil",
+              "partida": "2026-10-26T20:20:00Z",
+              "chegada": "2026-10-26T20:24:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 1,
+              "pontosGeometria": 189,
+              "precisao": 6
+            },
+            {
+              "modo": "WALK",
+              "origem": "BR-381 Rod. Fernão Dias, km 87,2 norte - Vila Itapegica, Guarulhos - SP, Brasil",
+              "destino": "R. Cap. Rubens, 805",
+              "partida": "2026-10-26T20:24:00Z",
+              "chegada": "2026-10-26T20:26:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 0,
+              "precisao": 6
+            },
+            {
+              "modo": "BUS",
+              "linha": "1767-10",
+              "agencia": "SPTRANS",
+              "sentido": "Metrô Tucuruvi",
+              "origem": "R. Cap. Rubens, 805",
+              "destino": "Pça. Cte. Eduardo De Oliveira",
+              "partida": "2026-10-26T20:28:00Z",
+              "chegada": "2026-10-26T20:30:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 8,
+              "precisao": 6
+            },
+            {
+              "modo": "WALK",
+              "origem": "Pça. Cte. Eduardo De Oliveira",
+              "destino": "END",
+              "partida": "2026-10-26T20:30:00Z",
+              "chegada": "2026-10-26T20:35:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 0,
+              "pontosGeometria": 27,
+              "precisao": 6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "caso": "tucuruvi_luz_trilhos",
+      "origem": "br-sao-paulo_18882",
+      "destino": "br-sao-paulo_18940",
+      "time": "2026-10-26T12:00:00Z",
+      "url": "https://api.transitous.org/api/v6/plan?fromPlace=br-sao-paulo_18882&toPlace=br-sao-paulo_18940&time=2026-10-26T12%3A00%3A00Z&numItineraries=3&maxPreTransitTime=1800&maxPostTransitTime=1800&directModes=WALK&preTransitModes=WALK&postTransitModes=WALK&transitModes=TRANSIT&detailedTransfers=true&detailedLegs=true&language=pt",
+      "verificadoEm": "2026-10-25T03:55:07.625Z",
+      "statusCode": 200,
+      "itineraries": [
+        {
+          "partida": "2026-10-26T12:00:00Z",
+          "chegada": "2026-10-26T12:14:00Z",
+          "etapas": [
+            {
+              "modo": "SUBWAY",
+              "linha": "METRÔ L1",
+              "agencia": "SPTRANS",
+              "sentido": "JABAQUARA",
+              "origem": "Tucuruvi",
+              "destino": "Luz",
+              "partida": "2026-10-26T12:00:00Z",
+              "chegada": "2026-10-26T12:14:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 7,
+              "pontosGeometria": 137,
+              "precisao": 6
+            }
+          ]
+        },
+        {
+          "partida": "2026-10-26T12:02:00Z",
+          "chegada": "2026-10-26T12:16:00Z",
+          "etapas": [
+            {
+              "modo": "SUBWAY",
+              "linha": "METRÔ L1",
+              "agencia": "SPTRANS",
+              "sentido": "JABAQUARA",
+              "origem": "Tucuruvi",
+              "destino": "Luz",
+              "partida": "2026-10-26T12:02:00Z",
+              "chegada": "2026-10-26T12:16:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 7,
+              "pontosGeometria": 137,
+              "precisao": 6
+            }
+          ]
+        },
+        {
+          "partida": "2026-10-26T12:04:00Z",
+          "chegada": "2026-10-26T12:18:00Z",
+          "etapas": [
+            {
+              "modo": "SUBWAY",
+              "linha": "METRÔ L1",
+              "agencia": "SPTRANS",
+              "sentido": "JABAQUARA",
+              "origem": "Tucuruvi",
+              "destino": "Luz",
+              "partida": "2026-10-26T12:04:00Z",
+              "chegada": "2026-10-26T12:18:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 7,
+              "pontosGeometria": 137,
+              "precisao": 6
+            }
+          ]
+        },
+        {
+          "partida": "2026-10-26T12:06:00Z",
+          "chegada": "2026-10-26T12:20:00Z",
+          "etapas": [
+            {
+              "modo": "SUBWAY",
+              "linha": "METRÔ L1",
+              "agencia": "SPTRANS",
+              "sentido": "JABAQUARA",
+              "origem": "Tucuruvi",
+              "destino": "Luz",
+              "partida": "2026-10-26T12:06:00Z",
+              "chegada": "2026-10-26T12:20:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 7,
+              "pontosGeometria": 137,
+              "precisao": 6
+            }
+          ]
+        },
+        {
+          "partida": "2026-10-26T12:08:00Z",
+          "chegada": "2026-10-26T12:22:00Z",
+          "etapas": [
+            {
+              "modo": "SUBWAY",
+              "linha": "METRÔ L1",
+              "agencia": "SPTRANS",
+              "sentido": "JABAQUARA",
+              "origem": "Tucuruvi",
+              "destino": "Luz",
+              "partida": "2026-10-26T12:08:00Z",
+              "chegada": "2026-10-26T12:22:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 7,
+              "pontosGeometria": 137,
+              "precisao": 6
+            }
+          ]
+        },
+        {
+          "partida": "2026-10-26T12:10:00Z",
+          "chegada": "2026-10-26T12:24:00Z",
+          "etapas": [
+            {
+              "modo": "SUBWAY",
+              "linha": "METRÔ L1",
+              "agencia": "SPTRANS",
+              "sentido": "JABAQUARA",
+              "origem": "Tucuruvi",
+              "destino": "Luz",
+              "partida": "2026-10-26T12:10:00Z",
+              "chegada": "2026-10-26T12:24:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 7,
+              "pontosGeometria": 137,
+              "precisao": 6
+            }
+          ]
+        },
+        {
+          "partida": "2026-10-26T12:12:00Z",
+          "chegada": "2026-10-26T12:26:00Z",
+          "etapas": [
+            {
+              "modo": "SUBWAY",
+              "linha": "METRÔ L1",
+              "agencia": "SPTRANS",
+              "sentido": "JABAQUARA",
+              "origem": "Tucuruvi",
+              "destino": "Luz",
+              "partida": "2026-10-26T12:12:00Z",
+              "chegada": "2026-10-26T12:26:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 7,
+              "pontosGeometria": 137,
+              "precisao": 6
+            }
+          ]
+        },
+        {
+          "partida": "2026-10-26T12:14:00Z",
+          "chegada": "2026-10-26T12:28:00Z",
+          "etapas": [
+            {
+              "modo": "SUBWAY",
+              "linha": "METRÔ L1",
+              "agencia": "SPTRANS",
+              "sentido": "JABAQUARA",
+              "origem": "Tucuruvi",
+              "destino": "Luz",
+              "partida": "2026-10-26T12:14:00Z",
+              "chegada": "2026-10-26T12:28:00Z",
+              "realTime": false,
+              "paradasIntermediarias": 7,
+              "pontosGeometria": 137,
+              "precisao": 6
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

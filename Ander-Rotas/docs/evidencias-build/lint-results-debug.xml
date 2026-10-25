@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 8.7.3">
+
+    <issue
+        id="ModifierParameter"
+        severity="Warning"
+        message="Modifier parameter should be the first optional parameter"
+        category="Correctness"
+        priority="3"
+        summary="Guidelines for Modifier parameters in a Composable function"
+        explanation="The first (or only) Modifier parameter in a Composable function should follow the following rules:&#xA;- Be named `modifier`&#xA;- Have a type of `Modifier`&#xA;- Either have no default value, or have a default value of `Modifier`&#xA;- If optional, be the first optional parameter in the parameter list"
+        errorLine1="fun MapaRotas(origem: Endereco, destino: Endereco, rota: Rota?, posicao: Ponto?, focoGps: Int, navegando: Boolean, rumo: Float? = null, modifier: Modifier = Modifier, onPonto: (Ponto) -> Unit, onEstado: (String?) -> Unit) {"
+        errorLine2="                                                                                                                                        ~~~~~~~~">
+        <location
+            file="/workspace/scratch/656f4789a2d8/ander-rotas/app/src/main/java/br/com/ander/rotas/MapaRotas.kt"
+            line="44"
+            column="137"/>
+    </issue>
+
+    <issue
+        id="DataExtractionRules"
+        severity="Warning"
+        message="The attribute `android:allowBackup` is deprecated from Android 12 and higher and may be removed in future versions. Consider adding the attribute `android:dataExtractionRules` specifying an `@xml` resource which configures cloud backups and device transfers on Android 12 and higher."
+        category="Security"
+        priority="3"
+        summary="Missing data extraction rules"
+        explanation="Before Android 12, the attributes `android:allowBackup` and `android:fullBackupContent` were used to configure all forms of backup, including cloud backups, device-to-device transfers and adb backup.&#xA;&#xA;In Android 12 and higher, these attributes have been deprecated and will only apply to cloud backups. You should instead use the attribute `android:dataExtractionRules`, specifying an `@xml` resource that configures which files to back up, for cloud backups and for device-to-device transfers, separately. If your `minSdkVersion` supports older versions, you&apos;ll still want to specify an `android:fullBackupContent` resource if the default behavior is not right for your app."
+        url="https://developer.android.com/about/versions/12/backup-restore#xml-changes"
+        urls="https://developer.android.com/about/versions/12/backup-restore#xml-changes,https://goo.gle/DataExtractionRules"
+        errorLine1="    &lt;application android:allowBackup=&quot;false&quot; android:icon=&quot;@drawable/ic_launcher&quot; android:label=&quot;Ander Rotas&quot; android:supportsRtl=&quot;true&quot; android:theme=&quot;@style/Theme.AnderRotas&quot; android:usesCleartextTraffic=&quot;false&quot;>"
+        errorLine2="                                      ~~~~~">
+        <location
+            file="/workspace/scratch/656f4789a2d8/ander-rotas/app/src/main/AndroidManifest.xml"
+            line="10"
+            column="39"/>
+    </issue>
+
+    <issue
+        id="StaticFieldLeak"
+        severity="Warning"
+        message="Do not place Android context classes in static fields (static reference to `OfflineRegion` which has field `context` pointing to `Context`); this is a memory leak"
+        category="Performance"
+        priority="6"
+        summary="Static Field Leaks"
+        explanation="A static field will leak contexts.&#xA;&#xA;Non-static inner classes have an implicit reference to their outer class. If that outer class is for example a `Fragment` or `Activity`, then this reference means that the long-running handler/loader/task will hold a reference to the activity which prevents it from getting garbage collected.&#xA;&#xA;Similarly, direct field references to activities and fragments from these longer running instances can cause leaks.&#xA;&#xA;ViewModel classes should never point to Views or non-application Contexts."
+        errorLine1="    private var ativa: OfflineRegion? = null"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/656f4789a2d8/ander-rotas/app/src/main/java/br/com/ander/rotas/MapaRotas.kt"
+            line="126"
+            column="5"/>
+    </issue>
+
+</issues>

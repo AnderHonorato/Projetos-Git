@@ -1,0 +1,2451 @@
+{
+  "itineraries": [
+    {
+      "duration": 8220,
+      "startTime": "2026-10-26T09:20:00Z",
+      "endTime": "2026-10-26T11:37:00Z",
+      "transfers": 2,
+      "id": "CkkhdQsT/CV6N8ApWkkrvqFIR8AyD2JyLUFSVEVTUF8yMjQyODmUxmgdVXk3wEGdhT3t8EdHwEjAtvzWBlDUu/zWBloEV0FMS2ABCogBCgMyNDASKTIwMjYxMDI2XzA2OjAwX2JyLUFSVEVTUF83NjAxX1dEXzJfNjUxNjYwGg9ici1BUlRFU1BfMjI0MjghlMZoHVV5N8ApnYU97fBHR8AyDmJyLUFSVEVTUF80MDEzOYlgHFw6hjfAQfKBHf8FUEfASNS7/NYGUKjI/NYGWgNCVVNgAQpZGg5ici1BUlRFU1BfNDAxMyGJYBxcOoY3wCnygR3/BVBHwDIPYnItQVJURVNQXzQ5NDkzOYCZ7+AnhjfAQY+u0t11UEfASKjI/NYGUJjK/NYGWgRXQUxLYAEKigEKAzgxOBIqMjAyNjEwMjZfMDc6MTBfYnItQVJURVNQXzY2NjFfV0RfMTFfNjU1ODM0Gg9ici1BUlRFU1BfNDk0OTMhgJnv4CeGN8Apj67S3XVQR8AyD2JyLUFSVEVTUF8zMDUxODkXhzO/moM3wEE4/dmPFF1HwEj4zfzWBlCU4fzWBloDQlVTYAEKWRoPYnItQVJURVNQXzMwNTE4IReHM7+agzfAKTj92Y8UXUfAMg5ici1BUlRFU1BfMTY4MDmtSiL7IIM3wEHVghd9BV1HwEiU4fzWBlCE4/zWBloEV0FMS2ABCpEBCgMwNTQSKTIwMjYxMDI2XzA3OjQwX2JyLUFSVEVTUF83MjIwX1dEXzhfNjUzMzEzGg5ici1BUlRFU1BfMTY4MCGtSiL7IIM3wCnVghd9BV1HwDIPYnItQVJURVNQXzI5MzgzOYiWPJ6WVzfAQbnCu1zEa0fASITj/NYGUOT1/NYGWgNCVVNgAXEAAAAAAAAAAApSGg9ici1BUlRFU1BfMjkzODMhiJY8npZXN8ApucK7XMRrR8A50jb+RGVXN8BBGxNiLqlrR8BI5PX81gZQ3Pb81gZaBFdBTEtgAWkAAAAAAAAAAA==",
+      "legs": [
+        {
+          "mode": "WALK",
+          "from": {
+            "name": "START",
+            "lat": -23.4771421,
+            "lon": -46.567436,
+            "tz": "America/Sao_Paulo",
+            "departure": "2026-10-26T09:20:00Z",
+            "scheduledDeparture": "2026-10-26T09:20:00Z",
+            "vertexType": "NORMAL"
+          },
+          "to": {
+            "name": "R. Cap. Busse, 391 - Parque Edu Chaves, São Paulo - SP, 02232-050, Brasil",
+            "stopId": "br-ARTESP_22428",
+            "importance": 0.000004293729944038205,
+            "lat": -23.473955000000004,
+            "lon": -46.56204,
+            "tz": "America/Sao_Paulo",
+            "arrival": "2026-10-26T09:31:00Z",
+            "scheduledArrival": "2026-10-26T09:31:00Z",
+            "vertexType": "TRANSIT",
+            "modes": [
+              "BUS"
+            ]
+          },
+          "duration": 660,
+          "startTime": "2026-10-26T09:20:00Z",
+          "endTime": "2026-10-26T09:31:00Z",
+          "scheduledStartTime": "2026-10-26T09:20:00Z",
+          "scheduledEndTime": "2026-10-26T09:31:00Z",
+          "realTime": false,
+          "scheduled": false,
+          "distance": 767,
+          "legGeometry": {
+            "points": "jx|wk@v_gywAuCmdA??oGDyGc@wGaA??sGkB??I[QW??YOGASC??[BYL??kGw@??sAc@mFgCeMeH??gHsImDsFaH_N??aCqIcB_KqAuO??EwIJuFPqF`@}DPsC`@mC??xA}E~@wBbEgLvF}K??aj@of@??yj@_h@??aCk@eCMyHHkED",
+            "precision": 6,
+            "length": 53
+          },
+          "steps": [
+            {
+              "relativeDirection": "CONTINUE",
+              "distance": 113,
+              "fromLevel": 0,
+              "toLevel": 0,
+              "toOsmNode": 997090840,
+              "polyline": {
+                "points": "jx|wk@v_gywAuCmdA",
+                "precision": 6,
+                "length": 2
+              },
+              "streetName": "",
+              "exit": "",
+              "stayOn": false,
+              "area": false,
+              "toll": false,
+              "elevationUp": 0,
+              "elevationDown": 0
+            },
+            {
+              "relativeDirection": "CONTINUE",
+              "distance": 47,
+              "fromLevel": 0,
+              "toLevel": 0,
+              "osmWay": 85901834,
+              "fromOsmNode": 997090840,
+              "toOsmNode": 8681383779,
+              "polyline": {
+                "points": "ts|wk@hzdywAoGDyGc@wGaA",
+                "precision": 6,
+                "length": 4
+              },
+              "streetName": "Rua Tenente Mário Barbedo",
+              "exit": "",
+              "stayOn": false,
+              "area": false,
+              "toll": false,
+              "elevationUp": 0,
+              "elevationDown": 0
+            },
+            {
+              "relativeDirection": "CONTINUE",
+              "distance": 16,
+              "fromLevel": 0,
+              "toLevel": 0,
+              "osmWay": 936942282,
+              "fromOsmNode": 8681383779,
+              "toOsmNode": 8681383796,
+              "polyline": {
+                "points": "ry{wk@hwdywAsGkB",
+                "precision": 6,
+                "length": 2
+              },
+              "streetName": "Rua Tenente Mário Barbedo",
+              "exit": "",
+              "stayOn": false,
+              "area": false,
+              "toll": false,
+              "elevationUp": 0,
+              "elevationDown": 0
+            },
+            {
+              "relativeDirection": "CONTINUE",
+              "distance": 3,
+              "fromLevel": 0,
+              "toLevel": 0,
+              "osmWay": 936942286,
+              "fromOsmNode": 8681383796,
+              "toOsmNode": 8681383794,
+              "polyline": {
+                "points": "~p{wk@|sdywAI[QW",
+                "precision": 6,
+                "length": 3
+              },
+              "streetName": "",
+              "exit": "",
+              "stayOn": false,
+              "area": false,
+              "toll": false,
+              "elevationUp": 0,
+              "elevationDown": 0
+            },
+            {
+              "relativeDirection": "CONTINUE",
+              "distance": 3,
+              "fromLevel": 0,
+              "toLevel": 0,
+              "osmWay": 936942286,
+              "fromOsmNode": 8681383794,
+              "toOsmNode": 8681383792,
+              "polyline": {
+                "points": "bp{wk@hrdywAYOGASC",
+                "precision": 6,
+                "length": 4
+              },
+              "streetName": "",
+              "exit": "",
+              "stayOn": false,
+              "area": false,
+              "toll": false,
+              "elevationUp": 0,
+              "elevationDown": 0
+            },
+            {
+              "relativeDirection": "CONTINUE",
+              "distance": 3,
+              "fromLevel": 0,
+              "toLevel": 0,
+              "osmWay": 936942286,
+              "fromOsmNode": 8681383792,
+              "toOsmNode": 8681383790,
+              "polyline": {
+                "points": "ln{wk@rqdywA[BYL",
+                "precision": 6,
+                "length": 3
+              },
+              "streetName": "",
+              "exit": "",
+              "stayOn": false,
+              "area": false,
+              "toll": false,
+              "elevationUp": 0,
+              "elevationDown": 0
+            },
+            {
+              "relativeDirection": "CONTINUE",
+              "distance": 15,
+              "fromLevel": 0,
+              "toLevel": 0,
+              "osmWay": 936942284,
+              "fromOsmNode": 8681383790,
+              "toOsmNode": 8681383780,
+              "polyline": {
+                "points": "vl{wk@drdywAkGw@",
+                "precision": 6,
+                "length": 2
+              },
+              "streetName": "Rua Tenente Mário Barbedo",
+              "exit": "",
+              "stayOn": false,
+              "area": false,
+              "toll": false,
+              "elevationUp": 0,
+              "elevationDown": 0
+            },
+            {
+              "relativeDirection": "CONTINUE",
+              "distance": 49,
+              "fromLevel": 0,
+              "toLevel": 0,
+              "osmWay": 85901834,
+              "fromOsmNode": 8681383780,
+              "toOsmNode": 997091060,
+              "polyline": {
+                "points": "jd{wk@lpdywAsAc@mFgCeMeH",
+                "precision": 6,
+                "length": 4
+              },
+              "streetName": "Rua Tenente Mário Barbedo",
+              "exit": "",
+              "stayOn": false,
+              "area": false,
+              "toll": false,
+              "elevationUp": 0,
+              "elevationDown": 0
+            },
+            {
+              "relativeDirection": "CONTINUE",
+              "distance": 69,
+              "fromLevel": 0,
+              "toLevel": 0,
+              "osmWay": 85901834,
+              "fromOsmNode": 997091060,
+              "toOsmNode": 997091074,
+              "polyline": {
+                "points": "blzwk@zadywAgHsImDsFaH_N",
+                "precision": 6,
+                "length": 4
+              },
+              "streetName": "Rua Tenente Mário Barbedo",
+              "exit": "",
+              "stayOn": false,
+              "area": false,
+              "toll": false,
+              "elevationUp": 0,
+              "elevationDown": 0
+            },
+            {
+              "relativeDirection": "CONTINUE",
+              "distance": 67,
+              "fromLevel": 0,
+              "toLevel": 0,
+              "osmWay": 85901834,
+              "fromOsmNode": 997091074,
+              "toOsmNode": 997090861,
+              "polyline": {
+                "points": "jtywk@r`cywAaCqIcB_KqAuO",
+                "precision": 6,
+                "length": 4
+              },
+              "streetName": "Rua Tenente Mário Barbedo",
+              "exit": "",
+              "stayOn": false,
+              "area": false,
+              "toll": false,
+              "elevationUp": 0,
+              "elevationDown": 0
+            },
+            {
+              "relativeDirection": "CONTINUE",
+              "distance": 67,
+              "fromLevel": 0,
+              "toLevel": 0,
+              "osmWay": 85901834,
+              "fromOsmNode": 997090861,
+              "toOsmNode": 997090869,
+              "polyline": {
+                "points": "rjywk@jyaywAEwIJuFPqF`@}DPsC`@mC",
+                "precision": 6,
+                "length": 7
+              },
+              "streetName": "Rua Tenente Mário Barbedo",
+              "exit": "",
+              "stayOn": false,
+              "area": false,
+              "toll": false,
+              "elevationUp": 0,
+              "elevationDown": 0
+            },
+            {
+              "relativeDirection": "CONTINUE",
+              "distance": 69,
+              "fromLevel": 0,
+              "toLevel": 0,
+              "osmWay": 85901834,
+              "fromOsmNode": 997090869,
+              "toOsmNode": 997090900,
+              "polyline": {
+                "points": "`nywk@jp`ywAxA}E~@wBbEgLvF}K",
+                "precision": 6,
+                "length": 5
+              },
+              "streetName": "Rua Tenente Mário Barbedo",
+              "exit": "",
+              "stayOn": false,
+              "area": false,
+              "toll": false,
+              "elevationUp": 0,
+              "elevationDown": 0
+            },
+            {
+              "relativeDirection": "CONTINUE",
+              "distance": 100,
+              "fromLevel": 0,
+              "toLevel": 0,
+              "osmWay": 85901907,
+              "fromOsmNode": 997090900,
+              "toOsmNode": 997091168,
+              "polyline": {
+                "points": "v`zwk@nk_ywAaj@of@",
+                "precision": 6,
+                "length": 2
+              },
+              "streetName": "Rua Açailândia",
+              "exit": "",
+              "stayOn": false,
+              "area": false,
+              "toll": false,
+              "elevationUp": 0,
+              "elevationDown": 0
+            },
+            {
+              "relativeDirection": "CONTINUE",
+              "distance": 103,
+              "fromLevel": 0,
+              "toLevel": 0,
+              "osmWay": 85901907,
+              "fromOsmNode": 997091168,
+              "toOsmNode": 2628724684,
+              "polyline": {
+                "points": "tuxwk@~c~xwAyj@_h@",
+                "precision": 6,
+                "length": 2
+              },
+              "streetName": "Rua Açailândia",
+              "exit": "",
+              "stayOn": false,
+              "area": false,
+              "toll": false,
+              "elevationUp": 0,
+              "elevationDown": 0
+            },
+            {
+              "relativeDirection": "CONTINUE",
+              "distance": 43,
+              "fromLevel": 0,
+              "toLevel": 0,
+              "fromOsmNode": 2628724684,
+              "polyline": {
+                "points": "ziwwk@~z|xwAaCk@eCMyHHkED",
+                "precision": 6,
+                "length": 5
+              },
+              "streetName": "",
+              "exit": "",
+              "stayOn": false,
+              "area": false,
+              "toll": false,
+              "elevationUp": 0,
+              "elevationDown": 0
+            }
+          ]
+        },
+        {
+          "mode": "BUS",
+          "from": {
+            "name": "R. Cap. Busse, 391 - Parque Edu Chaves, São Paulo - SP, 02232-050, Brasil",
+            "stopId": "br-ARTESP_22428",
+            "importance": 0.000004293729944038205,
+            "lat": -23.473955000000004,
+            "lon": -46.56204,
+            "tz": "America/Sao_Paulo",
+            "departure": "2026-10-26T09:31:00Z",
+            "scheduledDeparture": "2026-10-26T09:31:00Z",
+            "vertexType": "TRANSIT",
+            "pickupType": "NORMAL",
+            "dropoffType": "NORMAL",
+            "cancelled": false,
+            "arrivalTimestampReason": "NO_RT_DATA",
+            "departureTimestampReason": "NO_RT_DATA",
+            "modes": [
+              "BUS"
+            ]
+          },
+          "to": {
+            "name": "Avenida Cruzeiro do Sul, 808",
+            "stopId": "br-ARTESP_4013",
+            "importance": 0.00017948979802895337,
+            "lat": -23.524328,
+            "lon": -46.62518300000001,
+            "tz": "America/Sao_Paulo",
+            "arrival": "2026-10-26T09:58:00Z",
+            "scheduledArrival": "2026-10-26T09:58:00Z",
+            "vertexType": "TRANSIT",
+            "pickupType": "NORMAL",
+            "dropoffType": "NORMAL",
+            "cancelled": false,
+            "arrivalTimestampReason": "NO_RT_DATA",
+            "departureTimestampReason": "NO_RT_DATA",
+            "modes": [
+              "BUS"
+            ]
+          },
+          "duration": 1620,
+          "startTime": "2026-10-26T09:31:00Z",
+          "endTime": "2026-10-26T09:58:00Z",
+          "scheduledStartTime": "2026-10-26T09:31:00Z",
+          "scheduledEndTime": "2026-10-26T09:58:00Z",
+          "realTime": false,
+          "scheduled": true,
+          "interlineWithPreviousLeg": false,
+          "headsign": "SAO PAULO (TERMINAL RODOVIARIO DO TIETE)",
+          "tripFrom": {
+            "name": "Terminal Rodoviário Siguemi Aiacyda - Mairiporã, SP, 07600-000, Brasil",
+            "stopId": "br-ARTESP_97249",
+            "importance": 0.000031000119633972645,
+            "lat": -23.316828000000005,
+            "lon": -46.58396,
+            "level": 0,
+            "tz": "America/Sao_Paulo",
+            "departure": "2026-10-26T09:00:00Z",
+            "scheduledDeparture": "2026-10-26T09:00:00Z",
+            "vertexType": "TRANSIT",
+            "pickupType": "NORMAL",
+            "dropoffType": "NORMAL",
+            "cancelled": false,
+            "departureTimestampReason": "NO_RT_DATA",
+            "modes": [
+              "BUS"
+            ]
+          },
+          "tripTo": {
+            "name": "Av. Cruzeiro do Sul, 1762 - Santana, São Paulo - SP, 02030-000, Brasil",
+            "stopId": "br-ARTESP_45005",
+            "importance": 0.000022620024537900463,
+            "lat": -23.515508999999998,
+            "lon": -46.62487,
+            "tz": "America/Sao_Paulo",
+            "arrival": "2026-10-26T10:00:00Z",
+            "scheduledArrival": "2026-10-26T10:00:00Z",
+            "vertexType": "TRANSIT",
+            "pickupType": "NORMAL",
+            "dropoffType": "NORMAL",
+            "cancelled": false,
+            "arrivalTimestampReason": "NO_RT_DATA",
+            "modes": [
+              "BUS"
+            ]
+          },
+          "routeId": "br-ARTESP_240",
+          "routeUrl": "",
+          "directionId": "0",
+          "routeType": 3,
+          "agencyName": "ARTESP",
+          "agencyUrl": "http://www.artesp.sp.gov.br",
+          "agencyFareUrl": "",
+          "agencyId": "1",
+          "tripId": "20261026_06:00_br-ARTESP_7601_WD_2_651660",
+          "routeShortName": "240",
+          "routeLongName": "MAIRIPORA (TERMINAL RODOVIARIO CIDADE BONITA SIGUEMI AIACYDA) - SAO PAULO (TERMINAL RODOVIARIO DO TIETE)",
+          "tripShortName": "",
+          "displayName": "240",
+          "cancelled": false,
+          "source": "br_ARTESP.gtfs.zip/stop_times.txt:2256401:2256433",
+          "intermediateStops": [
+            {
+              "name": "BR-381 Rod. Fernão Dias, km 88,5 norte - Vila Itapegica, Guarulhos - SP, 07043-010, Brasil",
+              "stopId": "br-ARTESP_22429",
+              "importance": 0.000004293729944038205,
+              "lat": -23.485934999999998,
+              "lon": -46.55993,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T09:33:00Z",
+              "departure": "2026-10-26T09:33:00Z",
+              "scheduledArrival": "2026-10-26T09:33:00Z",
+              "scheduledDeparture": "2026-10-26T09:33:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Rod. Pres. Dutra, 448 - Parque Novo Mundo, São Paulo - SP, 02147-090, Brasil - Parque Novo Mundo, São Paulo - SP, 02147-090, Brasil",
+              "stopId": "br-ARTESP_2531",
+              "importance": 0.00013191944162826985,
+              "lat": -23.501898000000004,
+              "lon": -46.565422000000005,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T09:35:00Z",
+              "departure": "2026-10-26T09:35:00Z",
+              "scheduledArrival": "2026-10-26T09:35:00Z",
+              "scheduledDeparture": "2026-10-26T09:35:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "BR-116 Rod. Pres. Dutra, Km 228,1 Sul - Parada Parque Novo Mundo I - Parque Novo Mundo, São Paulo - SP, 02144-050, Brasil",
+              "stopId": "br-ARTESP_2532",
+              "importance": 0.00013191944162826985,
+              "lat": -23.504350000000002,
+              "lon": -46.568707,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T09:37:00Z",
+              "departure": "2026-10-26T09:37:00Z",
+              "scheduledArrival": "2026-10-26T09:37:00Z",
+              "scheduledDeparture": "2026-10-26T09:37:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "BR-116 Rod. Pres. Dutra, Km 229,2 Sul - Parada Parque Novo Mundo II - Parque Novo Mundo, São Paulo - SP, 02147-090, Brasil",
+              "stopId": "br-ARTESP_2533",
+              "importance": 0.00013191944162826985,
+              "lat": -23.511787,
+              "lon": -46.575874,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T09:39:00Z",
+              "departure": "2026-10-26T09:39:00Z",
+              "scheduledArrival": "2026-10-26T09:39:00Z",
+              "scheduledDeparture": "2026-10-26T09:39:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Av. Bandeirantes do Sul, 311 - Vila Maria, São Paulo - SP, 02165-000, Brasil",
+              "stopId": "br-ARTESP_5495",
+              "importance": 0.00013191944162826985,
+              "lat": -23.516865000000006,
+              "lon": -46.580933,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T09:41:00Z",
+              "departure": "2026-10-26T09:41:00Z",
+              "scheduledArrival": "2026-10-26T09:41:00Z",
+              "scheduledDeparture": "2026-10-26T09:41:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Rua Carmópolis de Minas, 839 - Parada Andaraí Sul - Vila Maria, São Paulo - SP, 02116-010, Brasil",
+              "stopId": "br-ARTESP_2534",
+              "importance": 0.00013191944162826985,
+              "lat": -23.521318,
+              "lon": -46.585213,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T09:43:00Z",
+              "departure": "2026-10-26T09:43:00Z",
+              "scheduledArrival": "2026-10-26T09:43:00Z",
+              "scheduledDeparture": "2026-10-26T09:43:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Av. Morvan Dias de Figueiredo - Av. Dr. Assis Ribeiro - Cangaiba, São Paulo - SP, 02147-090, Brasil",
+              "stopId": "br-ARTESP_4001",
+              "importance": 0.00013191944162826985,
+              "lat": -23.526748999999995,
+              "lon": -46.59494,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T09:45:00Z",
+              "departure": "2026-10-26T09:45:00Z",
+              "scheduledArrival": "2026-10-26T09:45:00Z",
+              "scheduledDeparture": "2026-10-26T09:45:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Av. Morvan Dias de Figueiredo, 3405 - Vila Guilherme, São Paulo - SP, 01142-300, Brasil",
+              "stopId": "br-ARTESP_5498",
+              "importance": 0.00013191944162826985,
+              "lat": -23.524199,
+              "lon": -46.599500000000006,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T09:46:00Z",
+              "departure": "2026-10-26T09:46:00Z",
+              "scheduledArrival": "2026-10-26T09:46:00Z",
+              "scheduledDeparture": "2026-10-26T09:46:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Av. Morvan Dias de Figueiredo, 2801 - Vila Guilherme, São Paulo - SP, 01142-300, Brasil",
+              "stopId": "br-ARTESP_20102",
+              "importance": 0.00013191944162826985,
+              "lat": -23.522048999999996,
+              "lon": -46.60304,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T09:48:00Z",
+              "departure": "2026-10-26T09:48:00Z",
+              "scheduledArrival": "2026-10-26T09:48:00Z",
+              "scheduledDeparture": "2026-10-26T09:48:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Av. Morvan Dias de Figueiredo, 799 - Vila Guilherme, São Paulo - SP, 02170-000, Brasil",
+              "stopId": "br-ARTESP_2538",
+              "importance": 0.00013191944162826985,
+              "lat": -23.521970000000003,
+              "lon": -46.60696,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T09:50:00Z",
+              "departure": "2026-10-26T09:50:00Z",
+              "scheduledArrival": "2026-10-26T09:50:00Z",
+              "scheduledDeparture": "2026-10-26T09:50:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Av. Bom Jardim, 150 - Pte. Pequena, São Paulo - SP, 03035-050, Brasil",
+              "stopId": "br-ARTESP_22440",
+              "importance": 0.000004293729944038205,
+              "lat": -23.525561999999997,
+              "lon": -46.613163,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T09:52:00Z",
+              "departure": "2026-10-26T09:52:00Z",
+              "scheduledArrival": "2026-10-26T09:52:00Z",
+              "scheduledDeparture": "2026-10-26T09:52:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Av. Bom Jardim, 346 - Pte. Pequena, São Paulo - SP, 03035-000, Brasil",
+              "stopId": "br-ARTESP_22441",
+              "importance": 0.000004293729944038205,
+              "lat": -23.524757,
+              "lon": -46.61519200000001,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T09:54:00Z",
+              "departure": "2026-10-26T09:54:00Z",
+              "scheduledArrival": "2026-10-26T09:54:00Z",
+              "scheduledDeparture": "2026-10-26T09:54:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Av. Bom Jardim, 464 - Pte. Pequena, São Paulo - SP, 03035-000, Brasil",
+              "stopId": "br-ARTESP_22442",
+              "importance": 0.000004293729944038205,
+              "lat": -23.524122,
+              "lon": -46.616802,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T09:56:00Z",
+              "departure": "2026-10-26T09:56:00Z",
+              "scheduledArrival": "2026-10-26T09:56:00Z",
+              "scheduledDeparture": "2026-10-26T09:56:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            }
+          ],
+          "legGeometry": {
+            "points": "dqvwk@nn|xwAiDsDfJgJnAoAvBwBbBcBvBcBzEsDnAoA~CwBbLwGvQgJnKsDvGcBbGcB~HwBbLwBrIoAvLcBjW_D~WsDfEg@nFSvL{@vGg@jHg@jMg@fh@oArISnFSvLg@jHSjRSzTSrg@oArb@oAvQSvQg@vQSbQg@bQg@~R{@jHS~HSvQSvLg@~W{@jf@wBzc@kCbV{@bV{@fY{@nUg@jRg@vGSjH?vQ{@fToArISvGSjRg@vBS~C?jC?vQSjMSbQSbLSbBSbGSnF?jH?~HSb`@SjW?rISjM?bL?vL?z@?nASzEkCjHRfE?jHR~HRzJRnKRbGRfJRzJRnKf@zE?bQf@vLRnFRzERz@z@z@f@bBf@~Hf@jHRzTbBjRnAjHz@jHf@jMnAvGz@~HnAzEz@jCf@jCz@nFnAfEnAjCz@vBz@zEbBrDbBbLnFvBnArDvBnKjHnFrDnFzEbBbBvBvBzEzEbBvBfEnFjHzJfJ~M~HvL~HvLrSnZ~RnZzEjHvBrDbBvBf@f@f@RnAf@~Cf@fOvVzObVbQzYnP~WnUn_@fJfOrDbGfEjHbB~CjCfEvLjRzJzOfJfOzJfOnKzOrDzErDzEnKrNfJbLf@zEz@rDvBfEnAbBvBjCzEnFzEfEbBvBnAz@f@f@nARbBf@bB?~CrDbBnAbBvBzJnKfTzTfEfEnZ~W~HvGbGbGn_@f^nZfYvLbLzEzEbGnFjMjMbGnF~H~HjHjH~HjHrNrNbLnKzOfOrN~M~MjMvLbLvBvBbGzEzO~MjdAzaAja@v`@bQzOzOfOrXvVnKzJfJrInFnFbGnFjWnUbGbGjHvGfO~MfEfEnFnFvB~Hz@nAnAnAfEzErDfEbGjHjH~HfJzJ~HfJvBjCnAnArIfJjCjCz@z@f@z@rD~CzJrIfErDnFzE~H~HfJfJrDrD~C~CrNvL~MbLvGbGbGnFjMvL~C~CfEfErS~RjHjHjHjHb[j\\nPzOvGvG~C~CjC~CzJbLvBzEnAvBvBrDbBbBfEfEjk@v`@vGzEnFfEnFfEfE~CnAz@~a@~\\fOvLzEfE~CvBz@z@bGzErIbGrDvBfEjC~CbBjCnAjCz@jHbBjCz@jCnArX~RjR~MrIbGvGzEve@~\\~f@z^bQjMvGzEvGzEjCjCfErD~C~CzEzErIfJjCfEzErI~CbGz@vBf@bBz@jCz@~Cz@zEbB~HbBnKnAnARfORjC?rDSnF?zEg@jHRRz@rDoFr]{EzYsIjk@gEzT_DnPgEvQoFzE{@rDkHfYkC~MwBfJcB~HgE~RgErSoAnF{@fE{EvQsDvLoA~CsDnKcGbL_IzOSnA?~C{TzYoUb[sNvQw[~a@{JjM{JrN_NjRgOrSsDnFsDnF{JzOgJjR_DbGcQ~a@kC~HwGvQ_DjM{@rDoAzE{@fEg@~CoA~H{@zEoAzJ{@nKg@bGSbGg@zJSrIg@zOSbL?rNRvL?nFz@nURzERbBnAnKvBrSz@zJbBjMvBvQz@bGbBfObBrNz@rInAnKz@jRRbGR~C?zTSfJ?rD{@zJ{@~Hg@rDg@nFoArI{@nFcBfJoAbGoAzEwBnKoAzEoAnFcBbGwBvBcBbBwBvBcBnAkCbBsDz@cB?cB?cBg@_D{@oA{@oAcBcBkC{@wBg@_DScBR_DRkCf@wBz@cBnAcBjCcB~CoAvBSfESbGf@jHz@jRvBzJz@vLnAnKnAbLz@~RvBjRvBvLz@rNbBvLnAnKz@nPbBjMnA~Hz@fERjHf@nFf@rDRnAbBnAz@vBRrDf@jCRvBnAz@f@bBvBf@bBSbBRrD_IjWsDvL_DbLkHvVwB~HsDrN_IzYcBrDgJzYcG~RcQjk@kCzJsDbLoKja@{Jb`@cBfJ?~CRz@f@vBz@bBr]jWnPvL~CjC~CjCbBvBnAbBfEzEjCbBvB?f@SzJnArInARbBf@rDf@vBjRni@jRbj@gYnZ_XnZ_IrISz@SnA?nKRzJf@bLRrDRjHbB~dASnZSjM?zJ?nASjHf@jCg@v[SbQSnK{J?sISoPSsD?{E?oP?CuE",
+            "precision": 6,
+            "length": 525
+          },
+          "bikesAllowed": false,
+          "wheelchairAccessible": "NOT_ACCESSIBLE",
+          "reservation": "NONE",
+          "alternatives": []
+        },
+        {
+          "mode": "WALK",
+          "from": {
+            "name": "Avenida Cruzeiro do Sul, 808",
+            "stopId": "br-ARTESP_4013",
+            "importance": 0.00017948979802895337,
+            "lat": -23.524328,
+            "lon": -46.62518300000001,
+            "tz": "America/Sao_Paulo",
+            "arrival": "2026-10-26T09:58:00Z",
+            "departure": "2026-10-26T09:58:00Z",
+            "scheduledArrival": "2026-10-26T09:58:00Z",
+            "scheduledDeparture": "2026-10-26T09:58:00Z",
+            "vertexType": "TRANSIT",
+            "cancelled": false,
+            "arrivalTimestampReason": "NO_RT_DATA",
+            "departureTimestampReason": "NO_RT_DATA",
+            "modes": [
+              "BUS"
+            ]
+          },
+          "to": {
+            "name": "R. Paulino Guimarães, 35 - Luz, São Paulo - SP, 01109-020, Brasil",
+            "stopId": "br-ARTESP_49493",
+            "importance": 0.000008323542715515941,
+            "lat": -23.524046,
+            "lon": -46.628597000000006,
+            "tz": "America/Sao_Paulo",
+            "arrival": "2026-10-26T10:02:00Z",
+            "scheduledArrival": "2026-10-26T10:02:00Z",
+            "vertexType": "TRANSIT",
+            "modes": [
+              "BUS"
+            ]
+          },
+          "duration": 240,
+          "startTime": "2026-10-26T09:58:00Z",
+          "endTime": "2026-10-26T10:02:00Z",
+          "scheduledStartTime": "2026-10-26T09:58:00Z",
+          "scheduledEndTime": "2026-10-26T10:02:00Z",
+          "realTime": false,
+          "scheduled": false,
+          "distance": 435,
+          "legGeometry": {
+            "points": "j}xzk@p~w|wAeBA???p@Gr@Kn@On@Wj@??{@nAkA|@wAd@}AL}Af@??~]^??vGF??a@tDuGhn@??aB~O??m@bG??o@jG_@pD??uC|Uq@xF??e@vDsKt|@??K|@",
+            "precision": 6,
+            "length": 36
+          },
+          "steps": [
+            {
+              "relativeDirection": "CONTINUE",
+              "distance": 5,
+              "fromLevel": 0,
+              "toLevel": 0,
+              "toOsmNode": 2934921749,
+              "polyline": {
+                "points": "j}xzk@p~w|wAeBA",
+                "precision": 6,
+                "length": 2
+              },
+              "streetName": "",
+              "exit": "",
+              "stayOn": false,
+              "area": false,
+              "toll": false,
+              "elevationUp": 0,
+              "elevationDown": 0
+            },
+            {
+              "relativeDirection": "CONTINUE",
+              "distance": 13,
+              "fromLevel": 0,
+              "toLevel": 0,
+              "osmWay": 289959604,
+              "fromOsmNode": 2934921749,
+              "toOsmNode": 2934921745,
+              "polyline": {
+                "points": "dzxzk@n~w|wA?p@Gr@Kn@On@Wj@",
+                "precision": 6,
+                "length": 6
+              },
+              "streetName": "",
+              "exit": "",
+              "stayOn": false,
+              "area": false,
+              "toll": false,
+              "elevationUp": 0,
+              "elevationDown": 0
+            },
+            {
+              "relativeDirection": "CONTINUE",
+              "distance": 27,
+              "fromLevel": 0,
+              "toLevel": 0,
+              "osmWay": 289959604,
+              "fromOsmNode": 2934921745,
+              "toOsmNode": 2934921738,
+              "polyline": {
+                "points": "hxxzk@`fx|wA{@nAkA|@wAd@}AL}Af@",
+                "precision": 6,
+                "length": 6
+              },
+              "streetName": "",
+              "exit": "",
+              "stayOn": false,
+              "area": false,
+              "toll": false,
+              "elevationUp": 0,
+              "elevationDown": 0
+            },
+            {
+              "relativeDirection": "CONTINUE",
+              "distance": 55,
+              "fromLevel": 0,
+              "toLevel": 0,
+              "osmWay": 463142183,
+              "fromOsmNode": 2934921738,
+              "toOsmNode": 5232877810,
+              "polyline": {
+                "points": "lkxzk@jmx|wA~]^",
+                "precision": 6,
+                "length": 2
+              },
+              "streetName": "Avenida Cruzeiro do Sul",
+              "exit": "",
+              "stayOn": false,
+              "area": false,
+              "toll": false,
+              "elevationUp": 0,
+              "elevationDown": 0
+            },
+            {
+              "relativeDirection": "CONTINUE",
+              "distance": 16,
+              "fromLevel": 0,
+              "toLevel": 0,
+              "osmWay": 463142183,
+              "fromOsmNode": 5232877810,
+              "toOsmNode": 452091569,
+              "polyline": {
+                "points": "ljyzk@jnx|wAvGF",
+                "precision": 6,
+                "length": 2
+              },
+              "streetName": "Avenida Cruzeiro do Sul",
+              "exit": "",
+              "stayOn": false,
+              "area": false,
+              "toll": false,
+              "elevationUp": 0,
+              "elevationDown": 0
+            },
+            {
+              "relativeDirection": "CONTINUE",
+              "distance": 88,
+              "fromLevel": 0,
+              "toLevel": 0,
+              "osmWay": 38305980,
+              "fromOsmNode": 452091569,
+              "toOsmNode": 5254243270,
+              "polyline": {
+                "points": "dsyzk@rnx|wAa@tDuGhn@",
+                "precision": 6,
+                "length": 3
+              },
+              "streetName": "Rua Paulino Guimarães",
+              "exit": "",
+              "stayOn": false,
+              "area": false,
+              "toll": false,
+              "elevationUp": 0,
+              "elevationDown": 0
+            },
+            {
+              "relativeDirection": "CONTINUE",
+              "distance": 28,
+              "fromLevel": 0,
+              "toLevel": 0,
+              "osmWay": 38305980,
+              "fromOsmNode": 5254243270,
+              "toOsmNode": 5254243272,
+              "polyline": {
+                "points": "liyzk@rcz|wAaB~O",
+                "precision": 6,
+                "length": 2
+              },
+              "streetName": "Rua Paulino Guimarães",
+              "exit": "",
+              "stayOn": false,
+              "area": false,
+              "toll": false,
+              "elevationUp": 0,
+              "elevationDown": 0
+            },
+            {
+              "relativeDirection": "CONTINUE",
+              "distance": 13,
+              "fromLevel": 0,
+              "toLevel": 0,
+              "osmWay": 38305980,
+              "fromOsmNode": 5254243272,
+              "toOsmNode": 5254243271,
+              "polyline": {
+                "points": "jfyzk@rtz|wAm@bG",
+                "precision": 6,
+                "length": 2
+              },
+              "streetName": "Rua Paulino Guimarães",
+              "exit": "",
+              "stayOn": false,
+              "area": false,
+              "toll": false,
+              "elevationUp": 0,
+              "elevationDown": 0
+            },
+            {
+              "relativeDirection": "CONTINUE",
+              "distance": 23,
+              "fromLevel": 0,
+              "toLevel": 0,
+              "osmWay": 38305980,
+              "fromOsmNode": 5254243271,
+              "toOsmNode": 3529235436,
+              "polyline": {
+                "points": "|dyzk@v|z|wAo@jG_@pD",
+                "precision": 6,
+                "length": 3
+              },
+              "streetName": "Rua Paulino Guimarães",
+              "exit": "",
+              "stayOn": false,
+              "area": false,
+              "toll": false,
+              "elevationUp": 0,
+              "elevationDown": 0
+            },
+            {
+              "relativeDirection": "CONTINUE",
+              "distance": 51,
+              "fromLevel": 0,
+              "toLevel": 0,
+              "osmWay": 38305980,
+              "fromOsmNode": 3529235436,
+              "toOsmNode": 452091607,
+              "polyline": {
+                "points": "lbyzk@tj{|wAuC|Uq@xF",
+                "precision": 6,
+                "length": 3
+              },
+              "streetName": "Rua Paulino Guimarães",
+              "exit": "",
+              "stayOn": false,
+              "area": false,
+              "toll": false,
+              "elevationUp": 0,
+              "elevationDown": 0
+            },
+            {
+              "relativeDirection": "CONTINUE",
+              "distance": 113,
+              "fromLevel": 0,
+              "toLevel": 0,
+              "osmWay": 38305980,
+              "fromOsmNode": 452091607,
+              "toOsmNode": 12085502742,
+              "polyline": {
+                "points": "d|xzk@li||wAe@vDsKt|@",
+                "precision": 6,
+                "length": 3
+              },
+              "streetName": "Rua Paulino Guimarães",
+              "exit": "",
+              "stayOn": false,
+              "area": false,
+              "toll": false,
+              "elevationUp": 0,
+              "elevationDown": 0
+            },
+            {
+              "relativeDirection": "CONTINUE",
+              "distance": 3,
+              "fromLevel": 0,
+              "toLevel": 0,
+              "fromOsmNode": 12085502742,
+              "polyline": {
+                "points": "jnxzk@zl~|wAK|@",
+                "precision": 6,
+                "length": 2
+              },
+              "streetName": "",
+              "exit": "",
+              "stayOn": false,
+              "area": false,
+              "toll": false,
+              "elevationUp": 0,
+              "elevationDown": 0
+            }
+          ]
+        },
+        {
+          "mode": "BUS",
+          "from": {
+            "name": "R. Paulino Guimarães, 35 - Luz, São Paulo - SP, 01109-020, Brasil",
+            "stopId": "br-ARTESP_49493",
+            "importance": 0.000008323542715515941,
+            "lat": -23.524046,
+            "lon": -46.628597000000006,
+            "tz": "America/Sao_Paulo",
+            "departure": "2026-10-26T10:10:00Z",
+            "scheduledDeparture": "2026-10-26T10:10:00Z",
+            "vertexType": "TRANSIT",
+            "pickupType": "NORMAL",
+            "dropoffType": "NORMAL",
+            "cancelled": false,
+            "departureTimestampReason": "NO_RT_DATA",
+            "modes": [
+              "BUS"
+            ]
+          },
+          "to": {
+            "name": "Av. Otaviano Alves de Lima - Vila Jaguara, São Paulo - SP, 02675-031, Brasil",
+            "stopId": "br-ARTESP_30518",
+            "importance": 0.000006075895726098679,
+            "lat": -23.514080000000003,
+            "lon": -46.72719000000001,
+            "tz": "America/Sao_Paulo",
+            "arrival": "2026-10-26T10:51:00Z",
+            "scheduledArrival": "2026-10-26T10:51:00Z",
+            "vertexType": "TRANSIT",
+            "pickupType": "NORMAL",
+            "dropoffType": "NORMAL",
+            "cancelled": false,
+            "arrivalTimestampReason": "NO_RT_DATA",
+            "departureTimestampReason": "NO_RT_DATA",
+            "modes": [
+              "BUS"
+            ]
+          },
+          "duration": 2460,
+          "startTime": "2026-10-26T10:10:00Z",
+          "endTime": "2026-10-26T10:51:00Z",
+          "scheduledStartTime": "2026-10-26T10:10:00Z",
+          "scheduledEndTime": "2026-10-26T10:51:00Z",
+          "realTime": false,
+          "scheduled": true,
+          "interlineWithPreviousLeg": false,
+          "headsign": "BARUERI (ALPHAVILLE)",
+          "tripFrom": {
+            "name": "R. Paulino Guimarães, 35 - Luz, São Paulo - SP, 01109-020, Brasil",
+            "stopId": "br-ARTESP_49493",
+            "importance": 0.000008323542715515941,
+            "lat": -23.524046,
+            "lon": -46.628597000000006,
+            "tz": "America/Sao_Paulo",
+            "departure": "2026-10-26T10:10:00Z",
+            "scheduledDeparture": "2026-10-26T10:10:00Z",
+            "vertexType": "TRANSIT",
+            "pickupType": "NORMAL",
+            "dropoffType": "NORMAL",
+            "cancelled": false,
+            "departureTimestampReason": "NO_RT_DATA",
+            "modes": [
+              "BUS"
+            ]
+          },
+          "tripTo": {
+            "name": "Alameda Tocantins, 234 - Alphaville Industrial, Barueri - SP, 06455-020, Brasil",
+            "stopId": "br-ARTESP_49469",
+            "importance": 0.000037128218536963686,
+            "lat": -23.502423999999998,
+            "lon": -46.84983,
+            "level": 0,
+            "tz": "America/Sao_Paulo",
+            "arrival": "2026-10-26T11:40:00Z",
+            "scheduledArrival": "2026-10-26T11:40:00Z",
+            "vertexType": "TRANSIT",
+            "pickupType": "NORMAL",
+            "dropoffType": "NORMAL",
+            "cancelled": false,
+            "arrivalTimestampReason": "NO_RT_DATA",
+            "modes": [
+              "BUS"
+            ]
+          },
+          "routeId": "br-ARTESP_818",
+          "routeUrl": "",
+          "directionId": "1",
+          "routeType": 3,
+          "agencyName": "ARTESP",
+          "agencyUrl": "http://www.artesp.sp.gov.br",
+          "agencyFareUrl": "",
+          "agencyId": "1",
+          "tripId": "20261026_07:10_br-ARTESP_6661_WD_11_655834",
+          "routeShortName": "818",
+          "routeLongName": "BARUERI (ALPHAVILLE) - SAO PAULO (METRO ARMENIA)",
+          "tripShortName": "",
+          "displayName": "818",
+          "cancelled": false,
+          "source": "br_ARTESP.gtfs.zip/stop_times.txt:142462:142512",
+          "intermediateStops": [
+            {
+              "name": "Av. Tiradentes, 1406 - Luz, São Paulo - SP, 01102-010, Brasil",
+              "stopId": "br-ARTESP_1605",
+              "importance": 0.00003087686127400957,
+              "lat": -23.523595999999998,
+              "lon": -46.62952000000001,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T10:11:00Z",
+              "departure": "2026-10-26T10:11:00Z",
+              "scheduledArrival": "2026-10-26T10:11:00Z",
+              "scheduledDeparture": "2026-10-26T10:11:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Av. Santos Dumont, 752 - Luz, São Paulo - SP, 01101-000, Brasil",
+              "stopId": "br-ARTESP_49529",
+              "importance": 0.000004182072643743595,
+              "lat": -23.522025999999997,
+              "lon": -46.630272000000005,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T10:13:00Z",
+              "departure": "2026-10-26T10:13:00Z",
+              "scheduledArrival": "2026-10-26T10:13:00Z",
+              "scheduledDeparture": "2026-10-26T10:13:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Av. Santos Dumont, 1331 - Santana, São Paulo - SP, 02012-010, Brazil",
+              "stopId": "br-ARTESP_92679",
+              "importance": 0.000004182072643743595,
+              "lat": -23.517782,
+              "lon": -46.629740000000005,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T10:15:00Z",
+              "departure": "2026-10-26T10:15:00Z",
+              "scheduledArrival": "2026-10-26T10:15:00Z",
+              "scheduledDeparture": "2026-10-26T10:15:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Av. Santos Dumont, 1318 - Parque Anhembi, São Paulo - SP, 02012-010, Brazil",
+              "stopId": "br-ARTESP_18706",
+              "importance": 0.000004182072643743595,
+              "lat": -23.516249,
+              "lon": -46.62950000000001,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T10:17:00Z",
+              "departure": "2026-10-26T10:17:00Z",
+              "scheduledArrival": "2026-10-26T10:17:00Z",
+              "scheduledDeparture": "2026-10-26T10:17:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Av. Olavo Fontoura, 327 - Jardim Sao Bento, São Paulo - SP, 02012-020, Brazil",
+              "stopId": "br-ARTESP_40660",
+              "importance": 0.000004182072643743595,
+              "lat": -23.513987000000004,
+              "lon": -46.632767,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T10:19:00Z",
+              "departure": "2026-10-26T10:19:00Z",
+              "scheduledArrival": "2026-10-26T10:19:00Z",
+              "scheduledDeparture": "2026-10-26T10:19:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Av. Olavo Fontoura, 650 - Jardim Sao Bento, São Paulo - SP, 02012-020, Brazil",
+              "stopId": "br-ARTESP_49530",
+              "importance": 0.000004182072643743595,
+              "lat": -23.513939,
+              "lon": -46.63492,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T10:20:00Z",
+              "departure": "2026-10-26T10:20:00Z",
+              "scheduledArrival": "2026-10-26T10:20:00Z",
+              "scheduledDeparture": "2026-10-26T10:20:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Avenida Olavo Fontoura, 1388-1924",
+              "stopId": "br-ARTESP_49531",
+              "importance": 0.000004182072643743595,
+              "lat": -23.51454,
+              "lon": -46.63899200000001,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T10:22:00Z",
+              "departure": "2026-10-26T10:22:00Z",
+              "scheduledArrival": "2026-10-26T10:22:00Z",
+              "scheduledDeparture": "2026-10-26T10:22:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Avenida Olavo Fontoura, 1582-1776",
+              "stopId": "br-ARTESP_49533",
+              "importance": 0.000004182072643743595,
+              "lat": -23.515445999999997,
+              "lon": -46.64515000000001,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T10:24:00Z",
+              "departure": "2026-10-26T10:24:00Z",
+              "scheduledArrival": "2026-10-26T10:24:00Z",
+              "scheduledDeparture": "2026-10-26T10:24:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Av. Olavo Fontoura, 2134",
+              "stopId": "br-ARTESP_49534",
+              "importance": 0.000024144073904608376,
+              "lat": -23.515535,
+              "lon": -46.649162000000004,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T10:26:00Z",
+              "departure": "2026-10-26T10:26:00Z",
+              "scheduledArrival": "2026-10-26T10:26:00Z",
+              "scheduledDeparture": "2026-10-26T10:26:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Av. Olavo Fontoura, 2312",
+              "stopId": "br-ARTESP_49535",
+              "importance": 0.00002529689845687244,
+              "lat": -23.51561,
+              "lon": -46.65165,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T10:28:00Z",
+              "departure": "2026-10-26T10:28:00Z",
+              "scheduledArrival": "2026-10-26T10:28:00Z",
+              "scheduledDeparture": "2026-10-26T10:28:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Av. Otaviano Alves de Lima, 162",
+              "stopId": "br-ARTESP_49536",
+              "importance": 0.000004182072643743595,
+              "lat": -23.515701,
+              "lon": -46.655125000000005,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T10:29:00Z",
+              "departure": "2026-10-26T10:29:00Z",
+              "scheduledArrival": "2026-10-26T10:29:00Z",
+              "scheduledDeparture": "2026-10-26T10:29:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Av. Otaviano Alves de Lima, 572",
+              "stopId": "br-ARTESP_49537",
+              "importance": 0.000004182072643743595,
+              "lat": -23.515043,
+              "lon": -46.65966399999999,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T10:31:00Z",
+              "departure": "2026-10-26T10:31:00Z",
+              "scheduledArrival": "2026-10-26T10:31:00Z",
+              "scheduledDeparture": "2026-10-26T10:31:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Avenida Otaviano Alves de Lima",
+              "stopId": "br-ARTESP_49538",
+              "importance": 0.000004182072643743595,
+              "lat": -23.514355000000005,
+              "lon": -46.665817000000004,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T10:33:00Z",
+              "departure": "2026-10-26T10:33:00Z",
+              "scheduledArrival": "2026-10-26T10:33:00Z",
+              "scheduledDeparture": "2026-10-26T10:33:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Avenida Otaviano Alves de Lima, 1536",
+              "stopId": "br-ARTESP_49539",
+              "importance": 0.000004182072643743595,
+              "lat": -23.51375,
+              "lon": -46.67013000000001,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T10:35:00Z",
+              "departure": "2026-10-26T10:35:00Z",
+              "scheduledArrival": "2026-10-26T10:35:00Z",
+              "scheduledDeparture": "2026-10-26T10:35:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Avenida Otaviano Alves de Lima",
+              "stopId": "br-ARTESP_92680",
+              "importance": 0.000004182072643743595,
+              "lat": -23.513248,
+              "lon": -46.674156,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T10:37:00Z",
+              "departure": "2026-10-26T10:37:00Z",
+              "scheduledArrival": "2026-10-26T10:37:00Z",
+              "scheduledDeparture": "2026-10-26T10:37:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Av. Otaviano Alves de Lima, 1730",
+              "stopId": "br-ARTESP_49540",
+              "importance": 0.000004182072643743595,
+              "lat": -23.513075000000004,
+              "lon": -46.67553000000001,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T10:38:00Z",
+              "departure": "2026-10-26T10:38:00Z",
+              "scheduledArrival": "2026-10-26T10:38:00Z",
+              "scheduledDeparture": "2026-10-26T10:38:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Avenida Otaviano Alves de Lima, 595-671",
+              "stopId": "br-ARTESP_18719",
+              "importance": 0.000004182072643743595,
+              "lat": -23.510672,
+              "lon": -46.680859999999996,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T10:40:00Z",
+              "departure": "2026-10-26T10:40:00Z",
+              "scheduledArrival": "2026-10-26T10:40:00Z",
+              "scheduledDeparture": "2026-10-26T10:40:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Av. Otaviano Alves de Lima, 379 - Nossa Sra. do O, São Paulo - SP, 02546-010, Brazil",
+              "stopId": "br-ARTESP_92681",
+              "importance": 0.000004182072643743595,
+              "lat": -23.508742999999996,
+              "lon": -46.68582,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T10:42:00Z",
+              "departure": "2026-10-26T10:42:00Z",
+              "scheduledArrival": "2026-10-26T10:42:00Z",
+              "scheduledDeparture": "2026-10-26T10:42:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Av. Otaviano Alves De Lima",
+              "stopId": "br-ARTESP_18720",
+              "importance": 0.00006215104804141447,
+              "lat": -23.507835000000004,
+              "lon": -46.69062,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T10:44:00Z",
+              "departure": "2026-10-26T10:44:00Z",
+              "scheduledArrival": "2026-10-26T10:44:00Z",
+              "scheduledDeparture": "2026-10-26T10:44:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Av. Otaviano Alves de Lima, 3718",
+              "stopId": "br-ARTESP_18721",
+              "importance": 0.000004182072643743595,
+              "lat": -23.506945,
+              "lon": -46.697193000000006,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T10:46:00Z",
+              "departure": "2026-10-26T10:46:00Z",
+              "scheduledArrival": "2026-10-26T10:46:00Z",
+              "scheduledDeparture": "2026-10-26T10:46:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Av. Otaviano Alves de Lima, 4098",
+              "stopId": "br-ARTESP_49544",
+              "importance": 0.000004182072643743595,
+              "lat": -23.507450000000002,
+              "lon": -46.70233500000001,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T10:47:00Z",
+              "departure": "2026-10-26T10:47:00Z",
+              "scheduledArrival": "2026-10-26T10:47:00Z",
+              "scheduledDeparture": "2026-10-26T10:47:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Rua Dr. José Ribeiro de Paiva, 1 - Vila Fiat Lux, São Paulo - SP, 05101-030, Brasil",
+              "stopId": "br-ARTESP_15849",
+              "importance": 0.00001311465439357562,
+              "lat": -23.508795,
+              "lon": -46.721527,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T10:49:00Z",
+              "departure": "2026-10-26T10:49:00Z",
+              "scheduledArrival": "2026-10-26T10:49:00Z",
+              "scheduledDeparture": "2026-10-26T10:49:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            }
+          ],
+          "legGeometry": {
+            "points": "zkxzk@hn~|wAjBX{@rIfObBrSvB~HnAnFnAbBz@f@z@nAjCRbBSfJ{@jCsI~Wc[_DkM{@wLoAkWwBwVcBgJ{@gEjp@{J{@cGg@oAnA{Ez@_D?{O?kHR{Ez@kWcBkRoA_SoAsIg@_IS_Sg@kMSoFg@sDScGSsD?ku@cGsg@{E_v@sIoZkCwL{@cL{@_ScBgJ{@gEg@cBg@_D_D{EgES{EcB_IwBcGcB_DsD{EoFgEgEwBgEwBgE{@sD{@_Dg@wGSoFf@oFz@_DnA{EbBkHbGoFbG_DvG{@bGcBrNg@vLRbGnAvLnA~C~CbGjCrD~CjC~CvBfEjCbGnKz@~CRjCSfESvLg@rXg@fY{@zY?jH{@j\\g@vQg@jRSj\\?zTf@zc@f@rSf@fTnAjRbBjWvBvQnFvo@zOrcBvG~p@jC~W~CrXbLvmAnF~k@nF~k@rDja@nAzTz@ni@Rni@bBniERzT?nKRrl@f@bQRrXz@~f@bBrNf@jCbBbGbBzErDzJnA~HbBjMf@vGRzJ?nKg@bLoArNSnF{@zOoArN{Ezw@SfJ{@fOcBnP{@zJwBr]kMrtAcB~Wg@vLoFrq@wBnUg@fJkCfh@kCbe@_Dve@oFf|@kCnUcGvrAcGz_BsD~k@_Drg@sDve@kMfuAwBnUwBrXcBfYRbBoF~z@_Drg@wBjWgE~u@{@~M?vG{Ens@_Dbe@sDvj@wBb[kCb[_D~WsDnPgEnPsD~MgE~MwQ~a@sNjWsyAvuBwLbQgTz^g@rDcLrXgJ~W_IfYgJrb@sDvVgEja@gEnd@gJjdAkHjp@cGrl@cGrg@wBjR{Jr{@wVrmBoKby@cLjz@kHbj@{@~RkCb[oAjf@Sv[?~RRv[fEb~@nFrjA~Crq@~Cfr@rIzdBjMzqCrIzdBz@~Wf@rg@{@bj@{EbhA{Ev~@gEvy@oA~\\oAv[gE~dAg@b`@oA~a@wBve@cBjWg@vBwBfToAn_@R~RrDrv@~Hby@fEvVvBbL~CjMS?fJfYrIvVrIzTfJfObGzJnAzJnAjCjCnFvB~CbLrIzEz@jH?bQjM~a@~WjRnKnd@bVvL~HzE~HjHvGfTfTrSvVnKzObGjHrInKnAnAjMrSfTfc@~Mj\\jCzEbQj\\fTja@wBvB",
+            "precision": 6,
+            "length": 270
+          },
+          "bikesAllowed": false,
+          "wheelchairAccessible": "NOT_ACCESSIBLE",
+          "reservation": "NONE",
+          "alternatives": []
+        },
+        {
+          "mode": "WALK",
+          "from": {
+            "name": "Av. Otaviano Alves de Lima - Vila Jaguara, São Paulo - SP, 02675-031, Brasil",
+            "stopId": "br-ARTESP_30518",
+            "importance": 0.000006075895726098679,
+            "lat": -23.514080000000003,
+            "lon": -46.72719000000001,
+            "tz": "America/Sao_Paulo",
+            "arrival": "2026-10-26T10:51:00Z",
+            "departure": "2026-10-26T10:51:00Z",
+            "scheduledArrival": "2026-10-26T10:51:00Z",
+            "scheduledDeparture": "2026-10-26T10:51:00Z",
+            "vertexType": "TRANSIT",
+            "cancelled": true,
+            "arrivalTimestampReason": "NO_RT_DATA",
+            "departureTimestampReason": "NO_RT_DATA",
+            "modes": [
+              "BUS"
+            ]
+          },
+          "to": {
+            "name": "Ramo 500 do Complexo Anhanguera (saída do Viaduto Domingos de Moraes)",
+            "stopId": "br-ARTESP_1680",
+            "importance": 0.00004249356788932346,
+            "lat": -23.512221999999998,
+            "lon": -46.72673000000001,
+            "tz": "America/Sao_Paulo",
+            "arrival": "2026-10-26T10:55:00Z",
+            "scheduledArrival": "2026-10-26T10:55:00Z",
+            "vertexType": "TRANSIT",
+            "cancelled": true,
+            "modes": [
+              "BUS"
+            ]
+          },
+          "duration": 240,
+          "startTime": "2026-10-26T10:51:00Z",
+          "endTime": "2026-10-26T10:55:00Z",
+          "scheduledStartTime": "2026-10-26T10:51:00Z",
+          "scheduledEndTime": "2026-10-26T10:55:00Z",
+          "realTime": false,
+          "scheduled": false,
+          "cancelled": true,
+          "legGeometry": {
+            "points": "",
+            "precision": 6,
+            "length": 0
+          }
+        },
+        {
+          "mode": "BUS",
+          "from": {
+            "name": "Ramo 500 do Complexo Anhanguera (saída do Viaduto Domingos de Moraes)",
+            "stopId": "br-ARTESP_1680",
+            "importance": 0.00004249356788932346,
+            "lat": -23.512221999999998,
+            "lon": -46.72673000000001,
+            "tz": "America/Sao_Paulo",
+            "departure": "2026-10-26T10:55:00Z",
+            "scheduledDeparture": "2026-10-26T10:55:00Z",
+            "vertexType": "TRANSIT",
+            "pickupType": "NORMAL",
+            "dropoffType": "NORMAL",
+            "cancelled": false,
+            "arrivalTimestampReason": "NO_RT_DATA",
+            "departureTimestampReason": "NO_RT_DATA",
+            "modes": [
+              "BUS"
+            ]
+          },
+          "to": {
+            "name": "Av. Antonio Cândido Machado, 96 - Vila Uniao, Cajamar - SP, 07776-415, Brasil",
+            "stopId": "br-ARTESP_29383",
+            "importance": 0.000023166709070210345,
+            "lat": -23.342141999999996,
+            "lon": -46.84193,
+            "level": 0,
+            "tz": "America/Sao_Paulo",
+            "arrival": "2026-10-26T11:35:00Z",
+            "scheduledArrival": "2026-10-26T11:35:00Z",
+            "vertexType": "TRANSIT",
+            "pickupType": "NORMAL",
+            "dropoffType": "NORMAL",
+            "cancelled": false,
+            "arrivalTimestampReason": "NO_RT_DATA",
+            "departureTimestampReason": "NO_RT_DATA",
+            "modes": [
+              "BUS"
+            ]
+          },
+          "duration": 2400,
+          "startTime": "2026-10-26T10:55:00Z",
+          "endTime": "2026-10-26T11:35:00Z",
+          "scheduledStartTime": "2026-10-26T10:55:00Z",
+          "scheduledEndTime": "2026-10-26T11:35:00Z",
+          "realTime": false,
+          "scheduled": true,
+          "interlineWithPreviousLeg": false,
+          "headsign": "CAJAMAR (JORDANESIA)",
+          "tripFrom": {
+            "name": "Rua Clemente Álvares, 517 - Ponto Final das Linhas 054 e 055 - Lapa, São Paulo - SP, 05074-050, Brasil",
+            "stopId": "br-ARTESP_6383",
+            "importance": 0.000011458646440587472,
+            "lat": -23.5193,
+            "lon": -46.707336000000005,
+            "tz": "America/Sao_Paulo",
+            "departure": "2026-10-26T10:40:00Z",
+            "scheduledDeparture": "2026-10-26T10:40:00Z",
+            "vertexType": "TRANSIT",
+            "pickupType": "NORMAL",
+            "dropoffType": "NORMAL",
+            "cancelled": false,
+            "departureTimestampReason": "NO_RT_DATA",
+            "modes": [
+              "BUS"
+            ]
+          },
+          "tripTo": {
+            "name": "Rua Alto Porã, 32-60 - Colina Maria Luíza, Cajamar - SP, 07750-000, Brasil",
+            "stopId": "br-ARTESP_6455",
+            "importance": 0.00000988529427559115,
+            "lat": -23.346073,
+            "lon": -46.82583,
+            "level": 0,
+            "tz": "America/Sao_Paulo",
+            "arrival": "2026-10-26T12:10:00Z",
+            "scheduledArrival": "2026-10-26T12:10:00Z",
+            "vertexType": "TRANSIT",
+            "pickupType": "NORMAL",
+            "dropoffType": "NORMAL",
+            "cancelled": false,
+            "arrivalTimestampReason": "NO_RT_DATA",
+            "modes": [
+              "BUS"
+            ]
+          },
+          "routeId": "br-ARTESP_054",
+          "routeUrl": "",
+          "directionId": "1",
+          "routeType": 3,
+          "agencyName": "ARTESP",
+          "agencyUrl": "http://www.artesp.sp.gov.br",
+          "agencyFareUrl": "",
+          "agencyId": "1",
+          "tripId": "20261026_07:40_br-ARTESP_7220_WD_8_653313",
+          "routeShortName": "054",
+          "routeLongName": "CAJAMAR (JORDANESIA) - SAO PAULO (LAPA)",
+          "tripShortName": "",
+          "displayName": "054",
+          "cancelled": false,
+          "source": "br_ARTESP.gtfs.zip/stop_times.txt:292949:293012",
+          "intermediateStops": [
+            {
+              "name": "R. Inácio Luís Da Costa - Parque Sao Domingos, São Paulo - SP, 05112-010, Brasil",
+              "stopId": "br-ARTESP_7035",
+              "importance": 0.00006035873229848221,
+              "lat": -23.508101999999997,
+              "lon": -46.734367,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T10:57:00Z",
+              "departure": "2026-10-26T10:57:00Z",
+              "scheduledArrival": "2026-10-26T10:57:00Z",
+              "scheduledDeparture": "2026-10-26T10:57:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "R. Inácio Luís da Costa, 1888 - Parque Sao Domingos, São Paulo - SP, 05112-010, Brasil",
+              "stopId": "br-ARTESP_15780",
+              "importance": 0.00005142615191289224,
+              "lat": -23.507515,
+              "lon": -46.740273,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T10:58:00Z",
+              "departure": "2026-10-26T10:58:00Z",
+              "scheduledArrival": "2026-10-26T10:58:00Z",
+              "scheduledDeparture": "2026-10-26T10:58:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "R. Inácio Luís da Costa, 2138 - Parque Sao Domingos, São Paulo - SP, 05112-010, Brasil",
+              "stopId": "br-ARTESP_67754",
+              "importance": 0.00005142615191289224,
+              "lat": -23.507416,
+              "lon": -46.742477,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T11:00:00Z",
+              "departure": "2026-10-26T11:00:00Z",
+              "scheduledArrival": "2026-10-26T11:00:00Z",
+              "scheduledDeparture": "2026-10-26T11:00:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "R. Bom Jesus do Amparo, 523 - Vila Santa Edwiges, São Paulo - SP, 05115-020, Brasil",
+              "stopId": "br-ARTESP_93821",
+              "importance": 0.00002656428114278242,
+              "lat": -23.505565999999998,
+              "lon": -46.751328,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T11:01:00Z",
+              "departure": "2026-10-26T11:01:00Z",
+              "scheduledArrival": "2026-10-26T11:01:00Z",
+              "scheduledDeparture": "2026-10-26T11:01:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Rodovia Anhanguera- SP 330, km. 15",
+              "stopId": "br-ARTESP_1683",
+              "importance": 0.00002656428114278242,
+              "lat": -23.500397,
+              "lon": -46.7542,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T11:02:00Z",
+              "departure": "2026-10-26T11:02:00Z",
+              "scheduledArrival": "2026-10-26T11:02:00Z",
+              "scheduledDeparture": "2026-10-26T11:02:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Rodovia Anhanguera- SP 330, km. 16",
+              "stopId": "br-ARTESP_1684",
+              "importance": 0.00002656428114278242,
+              "lat": -23.493837,
+              "lon": -46.757625999999995,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T11:04:00Z",
+              "departure": "2026-10-26T11:04:00Z",
+              "scheduledArrival": "2026-10-26T11:04:00Z",
+              "scheduledDeparture": "2026-10-26T11:04:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Rodovia Anhanguera- SP 330, km. 16,5",
+              "stopId": "br-ARTESP_1685",
+              "importance": 0.00002656428114278242,
+              "lat": -23.493935,
+              "lon": -46.76303000000001,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T11:05:00Z",
+              "departure": "2026-10-26T11:05:00Z",
+              "scheduledArrival": "2026-10-26T11:05:00Z",
+              "scheduledDeparture": "2026-10-26T11:05:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Rodovia Anhanguera- SP 330, km. 17",
+              "stopId": "br-ARTESP_1686",
+              "importance": 0.00002656428114278242,
+              "lat": -23.487585,
+              "lon": -46.767265,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T11:07:00Z",
+              "departure": "2026-10-26T11:07:00Z",
+              "scheduledArrival": "2026-10-26T11:07:00Z",
+              "scheduledDeparture": "2026-10-26T11:07:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Rodovia Anhanguera- SP 330, km. 18",
+              "stopId": "br-ARTESP_1687",
+              "importance": 0.00003148445102851838,
+              "lat": -23.480249999999998,
+              "lon": -46.770390000000006,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T11:08:00Z",
+              "departure": "2026-10-26T11:08:00Z",
+              "scheduledArrival": "2026-10-26T11:08:00Z",
+              "scheduledDeparture": "2026-10-26T11:08:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Rodovia Anhanguera- SP 330, km. 21 (Passarela Jaraguá)",
+              "stopId": "br-ARTESP_1688",
+              "importance": 0.00003148445102851838,
+              "lat": -23.463818,
+              "lon": -46.77868,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T11:10:00Z",
+              "departure": "2026-10-26T11:10:00Z",
+              "scheduledArrival": "2026-10-26T11:10:00Z",
+              "scheduledDeparture": "2026-10-26T11:10:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Rodovia Anhanguera- SP 330, km. 22",
+              "stopId": "br-ARTESP_1689",
+              "importance": 0.00006283259426709265,
+              "lat": -23.451206,
+              "lon": -46.78672,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T11:11:00Z",
+              "departure": "2026-10-26T11:11:00Z",
+              "scheduledArrival": "2026-10-26T11:11:00Z",
+              "scheduledDeparture": "2026-10-26T11:11:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Rodovia Anhanguera- SP 330, km. 23 (em frente ao Cemitério-Parque Jaraguá)",
+              "stopId": "br-ARTESP_1690",
+              "importance": 0.00003148445102851838,
+              "lat": -23.441361999999998,
+              "lon": -46.786205,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T11:12:00Z",
+              "departure": "2026-10-26T11:12:00Z",
+              "scheduledArrival": "2026-10-26T11:12:00Z",
+              "scheduledDeparture": "2026-10-26T11:12:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Rodovia Anhanguera- SP 330, km. 24",
+              "stopId": "br-ARTESP_1691",
+              "importance": 0.00003148445102851838,
+              "lat": -23.434708,
+              "lon": -46.786030000000004,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T11:14:00Z",
+              "departure": "2026-10-26T11:14:00Z",
+              "scheduledArrival": "2026-10-26T11:14:00Z",
+              "scheduledDeparture": "2026-10-26T11:14:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Rodovia Anhanguera- SP 330, km. 25",
+              "stopId": "br-ARTESP_1692",
+              "importance": 0.00003148445102851838,
+              "lat": -23.429742999999995,
+              "lon": -46.786713000000006,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T11:15:00Z",
+              "departure": "2026-10-26T11:15:00Z",
+              "scheduledArrival": "2026-10-26T11:15:00Z",
+              "scheduledDeparture": "2026-10-26T11:15:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Rodovia Anhanguera- SP 330, km. 25,5",
+              "stopId": "br-ARTESP_1693",
+              "importance": 0.00003116688094451092,
+              "lat": -23.423568999999997,
+              "lon": -46.788734000000005,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T11:17:00Z",
+              "departure": "2026-10-26T11:17:00Z",
+              "scheduledArrival": "2026-10-26T11:17:00Z",
+              "scheduledDeparture": "2026-10-26T11:17:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Rodovia Anhanguera- SP 330, km. 28",
+              "stopId": "br-ARTESP_1694",
+              "importance": 0.000037013662222307175,
+              "lat": -23.414303,
+              "lon": -46.806056999999996,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T11:18:00Z",
+              "departure": "2026-10-26T11:18:00Z",
+              "scheduledArrival": "2026-10-26T11:18:00Z",
+              "scheduledDeparture": "2026-10-26T11:18:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Rodovia Anhanguera, 12011-12273 - Jardim Jaragua, São Paulo - SP, Brasil",
+              "stopId": "br-ARTESP_29376",
+              "importance": 0.000008414897820330225,
+              "lat": -23.408056,
+              "lon": -46.821808,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T11:20:00Z",
+              "departure": "2026-10-26T11:20:00Z",
+              "scheduledArrival": "2026-10-26T11:20:00Z",
+              "scheduledDeparture": "2026-10-26T11:20:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Rodovia Anhanguera, 36 - Vila Granipavi, Cajamar - SP, 07750-000, Brasil",
+              "stopId": "br-ARTESP_29377",
+              "importance": 0.000008414897820330225,
+              "lat": -23.404898000000003,
+              "lon": -46.83146299999999,
+              "level": 0,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T11:21:00Z",
+              "departure": "2026-10-26T11:21:00Z",
+              "scheduledArrival": "2026-10-26T11:21:00Z",
+              "scheduledDeparture": "2026-10-26T11:21:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Rod. Anhanguera, 2100a - Vila Granipavi, Cajamar - Sp, 07750-000, Brasil - Guaturinho, Cajamar - SP, 07750-000, Brasil",
+              "stopId": "br-ARTESP_29378",
+              "importance": 0.000008414897820330225,
+              "lat": -23.390036,
+              "lon": -46.83582,
+              "level": 0,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T11:22:00Z",
+              "departure": "2026-10-26T11:22:00Z",
+              "scheduledArrival": "2026-10-26T11:22:00Z",
+              "scheduledDeparture": "2026-10-26T11:22:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Rodovia Anhanguera, 2433 - Guaturinho, Cajamar - SP, 07750-000, Brasil",
+              "stopId": "br-ARTESP_29379",
+              "importance": 0.000008414897820330225,
+              "lat": -23.38412,
+              "lon": -46.838356000000005,
+              "level": 0,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T11:24:00Z",
+              "departure": "2026-10-26T11:24:00Z",
+              "scheduledArrival": "2026-10-26T11:24:00Z",
+              "scheduledDeparture": "2026-10-26T11:24:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Via Anhanguera, 437 - Vila Nova - Vila Nova, Cajamar - SP, 07750-000, Brasil",
+              "stopId": "br-ARTESP_94631",
+              "importance": 0.000008414897820330225,
+              "lat": -23.356058000000004,
+              "lon": -46.84775,
+              "level": 0,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T11:25:00Z",
+              "departure": "2026-10-26T11:25:00Z",
+              "scheduledArrival": "2026-10-26T11:25:00Z",
+              "scheduledDeparture": "2026-10-26T11:25:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Rotatória da Av. Ribeirão dos Cristais",
+              "stopId": "br-ARTESP_13847",
+              "importance": 0.00001655427877267357,
+              "lat": -23.352562,
+              "lon": -46.850902999999995,
+              "level": 0,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T11:27:00Z",
+              "departure": "2026-10-26T11:27:00Z",
+              "scheduledArrival": "2026-10-26T11:27:00Z",
+              "scheduledDeparture": "2026-10-26T11:27:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Av. Jordano Mendes, 2501 - Vila Uniao, Cajamar - SP, 07750-000, Brasil",
+              "stopId": "br-ARTESP_93824",
+              "importance": 0.000008414897820330225,
+              "lat": -23.351227,
+              "lon": -46.84791,
+              "level": 0,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T11:28:00Z",
+              "departure": "2026-10-26T11:28:00Z",
+              "scheduledArrival": "2026-10-26T11:28:00Z",
+              "scheduledDeparture": "2026-10-26T11:28:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Av. Jordano Mendes, 726 - Vila Uniao, Cajamar - SP, 07750-000, Brasil",
+              "stopId": "br-ARTESP_67897",
+              "importance": 0.000008414897820330225,
+              "lat": -23.347641,
+              "lon": -46.84576,
+              "level": 0,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T11:30:00Z",
+              "departure": "2026-10-26T11:30:00Z",
+              "scheduledArrival": "2026-10-26T11:30:00Z",
+              "scheduledDeparture": "2026-10-26T11:30:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Av. Jordano Mendes, 1301 - Vila Uniao, Cajamar - SP, 07750-000, Brasil",
+              "stopId": "br-ARTESP_93825",
+              "importance": 0.000008414897820330225,
+              "lat": -23.345318,
+              "lon": -46.84364699999999,
+              "level": 0,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T11:31:00Z",
+              "departure": "2026-10-26T11:31:00Z",
+              "scheduledArrival": "2026-10-26T11:31:00Z",
+              "scheduledDeparture": "2026-10-26T11:31:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Av. Jordano Mendes, 1200 - Vila Uniao, Cajamar - SP, 07750-000, Brasil",
+              "stopId": "br-ARTESP_67898",
+              "importance": 0.00001655427877267357,
+              "lat": -23.343850000000003,
+              "lon": -46.840572,
+              "level": 0,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T11:32:00Z",
+              "departure": "2026-10-26T11:32:00Z",
+              "scheduledArrival": "2026-10-26T11:32:00Z",
+              "scheduledDeparture": "2026-10-26T11:32:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            },
+            {
+              "name": "Rodovia Edgar Maximo Zambotto - Altos de Jordanésia, Cajamar - SP, Brasil",
+              "stopId": "br-ARTESP_29381",
+              "importance": 0.000011719663234543987,
+              "lat": -23.344141,
+              "lon": -46.83779,
+              "level": 0,
+              "tz": "America/Sao_Paulo",
+              "arrival": "2026-10-26T11:34:00Z",
+              "departure": "2026-10-26T11:34:00Z",
+              "scheduledArrival": "2026-10-26T11:34:00Z",
+              "scheduledDeparture": "2026-10-26T11:34:00Z",
+              "vertexType": "TRANSIT",
+              "pickupType": "NORMAL",
+              "dropoffType": "NORMAL",
+              "cancelled": false,
+              "arrivalTimestampReason": "NO_RT_DATA",
+              "departureTimestampReason": "NO_RT_DATA",
+              "modes": [
+                "BUS"
+              ]
+            }
+          ],
+          "legGeometry": {
+            "points": "zhazk@rc~bxAgBnAcLnFgEfEsDfEcG~C{E~CsDbBoFbBgE~CgJjHsD~CgJnKkHfJ{OzTsIjMcLvQsDvB{@z@kHjMoKvQwGjM_IrSoKv[_Njf@{EjRgEbQoA~Hg@jC{@fE_DrIwBbQ{@zJg@fJg@jHS~HoA~\\SbG{@fOSnKSrISfE{@jRg@zEg@bQ{@zT{@fT?nKoAv[{@jWoAbQwBzOwBbQg@rIg@vLSnFkCvo@{@vVoAv[oArX?vLSjMg@n_@SvV?nKSjHSvGSvGg@rNwBzYoArSR~RRbLRnUz@b[SzTR~CRzEg@nPg@vLSvBg@vQoArX{@vQg@jMoAfOoAfTg@~H_Dr]cGbe@kCbQ_DfTwGb[kCfJgEbLwBzEoKvQwGfJgJnKoFnFwGz@sDnAkRjMwGzEgEjCsDrD{EzEcGvGkCfEcB~CkHnF{OnKsNbLcLfJwGzEcL~Hg@f@{EjCgEbB_NjHwGjCoKzEsIjC_DbBwLjCcGbBwLvBwLbB_Iz@{JnAgTvBwGz@_IR{Jz@gOz@{JRkRz@kHf@sIR{Jf@_D?wGR_I?kHRoK?kH?cLRcLRkM?_SRsNz@_Nz@gJnAoKvBkCf@cGbBkHjC_I~C_DnAcBz@sDvBoF~CkCnAgE~C{EfEgErD{EfEoFvG{EnFsDnFcB~C{EzJ_DvG_DjHkCvG_DzJoAzEwB~Hg@~Cg@vB{@nFg@fEcBbQg@zO?vG?fJ?~CRvLf@nUf@jMf@nKz@bVbBja@vB~f@nAnZRvLRjH?nFSrNg@bQ{@rI{@zJkCrScBnKcGnUgEnPwG~R{OvV{EjHoFjH{EbGsDfEgOvLwLrIcGrDgJnF_NvG_I~CkCz@oK~CwL~CcQfEcQrDwQrD_XbG{OrDwQfEk\\jHgTzEcVnFoPrDwGnAgEnAsIjCcBf@sNnFwQvGoKfEwQrIwGrDwGrDkHfEwGzEkHzEsIbGgE~CwGzEwGzEsIbGcL~HgJvGgJvGwLrIgEjCsIfEkCjCwG~C{EvB_NzE_DnAwBjCgJnA_InAwQjCsDRwLnAgER{TbBkWz@cLR_NR_X?kHSsDScLg@oKSsI{@oUcBgJoAgE{@cLoAwLwBkMcBsD{@gOwBcV_DsXwBsNS_I?gJRwLf@gObBwQ~CgJvBgJjCwGjCcLzE_DbBwLvGsDjCoAz@cGzEgJrI_IfJwBjC_DzEwGzJgEfJ_DbGgEnKoAzEwLn_@_IrX{EvQwGvVkHrX{EnP_DvL_DvLwGjWgEbQsDrN_DbL{EnP_DjMgEnPsD~MoArD{@nF_DjHgEzJsDfJ_DvGwBzE{EjHkHzJkHbGsIbGwBbBwGjC{EbBcBz@gEnAcGbBkHnAwGz@_If@wGR_D?wLScLoAcG{@kCg@_Dg@sIkCoK_DcGoAoKsD_IkCoFcBcLsD{EcBgEoAwGwBkHkCkCg@_XsIwLkCkHoAwG{@{Eg@sIg@sI?sIRgERcLbBsIbBkRzE{EvBoUjM_NbLgJrI{JfJgErDsXvVwQzOoPfOg^nZ{TbQkMfJoFfEk\\zTwGzEkHbG{ErDsInF{JjHcL~H_InFgJvGkHzEsIbGsIbGcQjMcLrIwL~HsIbGwGzEgJbGcGfE_IbGcGrD_g@j\\oUfO_SrN{TfOkWbQgEjCkHzE{JbGcQfJcGvB_NzEwGvB{T~HsSzEcGnAkHz@{JbB{Ef@gY~Cgc@fEwVjCsNbBwVvB{YjCoPbBoKnAwLnAwQbBoUjCce@nFoASg@S{JnAwGz@wBRcGf@wLf@sD?_I?sN?{O?o_@wB{^gEgc@{Ek_AoKc[{EoPwBwGoAsI{@sg@wGcVkCoPwBgEwB_DoAsSgEoF{@cG{@wGg@{Eg@wG?sD?sDnAkHoAcLoAcG{@kCg@kM{@_I{@wQcBcLoAgEg@kCcBcBoAcBg@wQwB{Jg@gEg@gJR{Jf@oKRsD?{E?{Eg@oF{@cG{@{E?wQz@{Oz@kRz@{Jz@kCR_Dz@wBf@gEbBwG~CcBz@oAf@wBf@_b@rDwe@rD_jArIgTbBkRnA{YnAw[nAod@~Cce@rDsNz@gOnA_Df@{YvBcGf@o_@~CcLz@gJf@sXjC{Ef@kMz@wLz@oKnAwLbB{Jf@sIf@gEf@{Ef@{Ef@gJnAcGz@gJvBkHvBoFnAsI~C{EbBsIfEgEvB_IrDwGjC{EjCkHrDkCnAwBbBwGzEcGzEwGnFsIrIcGvGgEbGoAbBkHnK_DbG{ErIwBnF{EjMkH~MoKjWcLnZcLzYcLnZgTvj@oFjM_DfJkCvGoFrN_DrIkCvG_DrIwBrNcL~WkMfYwGfOkCvG{EbL{@vBwG~McBjCoAvB_DnFgJjRoKbVwGfOoFjM_I~RgJzTkCvGoKnUoKzT_NnZoKvV_DjH_DjHwBfE_DvGwBbGsSzc@_D~HkCjHcGfOgEnK{EnKgEzJ_DjHsD~HsDrI_IvQoFbLwBnF_Sfc@sIrSsI~R{Trg@g^by@{Oz^oPf^sSz^gTzY_]zc@wGnKgEzEwB~C{TzYkHnK{EjHcBrDcBjC_IfOcGjM{EbLkCjHoFbQoFbQ_Ir]wBnKsDvVcBjM{@jM{@nKwBju@{@fh@{@vrASnU{@v`@SfTSvGg@rNg@jMcBjRkCbBg@fE{@rD{@nF_DvLgErNwBrI{EjMSnA_DjH{@vBsDrIwG~McGbLsDzE{EbGoK~MoKjM_DnFsDzEsIbQgOzYsIfOwGnK_DnFoAbB_DnFsDnF_DnFwBbGsDzE_I~MkHbLwGzJwGfJwGzJsIvLsDbG{EbGkHrIcB~CgE~HwG~M_DrIwBvGsDvL{@rDoAfEwBbL{@nFoAnK{@bL{@fOg@nK{@nPSfOg@bL{@v[{@b`@g@vQg@vL{@zY{@rXg@nZg@bVS~Cg@f@oAvGSzESfESbGRfJz@jHg@nPSvQg@~M?nFg@~Hg@jHcBvL{@~HkCbL_DnK{E~MkH~M_DzE_DfEoKvLsNjMkHvGoFzEkHbGsIvG_NvL_IbG{J~HgObLgJvGgJnFkH~CsI~CwGbBkHbBsDz@wGz@gEf@{Jf@sIRwQg@_NwBoU_DwLgEwGwB_IsDkHkCwLcG_NcGcL{EsIgEgEcBkMgEkHwBcGcBkHoA{E{@kC{@cBSsNwB{Eg@wGg@gJg@gTg@kMSgJScG?oFSkMSwG?oFSsI?{JSsISsISsIScQ?{OSc[SwLSwLSsSg@_ISwG?oKz@cBRoA?wG?oFRkHSoFRwLnAgJz@gEzEgJjCwGbBsIjCkHjCkRzJ{JnF_IzEkHfE_NfJwGfEw[~R{OnKkRbLkCbBcGzE_IfEkHfE_IzEwQfJ_IrD_Dz@cLrDsDz@cGbBwGnAoFnAoKz@_Iz@cGf@oFRwGRwB?kC?_I?sNSsISsDSsNg@gOSoFScQS{O?cGg@wGSsNSkH?wLS{JSgOSsIScQSwLScLSwG?{O?cQ?sb@fEw[bGc[jHc[vGsDf@_DnA{OzEg^bLk\\zJkMrD{J~CgTrI{E~C_IvGwBbBsDjCgErDoFfE_I~H{EnFwG~HwGfJgEvGwGbLcGfJ{Ob[gJbQkH~MgJzOkCzEsIjMsIzJsDzE_IvGwGzEkCbBwBnAkCnAwG~C_DbBsNfEwGbBsSjCoZ~CkWrD{T~CgOrDgOzEkRbGkRfJcQzJ{JnFoKnF{JrDwQnFkR~CoFz@sIbBgJz@{Jz@s]~CgTvBwQbBsIz@gJz@oKz@gTbBcQjCsIbBcLrDcLfE_SvL{ErD{ErDoKnKcQvQkMbLwBjCgJ~HsI~HcBnAgJnFcG~CoAz@wLzEgJ~CoAf@sIbBwBf@oKnAwGz@cQnAkRf@gOSsXcB{O{@wVcB_q@oFwQcBoFf@kHg@kMoAgYwB_SoAcL{@wGoAkRoA{Jg@sScBkWwBcQoAoZcBk\\wBwQoA_N{@oKoAcVsDwQcB_S{Es]_Ig^cLogAg^whAk\\c[{Jcj@wQsl@sSwQwGwQsI_SgO{J_IgJ{JwBsD{JgJcGgJcGkMsIoZcGwVg@gJ_DwQ_DoPkCgT{Ec[cBgOcBoKkCcBoAsDoAkMcB_NoAkHoA{E{@_DwBgEcBcBwBcBkCoA_D{@gERgEf@_DnAkCbBcB~CwBfESrDSfEf@nFnAfEbGzJfJ~MfJvLfEfJnKrSrD~HfEnKfEjMrInZ~C~MrD~MvG~W~CfJfEbL~CzE~CrD~H~MfO~RvBvBfTbQ~HnF~HfEvQ~HnPnFnU~HjRbGja@jMvQbGzOnFfm@~Rbt@zTbj@vQjf@~MbBvBvBnAz@nAnArDRjC?nAwcAzm@g@f@~HfOfEjH~CbGbGbLjCfEvBzEvGvLvBrDnAjCbBjCRvBRbB?z@?rDSvB?vGoAbG{@?cBf@{@R{@f@cBnA{@nAoAbBg@bBSjCSnASnAz@~Cz@jCnAvBz@nAvBz@nAf@bBRnARvBSbBSvBg@vB{@vBwBz@oAz@cBRcBR{@RoA?{E{@_Dg@wBoAoAcB{@{@ScBg@oAScB?SwBg@kC?cGRkC?cB?oA?{@SwBScBkHsNsI{OsIgOgTw`@gEwG_DcGgEwGwBgE{OgYgEkHkCgEcBwBwG{EsDwBgEwBcGkC_DoAwB{@wLsDgJ_DcQwGcQcGgTsI_]{J{YsI{Y_IkRoFsScGgEwBsDcB{TcQwVc[oKcQ{Oc[cQco@gJgc@wBwLwL_b@_DkMkCkHoKsNkRsS{OsNoF{EbBsIf@cBbB_DbBSz@{@RSRg@Rg@Rg@?{@?g@?{@S{@RsDf@gERoARwBvBwGbBoFz@_D~CoKnAcBz@{@rDkHjCg@z@{@nAkCf@sDnA_Sf@{EnAgOf@cGf@oFz@{Jf@_IR_IgE{@gE?wBnPwBnPcB~McBfT{@rDcB~HSbBSbB?nAf@~Cf@nAcBfOSz@SnAoAzEoArDkCrIcBnFsDzE{EfE{@z@g@z@SnASnARnARz@{@zEoAnKcGfT{EbQoFbQkCnKsDvL{Tzw@oFoF{@oA{E{E{EoF_D_DcBcBkCwBjEsD",
+            "precision": 6,
+            "length": 1271
+          },
+          "bikesAllowed": false,
+          "wheelchairAccessible": "NOT_ACCESSIBLE",
+          "reservation": "NONE",
+          "alternatives": []
+        },
+        {
+          "mode": "WALK",
+          "from": {
+            "name": "Av. Antonio Cândido Machado, 96 - Vila Uniao, Cajamar - SP, 07776-415, Brasil",
+            "stopId": "br-ARTESP_29383",
+            "importance": 0.000023166709070210345,
+            "lat": -23.342141999999996,
+            "lon": -46.84193,
+            "level": 0,
+            "tz": "America/Sao_Paulo",
+            "arrival": "2026-10-26T11:35:00Z",
+            "departure": "2026-10-26T11:35:00Z",
+            "scheduledArrival": "2026-10-26T11:35:00Z",
+            "scheduledDeparture": "2026-10-26T11:35:00Z",
+            "vertexType": "TRANSIT",
+            "cancelled": false,
+            "arrivalTimestampReason": "NO_RT_DATA",
+            "departureTimestampReason": "NO_RT_DATA",
+            "modes": [
+              "BUS"
+            ]
+          },
+          "to": {
+            "name": "END",
+            "lat": -23.341389,
+            "lon": -46.8411005,
+            "tz": "America/Sao_Paulo",
+            "arrival": "2026-10-26T11:37:00Z",
+            "scheduledArrival": "2026-10-26T11:37:00Z",
+            "vertexType": "NORMAL"
+          },
+          "duration": 120,
+          "startTime": "2026-10-26T11:35:00Z",
+          "endTime": "2026-10-26T11:37:00Z",
+          "scheduledStartTime": "2026-10-26T11:35:00Z",
+          "scheduledEndTime": "2026-10-26T11:37:00Z",
+          "realTime": false,
+          "scheduled": false,
+          "distance": 119,
+          "legGeometry": {
+            "points": "h~tok@dh_jxAmTiXcDwDiEuGgEuIkB}D????",
+            "precision": 6,
+            "length": 8
+          },
+          "steps": [
+            {
+              "relativeDirection": "CONTINUE",
+              "distance": 119,
+              "fromLevel": 0,
+              "toLevel": 0,
+              "toOsmNode": 7852186752,
+              "polyline": {
+                "points": "h~tok@dh_jxAmTiXcDwDiEuGgEuIkB}D",
+                "precision": 6,
+                "length": 6
+              },
+              "streetName": "",
+              "exit": "",
+              "stayOn": false,
+              "area": false,
+              "toll": false,
+              "elevationUp": 0,
+              "elevationDown": 0
+            },
+            {
+              "relativeDirection": "CONTINUE",
+              "distance": 0,
+              "fromLevel": 0,
+              "toLevel": 0,
+              "fromOsmNode": 7852186752,
+              "polyline": {
+                "points": "xssok@xo}ixA??",
+                "precision": 6,
+                "length": 2
+              },
+              "streetName": "",
+              "exit": "",
+              "stayOn": false,
+              "area": false,
+              "toll": false,
+              "elevationUp": 0,
+              "elevationDown": 0
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "direct": []
+}

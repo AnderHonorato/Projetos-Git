@@ -1,0 +1,59 @@
+{
+  "apk": "Ander-Rotas-v1.0.0.apk",
+  "bytes": 61411017,
+  "sha256": "4077599fec639211afb3fcf39a9a67389b8c091f909eb410358cb2ae233f555b",
+  "applicationId": "br.com.ander.rotas",
+  "versionName": "1.0.0",
+  "versionCode": 1,
+  "minSdk": 26,
+  "targetSdk": 35,
+  "compileSdk": 35,
+  "gradle": "8.10.2",
+  "AGP": "8.7.3",
+  "kotlin": "2.0.21",
+  "jdk": "17.0.16",
+  "buildTools": "35.0.0",
+  "unitTests": {
+    "tests": 32,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "suites": [
+    {
+      "name": "br.com.ander.rotas.MotorNavegacaoTest",
+      "tests": 13
+    },
+    {
+      "name": "br.com.ander.rotas.FormatoRotasTest",
+      "tests": 10
+    },
+    {
+      "name": "br.com.ander.rotas.MotorNavegacaoSegurancaTest",
+      "tests": 7
+    },
+    {
+      "name": "br.com.ander.rotas.PercursoRealSimuladoTest",
+      "tests": 2
+    }
+  ],
+  "lintIssues": [
+    {
+      "id": "ModifierParameter",
+      "severity": "Warning",
+      "message": "Modifier parameter should be the first optional parameter"
+    },
+    {
+      "id": "DataExtractionRules",
+      "severity": "Warning",
+      "message": "The attribute `android:allowBackup` is deprecated from Android 12 and higher and may be removed in future versions. Consider adding the attribute `android:dataExtractionRules` specifying an `@xml` resource which configures cloud backups and device transfers on Android 12 and higher."
+    },
+    {
+      "id": "StaticFieldLeak",
+      "severity": "Warning",
+      "message": "Do not place Android context classes in static fields (static reference to `OfflineRegion` which has field `context` pointing to `Context`); this is a memory leak"
+    }
+  ],
+  "apksignerVerified": true,
+  "emulatorValidation": "Pendente: boot sem KVM em andamento."
+}

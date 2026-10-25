@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="br.com.ander.rotas.MotorNavegacaoTest" tests="13" skipped="0" failures="0" errors="0" timestamp="2026-10-25T04:02:30" hostname="2a0e9badeda9" time="0.004">
+  <properties/>
+  <testcase name="medeProgressoNaPolilinhaNaoEmLinhaRetaAteODestino" classname="br.com.ander.rotas.MotorNavegacaoTest" time="0.0"/>
+  <testcase name="cruzaAntimeridianoPeloArcoCurto" classname="br.com.ander.rotas.MotorNavegacaoTest" time="0.0"/>
+  <testcase name="gpsRuimNaoContaParaDesvioOuChegada" classname="br.com.ander.rotas.MotorNavegacaoTest" time="0.0"/>
+  <testcase name="geometriaInsuficienteECoordenadasInvalidasNaoGeramFalsoDestino" classname="br.com.ander.rotas.MotorNavegacaoTest" time="0.0"/>
+  <testcase name="avisoAntesDeDescerExigeRepeticaoENaoRepeteNaEtapa" classname="br.com.ander.rotas.MotorNavegacaoTest" time="0.0"/>
+  <testcase name="idaEVoltaUtilizamSentidoDaGeometria" classname="br.com.ander.rotas.MotorNavegacaoTest" time="0.0"/>
+  <testcase name="novaRotaLimpaDesvioEProgressoAnterior" classname="br.com.ander.rotas.MotorNavegacaoTest" time="0.0"/>
+  <testcase name="ruidoIsoladoNaoProduzDesvioNemAlerta" classname="br.com.ander.rotas.MotorNavegacaoTest" time="0.0"/>
+  <testcase name="chegadaExigeTresLeiturasPrecisasNaUltimaEtapa" classname="br.com.ander.rotas.MotorNavegacaoTest" time="0.0"/>
+  <testcase name="desvioExigeTresLeiturasECooldownPermiteNovoAviso" classname="br.com.ander.rotas.MotorNavegacaoTest" time="0.001"/>
+  <testcase name="horariosPassadosNaoConfirmamEmbarqueNemMudamEtapa" classname="br.com.ander.rotas.MotorNavegacaoTest" time="0.001"/>
+  <testcase name="retornoAoTrajetoExigeDuasObservacoes" classname="br.com.ander.rotas.MotorNavegacaoTest" time="0.0"/>
+  <testcase name="distanciaGeodesicaEmMetros" classname="br.com.ander.rotas.MotorNavegacaoTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
