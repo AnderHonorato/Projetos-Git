@@ -24,6 +24,8 @@ import org.junit.Assert.*
 import org.junit.runner.RunWith
 import org.maplibre.android.camera.CameraPosition
 import org.maplibre.android.maps.MapView
+import org.maplibre.android.maps.MapLibreMap
+import org.maplibre.android.gestures.StandardScaleGestureDetector
 import java.io.File
 import java.util.concurrent.atomic.AtomicReference
 
@@ -41,7 +43,7 @@ class FluxoInterfaceTest {
     @After fun fechar(){if(::cenario.isInitialized)cenario.close();SessaoNavegacao.ativa.value=false;SessaoNavegacao.rota=null;SessaoNavegacao.estado.value=null}
     private fun abrir(){cenario=ActivityScenario.launch(MainActivity::class.java)}
     private fun captura(nome:String){
-        ui.waitForIdle();val pasta=File(InstrumentationRegistry.getInstrumentation().targetContext.getExternalFilesDir(null),"qa");pasta.mkdirs()
+        ui.waitForIdle();InstrumentationRegistry.getInstrumentation().waitForIdleSync();SystemClock.sleep(600);val pasta=File(InstrumentationRegistry.getInstrumentation().targetContext.getExternalFilesDir(null),"qa");pasta.mkdirs()
         assertTrue(device.takeScreenshot(File(pasta,"$nome.png")))
     }
     private fun mapa(view:View):MapView?{
@@ -85,9 +87,25 @@ class FluxoInterfaceTest {
         device.swipe(retangulo.left+retangulo.width()/4,retangulo.centerY(),retangulo.left+retangulo.width()/2,retangulo.centerY(),25)
         ui.waitUntil(5_000){camera()?.target?.let{MotorNavegacao.distancia(Ponto(origem.latitude,origem.longitude),Ponto(it.latitude,it.longitude))>15}?:false}
         captura("mapa-apos-arrastar")
+        // Encerra a inércia do arraste antes de medir o gesto seguinte.
+        val escalas=java.util.concurrent.atomic.AtomicInteger(0)
+        cenario.onActivity{a->mapa(a.window.decorView)!!.getMapAsync{m->
+            m.cancelTransitions()
+            assertTrue(m.uiSettings.isZoomGesturesEnabled)
+            m.addOnScaleListener(object:MapLibreMap.OnScaleListener{
+                override fun onScaleBegin(detector:StandardScaleGestureDetector){escalas.incrementAndGet()}
+                override fun onScale(detector:StandardScaleGestureDetector){}
+                override fun onScaleEnd(detector:StandardScaleGestureDetector){}
+            })
+        }}
         val zoom=camera()!!.zoom;val x=retangulo.left+retangulo.width()*2/5;val y=retangulo.centerY()
-        device.findObject(UiSelector().packageName(pacote).instance(0)).performTwoPointerGesture(Point(x-retangulo.width()/10,y),Point(x+retangulo.width()/10,y),Point(x-retangulo.width()/4,y),Point(x+retangulo.width()/4,y),30)
-        ui.waitUntil(5_000){(camera()?.zoom?:zoom)>zoom+.25}
+        val inicio=retangulo.width()/10;val fim=minOf(retangulo.width()/4,retangulo.height()/3)
+        assertTrue(device.findObject(UiSelector().packageName(pacote).instance(0)).performTwoPointerGesture(Point(x-inicio,y-inicio),Point(x+inicio,y+inicio),Point(x-fim,y-fim),Point(x+fim,y+fim),30))
+        try{ui.waitUntil(5_000){(camera()?.zoom?:zoom)>zoom+.25}}finally{
+            val pasta=File(InstrumentationRegistry.getInstrumentation().targetContext.getExternalFilesDir(null),"qa");pasta.mkdirs()
+            File(pasta,"gesto-pinca.txt").writeText("mapa=$retangulo zoomAntes=$zoom zoomDepois=${camera()?.zoom} gestosEscala=${escalas.get()}")
+            captura("mapa-apos-pinca")
+        }
         captura("mapa-arraste-pinca-zoom")
     }
     @Test fun abrirSemViagemRemoveAvisosAntigosENaoCriaNotificacoes(){
@@ -147,6 +165,8 @@ class FluxoInterfaceTest {
         SessaoNavegacao.estado.value=EstadoNavegacao(etapaAtual=0,metrosAteFim=680.0,mensagem="Siga até o desembarque.",paradaAtual=1,pontosRestantes=3,proximaParada="Ponto 2")
         abrir();ui.onNodeWithText("Ônibus 054").assertExists();ui.onNodeWithText("Ponto 2").assertExists();ui.onNodeWithText("3").assertExists()
         ui.onNodeWithText("Roteiro").assertExists();ui.onAllNodesWithText("ANDER",substring=true).assertCountEquals(0)
+        val mapaPronto=java.util.concurrent.atomic.AtomicBoolean(false)
+        cenario.onActivity{a->mapa(a.window.decorView)?.addOnDidBecomeIdleListener{mapaPronto.set(true)}}
         SessaoNavegacao.emitir(Location("gps").apply{latitude=ps[1].ponto.latitude;longitude=ps[1].ponto.longitude;accuracy=6f;time=System.currentTimeMillis();elapsedRealtimeNanos=SystemClock.elapsedRealtimeNanos()})
         ui.waitUntil(5_000){ui.onAllNodesWithText("Perto de Ponto 1").fetchSemanticsNodes().isNotEmpty()}
         ui.waitUntil(20_000){
@@ -154,6 +174,7 @@ class FluxoInterfaceTest {
             cenario.onActivity{a->mapa(a.window.decorView)?.getMapAsync{m->pronto.set(m.style?.layers?.isNotEmpty()==true)}}
             pronto.get()
         }
+        ui.waitUntil(25_000){mapaPronto.get()}
         captura("painel-viagem-ativa")
         ui.onNodeWithContentDescription("Cancelar").performClick();ui.onNodeWithText("Cancelar esta viagem?").assertExists()
         ui.onNodeWithText("Continuar viagem").performClick();ui.onNodeWithText("Ônibus 054").assertExists()
