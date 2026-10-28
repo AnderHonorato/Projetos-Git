@@ -10,8 +10,11 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
 data class EstadoRotas(
-    val origem: Endereco = ORIGEM_INICIAL, val destino: Endereco = DESTINO_INICIAL,
-    val textoOrigem: String = ORIGEM_INICIAL.nome, val textoDestino: String = DESTINO_INICIAL.nome,
+    val origem: Endereco = ENDERECO_VAZIO, val destino: Endereco = ENDERECO_VAZIO,
+    val textoOrigem: String = "", val textoDestino: String = "",
+    val textoBusca: String = "", val buscaParaParada: Boolean = false,
+    val paradasDesejadas: List<Endereco> = emptyList(), val origemAutomatica: Boolean = true,
+    val confirmarCancelamento: Boolean = false,
     val quando: Long = System.currentTimeMillis(), val horarioFuturo: Boolean = false,
     val conectado: Boolean = false, val resultadosBusca: List<Endereco> = emptyList(),
     val buscaParaOrigem: Boolean = true, val buscando: Boolean = false, val calculando: Boolean = false,
@@ -42,7 +45,7 @@ class RotasViewModel(application: Application) : AndroidViewModel(application) {
         callbackRegistrado = runCatching { conectividade.registerDefaultNetworkCallback(callbackRede); true }.getOrDefault(false)
         SessaoNavegacao.rota?.takeIf { SessaoNavegacao.ativa.value }?.let { rota ->
             _estado.update { it.copy(rotaSelecionada = rota, origem = rota.origem, destino = rota.destino,
-                textoOrigem = rota.origem.nome, textoDestino = rota.destino.nome, navegando = true,
+                textoOrigem = rota.origem.nome, textoDestino = rota.destino.nome, paradasDesejadas=rota.paradasDesejadas, origemAutomatica=false, navegando=true,
                 navegacao = SessaoNavegacao.estado.value) }
         }
         viewModelScope.launch(Dispatchers.IO) { atualizarSalvos() }
@@ -62,50 +65,73 @@ class RotasViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
-    fun editarTexto(texto: String, paraOrigem: Boolean) {
-        val atual = _estado.value
-        val anterior = if (paraOrigem) atual.textoOrigem else atual.textoDestino
-        if (texto != anterior && (atual.rotaSelecionada != null || atual.calculando)) invalidarConsulta()
-        busca?.cancel()
-        _estado.update { if (paraOrigem) it.copy(textoOrigem = texto, buscando = false, resultadosBusca = emptyList(), erro = null)
-            else it.copy(textoDestino = texto, buscando = false, resultadosBusca = emptyList(), erro = null) }
+    private fun podePlanejar():Boolean {
+        if(!_estado.value.navegando && !SessaoNavegacao.ativa.value && SessaoNavegacao.rota==null)return true
+        _estado.update{it.copy(erro="Conclua ou cancele a viagem atual antes de alterar destinos e paradas.")};return false
     }
-    /** Somente botão explícito: sem autocomplete de endereços. */
-    fun buscar(texto: String, paraOrigem: Boolean) {
-        editarTexto(texto, paraOrigem)
-        if (texto.trim().length < 3) { _estado.update { it.copy(erro = "Digite pelo menos três caracteres para buscar um endereço.") }; return }
-        busca = viewModelScope.launch {
-            _estado.update { it.copy(buscando = true, buscaParaOrigem = paraOrigem) }
-            try {
-                delay(300)
-                val encontrados = repositorio.buscarEnderecos(texto.trim())
-                _estado.update { it.copy(resultadosBusca = encontrados, buscando = false,
-                    erro = if (encontrados.isEmpty()) "Nenhum endereço encontrado. Acrescente cidade e número." else null) }
-            } catch (e: CancellationException) { throw e
-            } catch (e: Exception) { _estado.update { it.copy(buscando = false, erro = e.message ?: "Não foi possível buscar o endereço. Verifique a conexão.") } }
+    fun prepararBusca(paraOrigem:Boolean,parada:Boolean=false){
+        if(!podePlanejar())return
+        busca?.cancel();_estado.update{it.copy(buscaParaOrigem=paraOrigem,buscaParaParada=parada,textoBusca="",resultadosBusca=emptyList(),buscando=false,erro=null)}
+    }
+    fun fecharBusca(){busca?.cancel();_estado.update{it.copy(buscando=false,resultadosBusca=emptyList(),buscaParaParada=false)}}
+    fun editarTexto(texto:String,paraOrigem:Boolean){
+        if(!podePlanejar())return
+        busca?.cancel();_estado.update{it.copy(textoBusca=texto.take(240),buscaParaOrigem=paraOrigem,buscando=false,resultadosBusca=emptyList(),erro=null)}
+        if(texto.trim().length>=3)buscar(texto,paraOrigem)
+    }
+    fun buscar(texto:String,paraOrigem:Boolean){
+        if(!podePlanejar())return
+        busca?.cancel();if(texto.trim().length<3)return
+        busca=viewModelScope.launch{
+            _estado.update{it.copy(buscando=true,buscaParaOrigem=paraOrigem)}
+            try{delay(450);val encontrados=repositorio.buscarEnderecos(texto.trim(),_estado.value.posicao);ensureActive()
+                _estado.update{it.copy(resultadosBusca=encontrados,buscando=false,erro=if(encontrados.isEmpty())"Nenhum endereço encontrado. Acrescente a cidade ou escolha no mapa." else null)}
+            }catch(e:CancellationException){throw e
+            }catch(e:Exception){_estado.update{it.copy(buscando=false,erro=e.message?:"Não foi possível buscar sugestões.")}}
         }
     }
-    fun selecionarEndereco(endereco: Endereco, paraOrigem: Boolean) {
-        busca?.cancel(); invalidarConsulta()
-        _estado.update { if (paraOrigem) it.copy(origem = endereco, textoOrigem = endereco.nome, resultadosBusca = emptyList(), buscando = false)
-            else it.copy(destino = endereco, textoDestino = endereco.nome, resultadosBusca = emptyList(), buscando = false) }
+    fun selecionarEndereco(endereco:Endereco,paraOrigem:Boolean){
+        if(!podePlanejar())return
+        busca?.cancel()
+        if(_estado.value.buscaParaParada){
+            if(_estado.value.paradasDesejadas.size>=8){_estado.update{it.copy(erro="Escolha até oito paradas intermediárias.")};return}
+            invalidarConsulta();_estado.update{it.copy(paradasDesejadas=it.paradasDesejadas+endereco,buscaParaParada=false,resultadosBusca=emptyList(),buscando=false)}
+        }else{
+            invalidarConsulta();_estado.update{if(paraOrigem)it.copy(origem=endereco,textoOrigem=endereco.nome,origemAutomatica=false,resultadosBusca=emptyList(),buscando=false)
+                else it.copy(destino=endereco,textoDestino=endereco.nome,resultadosBusca=emptyList(),buscando=false)}
+        }
     }
-    fun definirQuando(instante: Long) { invalidarConsulta(); _estado.update { it.copy(quando = instante, horarioFuturo = true) } }
-    fun sairAgora() { invalidarConsulta(); _estado.update { it.copy(quando = System.currentTimeMillis(), horarioFuturo = false) } }
+    fun removerParada(indice:Int){
+        if(!podePlanejar() || indice !in _estado.value.paradasDesejadas.indices)return
+        invalidarConsulta();_estado.update{it.copy(paradasDesejadas=it.paradasDesejadas.filterIndexed{i,_->i!=indice})}
+    }
+    fun moverParada(de:Int,para:Int){
+        if(!podePlanejar())return
+        val lista=_estado.value.paradasDesejadas.toMutableList()
+        if(de !in lista.indices || para !in lista.indices || de==para)return
+        lista.add(para,lista.removeAt(de));invalidarConsulta();_estado.update{it.copy(paradasDesejadas=lista)}
+    }
+    fun usarLocalizacaoComoOrigem(){
+        if(!podePlanejar())return
+        invalidarConsulta();_estado.update{it.copy(origemAutomatica=true,origem=ENDERECO_VAZIO,textoOrigem="")}
+    }
+    fun definirQuando(instante: Long) { if(!podePlanejar())return; invalidarConsulta(); _estado.update { it.copy(quando = instante, horarioFuturo = true) } }
+    fun sairAgora() { if(!podePlanejar())return; invalidarConsulta(); _estado.update { it.copy(quando = System.currentTimeMillis(), horarioFuturo = false) } }
     fun calcular() {
+        if(!podePlanejar())return
         val consulta = _estado.value
-        if (consulta.textoOrigem != consulta.origem.nome || consulta.textoDestino != consulta.destino.nome) {
+        if (consulta.origem.nome.isBlank() || consulta.destino.nome.isBlank() || consulta.textoOrigem != consulta.origem.nome || consulta.textoDestino != consulta.destino.nome) {
             _estado.update { it.copy(erro = "Busque e selecione os endereços antes de calcular a viagem.") }; return
         }
         if (!MotorNavegacao.valido(consulta.origem.ponto) || !MotorNavegacao.valido(consulta.destino.ponto)) {
             _estado.update { it.copy(erro = "Um dos endereços não possui coordenadas válidas.") }; return
         }
         val partida = if (consulta.horarioFuturo) consulta.quando else System.currentTimeMillis()
-        parar(); calculo?.cancel()
+        calculo?.cancel()
         calculo = viewModelScope.launch {
             _estado.update { it.copy(calculando = true, erro = null, rotas = emptyList(), rotaSelecionada = null, navegacao = null, quando = partida) }
             try {
-                val rotas = repositorio.calcular(consulta.origem, consulta.destino, partida).map { segurancaSnapshot(it) }
+                val rotas = repositorio.calcularComParadas(consulta.origem,consulta.destino,consulta.paradasDesejadas,partida).map { segurancaSnapshot(it) }
                 _estado.update { it.copy(calculando = false, rotas = rotas, rotaSelecionada = rotas.firstOrNull(),
                     erro = if (rotas.isEmpty()) "Nenhuma viagem disponível nesta data e região. Tente outro horário." else null) }
             } catch (e: CancellationException) { throw e
@@ -114,6 +140,7 @@ class RotasViewModel(application: Application) : AndroidViewModel(application) {
     }
     /** Mantém roteiro e GPS existentes enquanto o novo planejamento não tiver sucesso. */
     fun recalcular() {
+        if(!podePlanejar())return
         val atual = _estado.value; val ponto = atual.posicao; val precisao = atual.precisaoMetros; val agora = System.currentTimeMillis()
         if (ponto == null || !MotorNavegacao.valido(ponto) || precisao == null || !precisao.isFinite() ||
             precisao <= 0f || precisao > 45f || agora - ultimaPosicaoEm !in 0L..30_000L) {
@@ -139,18 +166,21 @@ class RotasViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
     fun inverter() {
+        if(!podePlanejar())return
         invalidarConsulta(); busca?.cancel()
         _estado.update { it.copy(origem = it.destino, destino = it.origem, textoOrigem = it.textoDestino,
-            textoDestino = it.textoOrigem, resultadosBusca = emptyList(), buscando = false) }
+            textoDestino = it.textoOrigem, origemAutomatica=false, paradasDesejadas=it.paradasDesejadas.reversed(), resultadosBusca = emptyList(), buscando = false) }
     }
     fun selecionarRota(rota: Rota) {
-        calculo?.cancel(); parar()
+        if(!podePlanejar())return
+        calculo?.cancel()
         _estado.update { it.copy(rotaSelecionada = rota, origem = rota.origem, destino = rota.destino,
-            textoOrigem = rota.origem.nome, textoDestino = rota.destino.nome, quando = rota.inicio,
+            textoOrigem = rota.origem.nome, textoDestino = rota.destino.nome, quando = rota.inicio, origemAutomatica=false,paradasDesejadas=rota.paradasDesejadas,
             rotas = if (it.rotas.any { candidata -> candidata.id == rota.id }) it.rotas else listOf(rota),
             navegacao = null, calculando = false, erro = null) }
     }
     fun abrirRotaSalva(rota: Rota) {
+        if(!podePlanejar())return
         selecionarRota(segurancaSnapshot(rota, true))
         _estado.update { it.copy(horarioFuturo = false) }
     }
@@ -163,17 +193,26 @@ class RotasViewModel(application: Application) : AndroidViewModel(application) {
         })
     }
     fun iniciar() {
+        if(!podePlanejar())return
+        busca?.cancel();calculo?.cancel()
         val rota = _estado.value.rotaSelecionada ?: return
         if (rota.etapas.isEmpty()) { _estado.update { it.copy(erro = "Esta rota não possui etapas para acompanhar.") }; return }
         persistir { repositorio.salvarRota(rota) }
-        _estado.update { it.copy(navegando = true, navegacao = motor.iniciar(rota), erro = null) }
+        _estado.update{it.copy(navegando=true,navegacao=motor.iniciar(rota),erro=null,resultadosBusca=emptyList(),buscando=false)}
+        try{NavegacaoService.iniciar(getApplication(),rota)}catch(e:Exception){NavegacaoService.parar(getApplication());_estado.update{it.copy(navegando=false,navegacao=null,erro="Não foi possível iniciar. Confira o GPS e tente novamente.")}}
     }
-    fun parar() { NavegacaoService.parar(getApplication()); _estado.update { it.copy(navegando = false, navegacao = null) } }
+    fun solicitarCancelamento(){if(_estado.value.navegando)_estado.update{it.copy(confirmarCancelamento=true)}else if(_estado.value.navegacao?.chegou==true)parar()}
+    fun manterViagem(){_estado.update{it.copy(confirmarCancelamento=false)}}
+    fun parar(){busca?.cancel();calculo?.cancel();NavegacaoService.parar(getApplication());_estado.update{it.copy(navegando=false,navegacao=null,rotaSelecionada=null,rotas=emptyList(),confirmarCancelamento=false,calculando=false,buscando=false)}}
     fun atualizarPosicao(ponto: Ponto, precisao: Float, instante: Long = System.currentTimeMillis()) {
         if (!MotorNavegacao.valido(ponto)) return
         ultimaPosicaoEm = instante
         // Progresso calculado somente pelo serviço: cada leitura conta uma vez.
-        _estado.update { it.copy(posicao = ponto, precisaoMetros = precisao) }
+        _estado.update{
+            val usar=it.origemAutomatica && it.origem.nome.isBlank() && !it.navegando && precisao.isFinite() && precisao>0f && precisao<=100f
+            val origem=if(usar)Endereco("Minha localização",ponto,"GPS · precisão aproximada ±${precisao.toInt()} m · você pode editar")else it.origem
+            it.copy(posicao=ponto,precisaoMetros=precisao,origem=origem,textoOrigem=origem.nome)
+        }
     }
     fun avancarEtapa() = trocarEtapa(true)
     fun voltarEtapa() = trocarEtapa(false)
@@ -200,16 +239,17 @@ class RotasViewModel(application: Application) : AndroidViewModel(application) {
     fun removerViagem(viagem: ViagemFavorita) = persistir { repositorio.removerViagemFavorita(viagem) }
     fun salvarRota() { _estado.value.rotaSelecionada?.let { rota -> persistir { repositorio.salvarRota(rota) } } }
     fun abrirViagem(viagem: ViagemFavorita, invertida: Boolean = false) {
+        if(!podePlanejar())return
         invalidarConsulta()
         val origem = if (invertida) viagem.destino else viagem.origem; val destino = if (invertida) viagem.origem else viagem.destino
         _estado.update { it.copy(origem = origem, destino = destino, textoOrigem = origem.nome, textoDestino = destino.nome,
-            quando = System.currentTimeMillis(), horarioFuturo = false, resultadosBusca = emptyList()) }
+            quando = System.currentTimeMillis(), horarioFuturo = false, resultadosBusca = emptyList(), origemAutomatica=false,paradasDesejadas=emptyList()) }
     }
     fun mudarTema() { val escuro = !_estado.value.temaEscuro; preferencias.edit().putBoolean("escuro", escuro).apply(); _estado.update { it.copy(temaEscuro = escuro) } }
     fun obterGeocodificador(): String = repositorio.obterGeocodificador()
     fun configurarGeocodificador(url: String) { busca?.cancel(); repositorio.configurarGeocodificador(url); _estado.update { it.copy(buscando = false, resultadosBusca = emptyList()) } }
     fun limparErro() { _estado.update { it.copy(erro = null) } }
-    private fun invalidarConsulta() { calculo?.cancel(); parar(); _estado.update { it.copy(rotas = emptyList(), rotaSelecionada = null, navegacao = null, calculando = false, erro = null) } }
+    private fun invalidarConsulta() { calculo?.cancel(); _estado.update { it.copy(rotas = emptyList(), rotaSelecionada = null, navegacao = null, calculando = false, erro = null) } }
     private fun persistir(acao: () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             try { acao(); atualizarSalvos() } catch (e: Exception) { _estado.update { it.copy(erro = e.message ?: "Não foi possível salvar esta alteração.") } }

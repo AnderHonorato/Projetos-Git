@@ -26,7 +26,8 @@ data class Rota(
     val etapas: List<Etapa>,
     val consultadaEm: Long = System.currentTimeMillis(),
     val fonte: String = "Transitous · fontes GTFS por região",
-    val aviso: String = "Os horários podem mudar. Confira o sentido antes de embarcar."
+    val aviso: String = "Os horários podem mudar. Confira o sentido antes de embarcar.",
+    val paradasDesejadas: List<Endereco> = emptyList()
 ): Serializable {
     val inicio: Long get() = etapas.firstOrNull()?.inicio ?: consultadaEm
     val fim: Long get() = etapas.lastOrNull()?.fim ?: consultadaEm
@@ -37,3 +38,5 @@ data class ViagemFavorita(val nome: String, val origem: Endereco, val destino: E
 // Centros de vias retornados pelo Nominatim; os números de porta não estão confirmados.
 val ORIGEM_INICIAL = Endereco("Rua Silveira Tavares, 61", Ponto(-23.4771045,-46.5668804), "Parque Edu Chaves, São Paulo · número não localizado; ponto aproximado da rua")
 val DESTINO_INICIAL = Endereco("Rua Seis, 65", Ponto(-23.3410193,-46.8413569), "Jordanésia, Cajamar · número não localizado; ponto aproximado da rua")
+
+val ENDERECO_VAZIO = Endereco("", Ponto(Double.NaN, Double.NaN))
