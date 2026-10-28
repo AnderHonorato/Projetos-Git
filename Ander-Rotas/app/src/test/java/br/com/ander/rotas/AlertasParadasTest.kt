@@ -23,7 +23,22 @@ class AlertasParadasTest {
         assertFalse(m.atualizar(rota,pontos[5],5f).chegou)
         assertFalse(m.atualizar(rota,pontos[5],5f).chegou)
         val e=m.atualizar(rota,pontos[5],5f)
-        assertTrue(e.chegou);assertEquals(AvisoParada.DESEMBARCAR,e.avisoParada);assertTrue(e.mensagem.contains("Desça"))
+        assertTrue(e.chegou);assertEquals(AvisoParada.DESEMBARCAR,e.avisoParada);assertTrue(e.mensagem.contains("desça"))
+    }
+    @Test fun onibusParadoTrintaMetrosAntesNaoAnunciaDesembarque(){
+        val m=MotorNavegacao();val antes=Ponto(0.0,pontos.last().longitude-.00027)
+        repeat(5){val e=m.atualizar(rota,antes,5f);assertFalse(e.chegou);assertNotEquals(AvisoParada.DESEMBARCAR,e.avisoParada)}
+    }
+    @Test fun precisaoInsuficienteNaoConfirmaDesembarque(){
+        val m=MotorNavegacao();repeat(5){val e=m.atualizar(rota,pontos.last(),35f);assertFalse(e.chegou);assertNotEquals(AvisoParada.DESEMBARCAR,e.avisoParada)}
+    }
+    @Test fun desembarqueAntesDaCaminhadaTemAvisoMesmoSemParadasIntermediarias(){
+        val bus=rota.etapas.first().copy(paradas=listOf(paradas.first(),paradas.last()))
+        val caminho=bus.copy(modo="WALK",origem="B",destino="C",pontos=listOf(pontos.last(),Ponto(0.0,.012)),paradas=emptyList())
+        val r=rota.copy(etapas=listOf(bus,caminho));val m=MotorNavegacao()
+        repeat(2){m.atualizar(r,pontos.last(),5f)}
+        val e=m.atualizar(r,pontos.last(),5f);assertFalse(e.chegou);assertEquals(AvisoParada.DESEMBARCAR,e.avisoParada);assertTrue(e.alertar)
+        assertEquals(AvisoParada.NENHUM,m.atualizar(r,pontos.last(),5f).avisoParada)
     }
     @Test fun semParadasNaoInventaContagem() {
         val r=rota.copy(etapas=rota.etapas.map{it.copy(paradas=emptyList())});val m=MotorNavegacao()

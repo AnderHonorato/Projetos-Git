@@ -232,7 +232,7 @@ class RotasViewModel(application: Application) : AndroidViewModel(application) {
         }
         if (nome.isBlank()) { _estado.update { it.copy(erro = "Dê um nome para esta viagem.") }; return }
         persistir {
-            repositorio.salvarViagemFavorita(ViagemFavorita(nome.trim(), atual.origem, atual.destino))
+            repositorio.salvarViagemFavorita(ViagemFavorita(nome.trim(), atual.origem, atual.destino,atual.paradasDesejadas))
             atual.rotaSelecionada?.let { repositorio.salvarRota(it) }
         }
     }
@@ -243,7 +243,7 @@ class RotasViewModel(application: Application) : AndroidViewModel(application) {
         invalidarConsulta()
         val origem = if (invertida) viagem.destino else viagem.origem; val destino = if (invertida) viagem.origem else viagem.destino
         _estado.update { it.copy(origem = origem, destino = destino, textoOrigem = origem.nome, textoDestino = destino.nome,
-            quando = System.currentTimeMillis(), horarioFuturo = false, resultadosBusca = emptyList(), origemAutomatica=false,paradasDesejadas=emptyList()) }
+            quando = System.currentTimeMillis(), horarioFuturo = false, resultadosBusca = emptyList(), origemAutomatica=false,paradasDesejadas=if(invertida)viagem.paradasDesejadas.reversed()else viagem.paradasDesejadas) }
     }
     fun mudarTema() { val escuro = !_estado.value.temaEscuro; preferencias.edit().putBoolean("escuro", escuro).apply(); _estado.update { it.copy(temaEscuro = escuro) } }
     fun obterGeocodificador(): String = repositorio.obterGeocodificador()

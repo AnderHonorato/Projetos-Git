@@ -56,14 +56,14 @@ class NavegacaoService : Service(), LocationListener {
         avisos = getSystemService(NotificationManager::class.java)
         avisos.createNotificationChannel(NotificationChannel(CANAL, "Viagem em andamento", NotificationManager.IMPORTANCE_LOW))
         avisos.createNotificationChannel(NotificationChannel(ALERTAS,"Desembarque e trajeto",NotificationManager.IMPORTANCE_HIGH).apply{enableVibration(true)})
-        if(getSharedPreferences("aparencia",0).getBoolean("voz_permitida",false)){
+        run{
             voz=TextToSpeech(this){status->
                 if(status==TextToSpeech.SUCCESS){
                     val resultado=voz?.setLanguage(Locale("pt","BR"))
                     vozPronta=resultado!=null && resultado!=TextToSpeech.LANG_MISSING_DATA && resultado!=TextToSpeech.LANG_NOT_SUPPORTED
                     voz?.setAudioAttributes(AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ASSISTANCE_NAVIGATION_GUIDANCE).setContentType(AudioAttributes.CONTENT_TYPE_SPEECH).build())
-                    if(!vozPronta)SessaoNavegacao.erro.value="Voz em português indisponível. Ative uma voz nas configurações de texto para fala do Android. Os alertas visuais continuam."
-                }else SessaoNavegacao.erro.value="Não foi possível iniciar a voz. Os alertas visuais continuam."
+                    if(!vozPronta && getSharedPreferences("aparencia",0).getBoolean("voz_permitida",false))SessaoNavegacao.erro.value="Voz em português indisponível. Ative uma voz nas configurações de texto para fala do Android. Os alertas visuais continuam."
+                }else if(getSharedPreferences("aparencia",0).getBoolean("voz_permitida",false))SessaoNavegacao.erro.value="Não foi possível iniciar a voz. Os alertas visuais continuam."
             }
         }
     }
@@ -202,7 +202,7 @@ class NavegacaoService : Service(), LocationListener {
             SessaoNavegacao.rota = rota
             context.startForegroundService(Intent(context, NavegacaoService::class.java).setAction(INICIAR))
         }
-        fun parar(context: Context) { context.stopService(Intent(context, NavegacaoService::class.java)); SessaoNavegacao.ativa.value = false; SessaoNavegacao.rota = null;context.getSystemService(NotificationManager::class.java).cancel(ID_ALERTA);SessaoNavegacao.estado.value=null }
+        fun parar(context: Context) { context.stopService(Intent(context, NavegacaoService::class.java)); SessaoNavegacao.ativa.value = false; SessaoNavegacao.rota = null;context.getSystemService(NotificationManager::class.java)?.cancel(ID_ALERTA);SessaoNavegacao.estado.value=null }
         fun atualizarEtapa(context: Context, indice: Int) {
             if (SessaoNavegacao.ativa.value) context.startService(Intent(context, NavegacaoService::class.java).setAction(ETAPA).putExtra("etapa", indice))
         }
@@ -221,7 +221,6 @@ class NavegacaoService : Service(), LocationListener {
             }
             listener = object: LocationListener {
                 override fun onLocationChanged(location: Location) {
-        if(concluindo)return
                     val idade = (SystemClock.elapsedRealtimeNanos() - location.elapsedRealtimeNanos) / 1_000_000
                     if (idade > 30_000 || idade < -1000 || !location.hasAccuracy() || location.accuracy <= 0) return
                     concluir(LeituraLocalizacao(Ponto(location.latitude, location.longitude), location.accuracy, if(location.hasBearing()) location.bearing else null, if(location.hasSpeed()) location.speed else null, location.time))

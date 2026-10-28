@@ -164,7 +164,7 @@ class RepositorioRotas(context: Context) {
     @Synchronized fun viagensFavoritas(): List<ViagemFavorita> = lerArray("viagens").objetos().mapNotNull {
         val from = it.optJSONObject("origem")?.let(FormatoRotas::enderecoSalvo)
         val to = it.optJSONObject("destino")?.let(FormatoRotas::enderecoSalvo)
-        if (from != null && to != null) ViagemFavorita(it.optString("nome"), from, to) else null
+        if (from != null && to != null) ViagemFavorita(it.optString("nome"), from, to, it.optJSONArray("paradasDesejadas")?.objetos()?.mapNotNull(FormatoRotas::enderecoSalvo).orEmpty()) else null
     }
     @Synchronized fun salvarViagemFavorita(v: ViagemFavorita) {
         require(FormatoRotas.valido(v.origem.ponto) && FormatoRotas.valido(v.destino.ponto))
@@ -173,7 +173,7 @@ class RepositorioRotas(context: Context) {
     @Synchronized fun removerViagemFavorita(v: ViagemFavorita) { escreverViagens(viagensFavoritas().filterNot { it == v }) }
     private fun escreverViagens(items: List<ViagemFavorita>) {
         prefs.edit().putString("viagens", JSONArray(items.map {
-            JSONObject().put("nome", it.nome).put("origem", FormatoRotas.enderecoJson(it.origem)).put("destino", FormatoRotas.enderecoJson(it.destino))
+            JSONObject().put("nome", it.nome).put("origem", FormatoRotas.enderecoJson(it.origem)).put("destino", FormatoRotas.enderecoJson(it.destino)).put("paradasDesejadas",JSONArray(it.paradasDesejadas.map(FormatoRotas::enderecoJson)))
         }).toString()).apply()
     }
     private fun lerArray(key: String): JSONArray = runCatching { JSONArray(prefs.getString(key, "[]")) }.getOrElse { JSONArray() }

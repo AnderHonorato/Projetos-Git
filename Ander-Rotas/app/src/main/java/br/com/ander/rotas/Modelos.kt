@@ -33,7 +33,7 @@ data class Rota(
     val fim: Long get() = etapas.lastOrNull()?.fim ?: consultadaEm
     val duracaoMinutos: Int get() = ((fim-inicio)/60000).toInt().coerceAtLeast(0)
 }
-data class ViagemFavorita(val nome: String, val origem: Endereco, val destino: Endereco): Serializable
+data class ViagemFavorita(val nome: String, val origem: Endereco, val destino: Endereco, val paradasDesejadas: List<Endereco> = emptyList()): Serializable
 
 // Centros de vias retornados pelo Nominatim; os números de porta não estão confirmados.
 val ORIGEM_INICIAL = Endereco("Rua Silveira Tavares, 61", Ponto(-23.4771045,-46.5668804), "Parque Edu Chaves, São Paulo · número não localizado; ponto aproximado da rua")

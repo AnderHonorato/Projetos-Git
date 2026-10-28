@@ -70,10 +70,11 @@ class MotorNavegacao(private val agora: () -> Long = System::currentTimeMillis) 
         } else { dentro++; fora = 0 }
         if (fora >= 3) emDesvio = true
         if (dentro >= 2) emDesvio = false
-        val pertoFim = distancia(posicao, atual.pontos.last()) <= 40.0 && projecao.restante <= 65.0
+        val transporte = atual.modo.uppercase() !in setOf("WALK", "FOOT", "WALKING", "CAMINHADA", "A_PÉ", "A PE")
+        val pertoFim = if(transporte) precisaoMetros<=20f && distancia(posicao,atual.pontos.last())<=15.0 && projecao.restante<=20.0
+            else distancia(posicao, atual.pontos.last()) <= 40.0 && projecao.restante <= 65.0
         proximas = if (pertoFim && !emDesvio) proximas + 1 else 0
         val chegou = etapa == rota.etapas.lastIndex && proximas >= 3
-        val transporte = atual.modo.uppercase() !in setOf("WALK", "FOOT", "CAMINHADA", "A_PÉ", "A PE")
         // Não estimar número de paradas a partir dos metros: usar apenas a lista publicada.
         val paradas = atual.paradas.takeIf { transporte && it.size >= 3 && it.all { e -> valido(e.ponto) } }
         val distanciasParadas = paradas?.map { projetar(it.ponto, atual.pontos).restante }
@@ -81,7 +82,7 @@ class MotorNavegacao(private val agora: () -> Long = System::currentTimeMillis) 
         var restantes: Int? = null
         var proxima: String? = null
         var avisoParada = AvisoParada.NENHUM
-        if (contagemValida && paradas != null && distanciasParadas != null) {
+        if (paradas != null && distanciasParadas != null && contagemValida) {
             if (!emDesvio && dentro >= 1) {
                 val candidato = distanciasParadas.indexOfLast { it >= projecao.restante - 15.0 }.coerceAtLeast(0)
                     .coerceAtMost(if (proximas >= 3) paradas.lastIndex else paradas.lastIndex - 1)
@@ -99,6 +100,7 @@ class MotorNavegacao(private val agora: () -> Long = System::currentTimeMillis) 
             }
             if (!emDesvio && dentro>=2 && (repeticoesParada>=2 || proximas>=3) && marco!=AvisoParada.NENHUM && avisosParadas.add(marco)) avisoParada=marco
         }
+        if(transporte && !emDesvio && proximas>=3 && avisosParadas.add(AvisoParada.DESEMBARCAR))avisoParada=AvisoParada.DESEMBARCAR
         val descida = !contagemValida && transporte && !avisouDescida && !emDesvio && dentro >= 2 && projecao.restante <= 350.0
         val instante = agora()
         val podeAlertar = ultimoAlerta?.let { instante - it >= 90_000L } ?: true
@@ -106,10 +108,10 @@ class MotorNavegacao(private val agora: () -> Long = System::currentTimeMillis) 
         val alerta = avisoParada != AvisoParada.NENHUM || (chegou && !estado.chegou) || ((emDesvio || descida) && podeAlertar)
         if (alerta) { ultimoAlerta = instante; if (descida) avisouDescida = true }
         val mensagem = when {
-            chegou && transporte -> "Você chegou a ${atual.destino}. Desça neste ponto, com segurança."
+            chegou && transporte -> "Você chegou a ${atual.destino}. Confira se o veículo parou neste ponto e desça com segurança."
             chegou -> "Você chegou ao destino. Confira o endereço ao redor."
             emDesvio -> "Você parece fora desta etapa. Confira o mapa e o sentido antes de continuar."
-            proximas>=3 && transporte -> "Você chegou a ${atual.destino}. Desça neste ponto, com segurança."
+            proximas>=3 && transporte -> "Você chegou a ${atual.destino}. Confira se o veículo parou neste ponto e desça com segurança."
             restantes!=null && restantes>0 -> if(restantes==1) "Próximo ponto: ${atual.destino}. Prepare-se para descer." else "Faltam $restantes pontos para ${atual.destino}. Próximo: $proxima."
             pertoFim && transporte -> "Prepare-se para descer em ${atual.destino}. Confirme a próxima etapa."
             descida || (avisouDescida && projecao.restante <= 350.0) -> "Faltam cerca de ${projecao.restante.toInt()} m para ${atual.destino}. Prepare-se para descer."
