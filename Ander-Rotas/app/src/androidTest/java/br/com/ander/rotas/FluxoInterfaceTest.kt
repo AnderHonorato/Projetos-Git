@@ -1,6 +1,10 @@
 package br.com.ander.rotas
 
 import android.Manifest
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import org.maplibre.android.style.layers.SymbolLayer
 import android.graphics.Point
 import android.graphics.Rect
 import android.location.Location
@@ -10,6 +14,7 @@ import android.view.ViewGroup
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.test.core.app.ActivityScenario
+import androidx.lifecycle.ViewModelProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
@@ -29,6 +34,7 @@ class FluxoInterfaceTest {
     private val device=UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
     private val pacote="br.com.ander.rotas"
     @Before fun preparar(){
+        InstrumentationRegistry.getInstrumentation().targetContext.getSharedPreferences("aparencia",0).edit().putBoolean("introducao_concluida_v1",true).commit()
         SessaoNavegacao.ativa.value=false;SessaoNavegacao.rota=null;SessaoNavegacao.estado.value=null;SessaoNavegacao.erro.value=null
         listOf(Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.POST_NOTIFICATIONS).forEach{device.executeShellCommand("pm grant $pacote $it")}
     }
@@ -47,6 +53,16 @@ class FluxoInterfaceTest {
         val ref=AtomicReference<CameraPosition?>()
         cenario.onActivity{a->mapa(a.window.decorView)?.getMapAsync{ref.set(it.cameraPosition)}}
         return ref.get()
+    }
+    @Test fun introducaoIlustradaApareceUmaVezEPodeSerConcluida(){
+        val prefs=InstrumentationRegistry.getInstrumentation().targetContext.getSharedPreferences("aparencia",0)
+        prefs.edit().putBoolean("introducao_concluida_v1",false).commit();abrir()
+        ui.onNodeWithText("Buscar endereço").assertExists();ui.onNodeWithContentDescription("Mascote animado").assertExists();captura("introducao-01")
+        ui.onNodeWithText("Próximo").performClick();ui.onNodeWithText("Mapa e paradas").assertExists();captura("introducao-02")
+        ui.onNodeWithText("Próximo").performClick();ui.onNodeWithText("Acompanhar a viagem").assertExists();captura("introducao-03")
+        ui.onNodeWithText("Começar").performClick();ui.onNodeWithText("Digite seu destino").assertExists()
+        assertTrue(prefs.getBoolean("introducao_concluida_v1",false));cenario.close();abrir()
+        ui.onAllNodesWithText("Buscar endereço").assertCountEquals(0)
     }
     @Test fun digitacaoMostraSugestoesSelecionaveisSemBotaoPesquisar(){
         abrir();ui.onNodeWithText("Digite seu destino").performClick()
@@ -68,10 +84,49 @@ class FluxoInterfaceTest {
         val origem=camera()!!.target!!
         device.swipe(retangulo.left+retangulo.width()/4,retangulo.centerY(),retangulo.left+retangulo.width()/2,retangulo.centerY(),25)
         ui.waitUntil(5_000){camera()?.target?.let{MotorNavegacao.distancia(Ponto(origem.latitude,origem.longitude),Ponto(it.latitude,it.longitude))>15}?:false}
+        captura("mapa-apos-arrastar")
         val zoom=camera()!!.zoom;val x=retangulo.left+retangulo.width()*2/5;val y=retangulo.centerY()
-        device.findObject(UiSelector().packageName(pacote).instance(0)).performTwoPointerGesture(Point(x-20,y),Point(x+20,y),Point(x-110,y),Point(x+110,y),30)
+        device.findObject(UiSelector().packageName(pacote).instance(0)).performTwoPointerGesture(Point(x-retangulo.width()/10,y),Point(x+retangulo.width()/10,y),Point(x-retangulo.width()/4,y),Point(x+retangulo.width()/4,y),30)
         ui.waitUntil(5_000){(camera()?.zoom?:zoom)>zoom+.25}
         captura("mapa-arraste-pinca-zoom")
+    }
+    @Test fun abrirSemViagemRemoveAvisosAntigosENaoCriaNotificacoes(){
+        val contexto=InstrumentationRegistry.getInstrumentation().targetContext
+        val nm=contexto.getSystemService(NotificationManager::class.java)
+        nm.createNotificationChannel(NotificationChannel("qa-aviso-antigo","Aviso antigo",NotificationManager.IMPORTANCE_LOW))
+        nm.notify(101,Notification.Builder(contexto,"qa-aviso-antigo").setSmallIcon(R.drawable.ic_launcher).setContentTitle("Aviso de viagem anterior").build())
+        abrir();ui.waitUntil(5_000){nm.activeNotifications.none{it.id==100 || it.id==101}}
+        ui.onAllNodesWithText("Seu caminho, mais leve.").assertCountEquals(0)
+        captura("inicial-sem-notificacoes")
+    }
+    @Test fun notificacaoSoApareceDepoisDeIrEDesapareceAoCancelar(){
+        val ctx=InstrumentationRegistry.getInstrumentation().targetContext
+        ctx.getSharedPreferences("aparencia",0).edit().putBoolean("voz_permitida",false).commit()
+        val nm=ctx.getSystemService(NotificationManager::class.java)
+        abrir();assertTrue(nm.activeNotifications.none{it.id==100 || it.id==101})
+        val a=Endereco("Praça inicial",Ponto(-23.533,-46.625));val b=Endereco("Terminal",Ponto(-23.55,-46.64));val agora=System.currentTimeMillis()
+        val r=Rota("qa-notificacao",a,b,listOf(Etapa("WALK",origem=a.nome,destino=b.nome,inicio=agora,fim=agora+600_000,pontos=listOf(a.ponto,b.ponto))))
+        cenario.onActivity{ViewModelProvider(it)[RotasViewModel::class.java].selecionarRota(r)}
+        ui.onNodeWithText("Ir").performClick()
+        ui.waitUntil(12_000){nm.activeNotifications.any{it.id==100}}
+        ui.onNodeWithContentDescription("Cancelar").performClick()
+        ui.onNodeWithText("Cancelar esta viagem?").assertExists()
+        ui.onNodeWithText("Cancelar viagem").performClick()
+        ui.waitUntil(5_000){nm.activeNotifications.none{it.id==100 || it.id==101}}
+        assertFalse(SessaoNavegacao.ativa.value)
+        captura("apos-cancelar-sem-notificacao")
+    }
+    @Test fun mapaMantemNomesDeRuasELugares(){
+        abrir()
+        ui.waitUntil(20_000){
+            val resultado=java.util.concurrent.atomic.AtomicBoolean(false)
+            cenario.onActivity{a->mapa(a.window.decorView)?.getMapAsync{m->
+                val camadas=m.style?.layers?.filterIsInstance<SymbolLayer>().orEmpty()
+                resultado.set(camadas.isNotEmpty() && camadas.any{(it.textOpacity.value?:1f)>0f})
+            }}
+            resultado.get()
+        }
+        captura("mapa-com-nomes")
     }
     @Test fun etapaSemGeometriaNaoMostraDistanciaZeroComoChegada(){
         val a=Endereco("Origem",Ponto(-23.53,-46.63));val b=Endereco("Destino",Ponto(-23.54,-46.62))
@@ -79,7 +134,7 @@ class FluxoInterfaceTest {
         val r=Rota("qa-sem-tracado",a,b,listOf(bus));SessaoNavegacao.rota=r;SessaoNavegacao.ativa.value=true
         SessaoNavegacao.estado.value=MotorNavegacao().atualizar(r,a.ponto,5f)
         abrir();ui.onNodeWithText("sem traçado").assertExists()
-        ui.onNodeWithText("Etapa sem geometria suficiente",substring=true).assertExists()
+        ui.onNode(hasText("Etapa sem geometria suficiente",substring=true) and hasAnyAncestor(hasTestTag("painel-viagem"))).assertExists()
         ui.onAllNodesWithText("0 m").assertCountEquals(0)
         captura("painel-sem-tracado")
     }
@@ -92,8 +147,15 @@ class FluxoInterfaceTest {
         SessaoNavegacao.estado.value=EstadoNavegacao(etapaAtual=0,metrosAteFim=680.0,mensagem="Siga até o desembarque.",paradaAtual=1,pontosRestantes=3,proximaParada="Ponto 2")
         abrir();ui.onNodeWithText("Ônibus 054").assertExists();ui.onNodeWithText("Ponto 2").assertExists();ui.onNodeWithText("3").assertExists()
         ui.onNodeWithText("Roteiro").assertExists();ui.onAllNodesWithText("ANDER",substring=true).assertCountEquals(0)
+        SessaoNavegacao.emitir(Location("gps").apply{latitude=ps[1].ponto.latitude;longitude=ps[1].ponto.longitude;accuracy=6f;time=System.currentTimeMillis();elapsedRealtimeNanos=SystemClock.elapsedRealtimeNanos()})
+        ui.waitUntil(5_000){ui.onAllNodesWithText("Perto de Ponto 1").fetchSemanticsNodes().isNotEmpty()}
+        ui.waitUntil(20_000){
+            val pronto=java.util.concurrent.atomic.AtomicBoolean(false)
+            cenario.onActivity{a->mapa(a.window.decorView)?.getMapAsync{m->pronto.set(m.style?.layers?.isNotEmpty()==true)}}
+            pronto.get()
+        }
         captura("painel-viagem-ativa")
-        ui.onNodeWithText("Cancelar").performClick();ui.onNodeWithText("Cancelar esta viagem?").assertExists()
+        ui.onNodeWithContentDescription("Cancelar").performClick();ui.onNodeWithText("Cancelar esta viagem?").assertExists()
         ui.onNodeWithText("Continuar viagem").performClick();ui.onNodeWithText("Ônibus 054").assertExists()
     }
 }

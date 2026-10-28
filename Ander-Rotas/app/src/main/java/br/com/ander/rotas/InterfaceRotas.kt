@@ -32,11 +32,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.Font
@@ -55,14 +58,14 @@ import java.util.Date
 import java.util.Locale
 
 private val Figtree = FontFamily(Font(R.font.figtree))
-private val Tipografia = Typography().let { t -> Typography(bodyLarge=t.bodyLarge.copy(fontFamily=Figtree),bodyMedium=t.bodyMedium.copy(fontFamily=Figtree),bodySmall=t.bodySmall.copy(fontFamily=Figtree),titleLarge=t.titleLarge.copy(fontFamily=Figtree),titleMedium=t.titleMedium.copy(fontFamily=Figtree),titleSmall=t.titleSmall.copy(fontFamily=Figtree),headlineSmall=t.headlineSmall.copy(fontFamily=Figtree),labelLarge=t.labelLarge.copy(fontFamily=Figtree),labelMedium=t.labelMedium.copy(fontFamily=Figtree),labelSmall=t.labelSmall.copy(fontFamily=Figtree)) }
+internal val Tipografia = Typography().let { t -> Typography(bodyLarge=t.bodyLarge.copy(fontFamily=Figtree),bodyMedium=t.bodyMedium.copy(fontFamily=Figtree),bodySmall=t.bodySmall.copy(fontFamily=Figtree),titleLarge=t.titleLarge.copy(fontFamily=Figtree),titleMedium=t.titleMedium.copy(fontFamily=Figtree),titleSmall=t.titleSmall.copy(fontFamily=Figtree),headlineSmall=t.headlineSmall.copy(fontFamily=Figtree),labelLarge=t.labelLarge.copy(fontFamily=Figtree),labelMedium=t.labelMedium.copy(fontFamily=Figtree),labelSmall=t.labelSmall.copy(fontFamily=Figtree)) }
 private val Vinho=Color(0xFF8F2D4A); private val Verde=Color(0xFF2C7369); private val Creme=Color(0xFFF8EEE3); private val Papel=Color(0xFFFFFAF5); private val Texto=Color(0xFF2F2522); private val Muted=Color(0xFF7C6961); private val Borda=Color(0xFFDFCEC5)
 private fun hora(epoch:Long)=SimpleDateFormat("HH:mm",Locale("pt","BR")).format(Date(epoch))
 private fun dataHora(epoch:Long)=SimpleDateFormat("dd/MM · HH:mm",Locale("pt","BR")).format(Date(epoch))
 private fun ruaAproximada(endereco: Endereco) = endereco.detalhe.contains("aproximado da rua",true) || endereco.detalhe.contains("número não localizado",true)
 fun nomeModo(modo:String)=when(modo.uppercase()){ "WALK","FOOT","WALKING"->"A pé";"SUBWAY","METRO"->"Metrô";"RAIL","TRAIN"->"Trem";"TRAM"->"VLT";"FERRY"->"Balsa";else->"Ônibus" }
 
-@Composable fun InterfaceRotas(vm:RotasViewModel,onGps:()->Unit,onIniciar:()->Unit,onParar:()->Unit) {
+@Composable fun InterfaceRotas(vm:RotasViewModel,onGps:()->Unit,onIniciar:()->Unit,onParar:()->Unit,onAjuda:()->Unit={}) {
     val estado by vm.estado.collectAsStateWithLifecycle()
     val context=LocalContext.current
     val mapaOffline by MapasOffline.estado.collectAsStateWithLifecycle()
@@ -78,12 +81,12 @@ fun nomeModo(modo:String)=when(modo.uppercase()){ "WALK","FOOT","WALKING"->"A p�
         var vozPermitida by remember{mutableStateOf(context.getSharedPreferences("aparencia",0).getBoolean("voz_permitida",false))}
         LaunchedEffect(pagina){vozPermitida=context.getSharedPreferences("aparencia",0).getBoolean("voz_permitida",false)}
         var focoGps by remember { mutableIntStateOf(0) };var zoomComando by remember{mutableIntStateOf(0)};var norteComando by remember{mutableIntStateOf(0)}; var erroMapa by remember { mutableStateOf<String?>(null) }; var reiniciarMapa by remember { mutableIntStateOf(0) }; var pontoMarcado by remember { mutableStateOf<Ponto?>(null) }
-        var aviso by remember { mutableStateOf<String?>(null) }; var mascoteMini by rememberSaveable { mutableStateOf(false) }; var mascoteMudo by rememberSaveable { mutableStateOf(false) }; var interagiuMascote by rememberSaveable { mutableStateOf(false) }
+        var aviso by remember { mutableStateOf<String?>(null) }; var mascoteMini by rememberSaveable { mutableStateOf(false) }; var mascoteMudo by rememberSaveable { mutableStateOf(true) }; var interagiuMascote by rememberSaveable { mutableStateOf(false) }
         var saltoEtapa by remember { mutableStateOf(false) }; var aberturaMascote by remember { mutableStateOf(true) }; var fraseIdle by remember { mutableIntStateOf(0) }
-        val frases=listOf("Seu próximo caminho começa aqui.","Confira o sentido antes de embarcar.","Um passo de cada vez. Vamos juntos!","Guarde seus destinos em Salvos.")
+        val frases=listOf("")
         LaunchedEffect(Unit){ delay(5000);aberturaMascote=false;if(!interagiuMascote) mascoteMini=true }
         LaunchedEffect(estado.navegacao?.etapaAtual){ if((estado.navegacao?.etapaAtual?:0)>0){ saltoEtapa=true;delay(1400);saltoEtapa=false } }
-        LaunchedEffect(Unit){ while(true){delay(45000);fraseIdle=(fraseIdle+1)%frases.size} }
+
         val etapaAtual=estado.rotaSelecionada?.etapas?.getOrNull(estado.navegacao?.etapaAtual?:0)
         val esperaMinutos=etapaAtual?.let{(it.inicio-System.currentTimeMillis())/60000}?:0
         val acaoMascote=when {
@@ -101,23 +104,22 @@ fun nomeModo(modo:String)=when(modo.uppercase()){ "WALK","FOOT","WALKING"->"A p�
                         Cabecalho(estado.navegando,estado.temaEscuro,vm::mudarTema)
                         Box(Modifier.weight(1f).fillMaxWidth()){
                             key(reiniciarMapa){MapaRotas(estado.origem,estado.destino,estado.rotaSelecionada,estado.posicao,focoGps,estado.navegando,rumo=leituraGps?.rumo,navegacao=estado.navegacao,zoomComando=zoomComando,norteComando=norteComando,modifier=Modifier.fillMaxSize(),onPonto={if(!estado.navegando)pontoMarcado=it},onEstado={erroMapa=it})}
-                            Row(Modifier.align(Alignment.TopStart).padding(16.dp)){Etiqueta("ARRASTE · PINCE PARA ZOOM",Verde)}
                             Column(Modifier.align(Alignment.CenterEnd).padding(end=12.dp),verticalArrangement=Arrangement.spacedBy(7.dp)){
                                 Row(horizontalArrangement=Arrangement.spacedBy(5.dp)){
-                                    FilledIconButton(onClick={zoomComando++},modifier=Modifier.size(42.dp),colors=IconButtonDefaults.filledIconButtonColors(containerColor=MaterialTheme.colorScheme.surface,contentColor=MaterialTheme.colorScheme.primary)){Text("+",fontSize=26.sp,modifier=Modifier.semantics{contentDescription="Aumentar zoom"})}
-                                    FilledIconButton(onClick={zoomComando--},modifier=Modifier.size(42.dp),colors=IconButtonDefaults.filledIconButtonColors(containerColor=MaterialTheme.colorScheme.surface,contentColor=MaterialTheme.colorScheme.primary)){Text("−",fontSize=26.sp,modifier=Modifier.semantics{contentDescription="Diminuir zoom"})}
+                                    FilledIconButton(onClick={zoomComando++},modifier=Modifier.size(42.dp),colors=IconButtonDefaults.filledIconButtonColors(containerColor=MaterialTheme.colorScheme.surface,contentColor=MaterialTheme.colorScheme.primary)){Simbolo("mais",Modifier.size(22.dp),descricao="Aumentar zoom")}
+                                    FilledIconButton(onClick={zoomComando--},modifier=Modifier.size(42.dp),colors=IconButtonDefaults.filledIconButtonColors(containerColor=MaterialTheme.colorScheme.surface,contentColor=MaterialTheme.colorScheme.primary)){Simbolo("menos",Modifier.size(22.dp),descricao="Diminuir zoom")}
                                 }
                                 Row(horizontalArrangement=Arrangement.spacedBy(5.dp)){
                                     FilledIconButton(onClick={onGps();focoGps++},modifier=Modifier.size(42.dp),colors=IconButtonDefaults.filledIconButtonColors(containerColor=MaterialTheme.colorScheme.surface,contentColor=MaterialTheme.colorScheme.primary)){Simbolo("gps",Modifier.size(22.dp))}
-                                    FilledIconButton(onClick={norteComando++},modifier=Modifier.size(42.dp),colors=IconButtonDefaults.filledIconButtonColors(containerColor=MaterialTheme.colorScheme.surface,contentColor=MaterialTheme.colorScheme.primary)){Text("N",fontWeight=FontWeight.Bold,modifier=Modifier.semantics{contentDescription="Orientar mapa para o norte"})}
+                                    FilledIconButton(onClick={norteComando++},modifier=Modifier.size(42.dp),colors=IconButtonDefaults.filledIconButtonColors(containerColor=MaterialTheme.colorScheme.surface,contentColor=MaterialTheme.colorScheme.primary)){Simbolo("norte",Modifier.size(23.dp),descricao="Orientar mapa para o norte")}
                                 }
                             }
                             Text("© OpenStreetMap · OpenMapTiles · OpenFreeMap",fontSize=9.sp,color=Texto,modifier=Modifier.align(Alignment.BottomStart).padding(start=9.dp,bottom=5.dp).background(Papel.copy(alpha=.94f),RoundedCornerShape(4.dp)).clickable{context.startActivity(Intent(Intent.ACTION_VIEW,android.net.Uri.parse("https://www.openstreetmap.org/copyright")))}.padding(5.dp))
-                            Box(Modifier.align(Alignment.BottomStart).padding(start=11.dp,bottom=30.dp)){MascoteStitch(acaoMascote,if(estado.navegacao?.chegou==true)"Chegamos! Que bom ir com você." else if(estado.navegando)estado.navegacao?.mensagem?:"Vamos juntos!" else if(estado.calculando)"Procurando o melhor caminho…" else frases[fraseIdle],mascoteMini,mascoteMudo,{interagiuMascote=true;mascoteMini=!mascoteMini},{mascoteMudo=!mascoteMudo})}
+                            Box(Modifier.align(Alignment.BottomStart).padding(start=11.dp,bottom=30.dp)){MascoteStitch(acaoMascote,if(estado.navegacao?.chegou==true)"Destino alcançado." else if(estado.navegando)estado.navegacao?.mensagem?:"Aguardando GPS." else if(estado.calculando)"Calculando rota." else frases[fraseIdle],mascoteMini,mascoteMudo,{interagiuMascote=true;mascoteMini=!mascoteMini},{mascoteMudo=!mascoteMudo})}
                             if(erroMapa!=null) Surface(Modifier.align(Alignment.TopCenter).padding(top=52.dp,start=16.dp,end=16.dp),color=MaterialTheme.colorScheme.surface,shape=RoundedCornerShape(16.dp)){Row(Modifier.padding(12.dp),verticalAlignment=Alignment.CenterVertically){Text("Não foi possível carregar o mapa. Seus trajetos salvos continuam disponíveis.",Modifier.weight(1f),fontSize=12.sp);TextButton(onClick={erroMapa=null;reiniciarMapa++}){Text("Tentar")}}}
                         }
-                        Surface(shape=RoundedCornerShape(topStart=28.dp,topEnd=28.dp),color=MaterialTheme.colorScheme.surface,shadowElevation=12.dp){
-                            Column(Modifier.fillMaxWidth().animateContentSize().padding(horizontal=20.dp,vertical=14.dp),verticalArrangement=Arrangement.spacedBy(9.dp)){
+                        Surface(modifier=Modifier.testTag(if(estado.navegando||estado.navegacao?.chegou==true)"painel-viagem"else"planejador"),shape=if(estado.navegando||estado.navegacao?.chegou==true)RoundedCornerShape(3.dp)else RoundedCornerShape(topStart=22.dp,topEnd=22.dp),color=MaterialTheme.colorScheme.surface,shadowElevation=10.dp){
+                            Column(Modifier.fillMaxWidth().animateContentSize().padding(horizontal=16.dp,vertical=11.dp),verticalArrangement=Arrangement.spacedBy(if(estado.navegando)6.dp else 9.dp)){
                                 Box(Modifier.align(Alignment.CenterHorizontally).width(64.dp).height(16.dp).clickable{planejadorExpandido=!planejadorExpandido}.semantics{contentDescription="Expandir ou recolher planejador"},contentAlignment=Alignment.Center){Box(Modifier.width(34.dp).height(4.dp).background(MaterialTheme.colorScheme.outline,CircleShape))}
                                 if((estado.navegando||estado.navegacao?.chegou==true)&&estado.rotaSelecionada!=null){PainelNavegacao(estado,vm::avancarEtapa,vm::voltarEtapa,{detalhes=true},onParar,vm::recalcular)}else if(!planejadorExpandido){
                                     Row(verticalAlignment=Alignment.CenterVertically){
@@ -129,7 +131,7 @@ fun nomeModo(modo:String)=when(modo.uppercase()){ "WALK","FOOT","WALKING"->"A p�
                                     if(estado.rotas.isNotEmpty())Row(Modifier.horizontalScroll(rememberScrollState()),horizontalArrangement=Arrangement.spacedBy(8.dp)){estado.rotas.forEach{rota->FilterChip(selected=rota.id==estado.rotaSelecionada?.id,onClick={vm.selecionarRota(rota);detalhes=true},label={Text("${rota.duracaoMinutos} min · ${hora(rota.inicio)}")})}}
                                     if(!estado.conectado)Text("Sem internet · horários salvos sem atualização.",fontSize=11.sp,color=MaterialTheme.colorScheme.error)
                                 }else{
-                                    Row(verticalAlignment=Alignment.CenterVertically){Text("Qual é o próximo destino?",Modifier.weight(1f),fontSize=21.sp,fontWeight=FontWeight.Bold,letterSpacing=(-.5).sp);IconButton(onClick=vm::inverter){Simbolo("inverter",Modifier.size(23.dp))}}
+                                    Row(verticalAlignment=Alignment.CenterVertically){Text("Destino",Modifier.weight(1f),fontSize=21.sp,fontWeight=FontWeight.Bold,letterSpacing=(-.5).sp);IconButton(onClick=vm::inverter){Simbolo("inverter",Modifier.size(23.dp))}}
                                     Row(verticalAlignment=Alignment.CenterVertically){Box(Modifier.weight(1f)){CampoEndereco("De",estado.origem.nome.ifBlank{"Sua localização · toque para editar"},"origem"){vm.prepararBusca(true);buscaOrigem=true}};IconButton(onClick={vm.usarLocalizacaoComoOrigem();onGps()}){Simbolo("gps",Modifier.size(21.dp),descricao="Usar minha localização como origem")}}
                                     CampoEndereco("Para",estado.destino.nome.ifBlank{"Digite seu destino"},"destino"){vm.prepararBusca(false);buscaOrigem=false}
                                     ParadasPlanejadas(estado.paradasDesejadas,vm::moverParada,vm::removerParada)
@@ -148,13 +150,13 @@ fun nomeModo(modo:String)=when(modo.uppercase()){ "WALK","FOOT","WALKING"->"A p�
                     }
                 }else if(pagina==1){
                     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).statusBarsPadding().padding(horizontal=22.dp),verticalArrangement=Arrangement.spacedBy(14.dp)){
-                        TituloPagina("Seus caminhos","SALVOS","Guarde lugares e leve suas viagens com você.")
+                        TituloPagina("Salvos","SALVOS","Endereços e viagens salvos.")
                         Secao("Destinos favoritos")
-                        if(estado.favoritos.isEmpty())Vazio("Seus lugares preferidos vão morar aqui.","Toque na estrela de um endereço encontrado.")
+                        if(estado.favoritos.isEmpty())Vazio("Nenhum endereço favorito.","Toque na estrela de um endereço encontrado.")
                         estado.favoritos.forEach{endereco->CartaoLinha(endereco.nome,endereco.detalhe,"salvo"){vm.selecionarEndereco(endereco,false);pagina=0}}
                         Secao("Viagens favoritas")
                         estado.viagensFavoritas.forEach{viagem->Surface(shape=RoundedCornerShape(20.dp),color=MaterialTheme.colorScheme.surface){Column(Modifier.padding(16.dp)){Text(viagem.nome,fontWeight=FontWeight.Bold);Text("${viagem.origem.nome} → ${viagem.destino.nome}",fontSize=12.sp,color=MaterialTheme.colorScheme.onSurfaceVariant);Row{TextButton(onClick={vm.abrirViagem(viagem);pagina=0}){Text("Ida")};TextButton(onClick={vm.abrirViagem(viagem,true);pagina=0}){Text("Volta")}}}}}
-                        if(estado.viagensFavoritas.isEmpty())Vazio("Ida e volta, sempre à mão.","Salve uma viagem nos detalhes do trajeto.")
+                        if(estado.viagensFavoritas.isEmpty())Vazio("Nenhuma viagem favorita.","Salve uma viagem nos detalhes do trajeto.")
                         Secao("Viagens neste aparelho")
                         estado.salvas.forEach{rota->CartaoLinha(rota.destino.nome,"${rota.duracaoMinutos} min · consultada ${dataHora(rota.consultadaEm)}","relogio"){vm.abrirRotaSalva(rota);pagina=0;detalhes=true}}
                         if(estado.salvas.isEmpty())Vazio("Ainda não há viagens salvas.","Rotas escolhidas para salvar ficam disponíveis para reabrir sem internet. Horários salvos podem estar desatualizados.")
@@ -163,7 +165,7 @@ fun nomeModo(modo:String)=when(modo.uppercase()){ "WALK","FOOT","WALKING"->"A p�
                     }
                 }else{
                     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).statusBarsPadding().padding(horizontal=22.dp),verticalArrangement=Arrangement.spacedBy(16.dp)){
-                        TituloPagina("Do seu jeito","AJUSTES","Um companheiro simples para chegar bem.")
+                        TituloPagina("Ajustes","AJUSTES","Preferências do aplicativo.")
                         Surface(shape=RoundedCornerShape(22.dp),color=MaterialTheme.colorScheme.surface){Column(Modifier.padding(18.dp),verticalArrangement=Arrangement.spacedBy(14.dp)){
                             Row(verticalAlignment=Alignment.CenterVertically){Column(Modifier.weight(1f)){Text("Aparência escura",fontWeight=FontWeight.SemiBold);Text("Conforto para viagens à noite",fontSize=12.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)};Switch(checked=estado.temaEscuro,onCheckedChange={vm.mudarTema()})}
                             HorizontalDivider(color=MaterialTheme.colorScheme.outline.copy(alpha=.5f))
@@ -171,10 +173,12 @@ fun nomeModo(modo:String)=when(modo.uppercase()){ "WALK","FOOT","WALKING"->"A p�
                         }}
                         Row(verticalAlignment=Alignment.CenterVertically){Column(Modifier.weight(1f)){Text("Avisos por voz",fontWeight=FontWeight.SemiBold);Text("Dois pontos antes e ao desembarcar",fontSize=12.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)};Switch(checked=vozPermitida,onCheckedChange={vozPermitida=it;context.getSharedPreferences("aparencia",0).edit().putBoolean("voz_permitida",it).apply()})}
                         Secao("Mapas sem internet")
-                        Surface(shape=RoundedCornerShape(22.dp),color=MaterialTheme.colorScheme.surface){Column(Modifier.padding(18.dp),verticalArrangement=Arrangement.spacedBy(10.dp)){Simbolo("mapa",Modifier.size(29.dp));Text("Um pedaço da cidade com você",fontWeight=FontWeight.Bold,fontSize=18.sp);Text("Salve a região de 8 × 8 km em torno do destino atual. Mantém uma região por vez. O download acontece somente ao tocar no botão, até 50 MB. Busca e novos horários precisam de internet.",fontSize=13.sp,color=MaterialTheme.colorScheme.onSurfaceVariant);Text(mapaOffline.mensagem,fontSize=12.sp,fontWeight=FontWeight.Medium);Button(onClick={MapasOffline.salvar(context,estado.destino)},enabled=!mapaOffline.ocupado && MotorNavegacao.valido(estado.destino.ponto),shape=RoundedCornerShape(14.dp)){Text(if(mapaOffline.ocupado)"Salvando…" else "Salvar região do destino")};TextButton(onClick={MapasOffline.excluir(context)},enabled=!mapaOffline.ocupado){Text("Excluir mapas salvos")}}}
+                        Surface(shape=RoundedCornerShape(22.dp),color=MaterialTheme.colorScheme.surface){Column(Modifier.padding(18.dp),verticalArrangement=Arrangement.spacedBy(10.dp)){Simbolo("mapa",Modifier.size(29.dp));Text("Mapa offline do destino",fontWeight=FontWeight.Bold,fontSize=18.sp);Text("Salve a região de 8 × 8 km em torno do destino atual. Mantém uma região por vez. O download acontece somente ao tocar no botão, até 50 MB. Busca e novos horários precisam de internet.",fontSize=13.sp,color=MaterialTheme.colorScheme.onSurfaceVariant);Text(mapaOffline.mensagem,fontSize=12.sp,fontWeight=FontWeight.Medium);Button(onClick={MapasOffline.salvar(context,estado.destino)},enabled=!mapaOffline.ocupado && MotorNavegacao.valido(estado.destino.ponto),shape=RoundedCornerShape(14.dp)){Text(if(mapaOffline.ocupado)"Salvando…" else "Salvar região do destino")};TextButton(onClick={MapasOffline.excluir(context)},enabled=!mapaOffline.ocupado){Text("Excluir mapas salvos")}}}
                         Secao("Busca de endereços")
                         OutlinedTextField(value=geocodificador,onValueChange={geocodificador=it},modifier=Modifier.fillMaxWidth(),label={Text("Servidor de sugestões compatível com Photon")},supportingText={Text("URL HTTPS da API de sugestões. Resultados aparecem ao digitar.")},shape=RoundedCornerShape(16.dp),singleLine=true)
                         OutlinedButton(onClick={runCatching{vm.configurarGeocodificador(geocodificador.trim())}.onSuccess{aviso="Servidor de busca atualizado."}.onFailure{aviso=it.message?:"Informe uma URL HTTPS válida."}}){Text("Salvar servidor de busca")}
+                        Secao("Como usar")
+                        OutlinedButton(onClick=onAjuda){Text("Ver instruções ilustradas")}
                         Secao("Fontes e transparência")
                         Text("Rotas: Transitous. Endereços: OpenStreetMap / Photon. Mapa: OpenFreeMap, OpenMapTiles e colaboradores do OpenStreetMap. A cobertura depende das fontes de cada região.",fontSize=13.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)
                         Text("Horário programado é a tabela publicada. Previsão e tempo real são identificados apenas quando fornecidos pela fonte. Sempre confira o letreiro, o sentido e os avisos da operadora.",fontSize=13.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)
@@ -193,7 +197,7 @@ fun nomeModo(modo:String)=when(modo.uppercase()){ "WALK","FOOT","WALKING"->"A p�
     }
 }
 
-@Composable private fun Cabecalho(navegando:Boolean,escuro:Boolean,onTema:()->Unit){Row(Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.background).statusBarsPadding().padding(horizontal=22.dp,vertical=12.dp),verticalAlignment=Alignment.CenterVertically){Box(Modifier.size(42.dp).clip(RoundedCornerShape(14.dp)).background(MaterialTheme.colorScheme.primary),contentAlignment=Alignment.Center){Simbolo("rota",Modifier.size(25.dp),MaterialTheme.colorScheme.onPrimary)};Spacer(Modifier.width(12.dp));Column(Modifier.weight(1f)){Text("ROTAS",fontSize=10.sp,fontWeight=FontWeight.Bold,letterSpacing=3.sp,color=MaterialTheme.colorScheme.primary);Text(if(navegando)"Vamos juntos." else "Seu caminho, mais leve.",fontSize=19.sp,fontWeight=FontWeight.Bold,letterSpacing=(-.5).sp)};IconButton(onClick=onTema){Simbolo(if(escuro)"sol" else "lua",Modifier.size(22.dp))}}}
+@Composable private fun Cabecalho(navegando:Boolean,escuro:Boolean,onTema:()->Unit){Row(Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.background).statusBarsPadding().padding(horizontal=22.dp,vertical=12.dp),verticalAlignment=Alignment.CenterVertically){Box(Modifier.size(42.dp).clip(RoundedCornerShape(14.dp)).background(MaterialTheme.colorScheme.primary),contentAlignment=Alignment.Center){Simbolo("rota",Modifier.size(25.dp),MaterialTheme.colorScheme.onPrimary)};Spacer(Modifier.width(12.dp));Column(Modifier.weight(1f)){Text("ROTAS",fontSize=10.sp,fontWeight=FontWeight.Bold,letterSpacing=3.sp,color=MaterialTheme.colorScheme.primary);Text(if(navegando)"Viagem" else "Planejar viagem",fontSize=19.sp,fontWeight=FontWeight.Bold,letterSpacing=(-.5).sp)};IconButton(onClick=onTema){Simbolo(if(escuro)"sol" else "lua",Modifier.size(22.dp))}}}
 @Composable private fun CampoEndereco(label:String,nome:String,icone:String,onClick:()->Unit){Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(15.dp)).background(MaterialTheme.colorScheme.background).clickable(onClick=onClick).padding(horizontal=13.dp,vertical=10.dp),verticalAlignment=Alignment.CenterVertically){Simbolo(icone,Modifier.size(19.dp),if(icone=="origem")MaterialTheme.colorScheme.primary else Verde);Spacer(Modifier.width(11.dp));Text(label,Modifier.width(37.dp),fontSize=12.sp,color=MaterialTheme.colorScheme.onSurfaceVariant);Text(nome,Modifier.weight(1f),fontSize=13.sp,fontWeight=FontWeight.Medium,maxLines=1,overflow=TextOverflow.Ellipsis);Simbolo("busca",Modifier.size(16.dp),MaterialTheme.colorScheme.onSurfaceVariant)}}
 @Composable private fun Etiqueta(texto:String,cor:Color=Vinho){Text(texto,fontSize=9.sp,fontWeight=FontWeight.Bold,letterSpacing=.7.sp,color=cor,modifier=Modifier.background(Papel.copy(alpha=.97f),RoundedCornerShape(8.dp)).padding(horizontal=9.dp,vertical=6.dp))}
 @Composable private fun TituloPagina(titulo:String,kicker:String,subtitulo:String){Column(Modifier.padding(top=24.dp,bottom=8.dp)){Text(kicker,color=MaterialTheme.colorScheme.primary,fontSize=11.sp,fontWeight=FontWeight.Bold,letterSpacing=2.sp);Spacer(Modifier.height(8.dp));Text(titulo,fontSize=31.sp,fontWeight=FontWeight.Bold,letterSpacing=(-1).sp);Text(subtitulo,fontSize=14.sp,color=MaterialTheme.colorScheme.onSurfaceVariant,modifier=Modifier.padding(top=7.dp))}}
@@ -266,11 +270,16 @@ fun nomeModo(modo:String)=when(modo.uppercase()){ "WALK","FOOT","WALKING"->"A p�
     val distanciaTexto=if(distancia>=1000)"${String.format(Locale("pt","BR"),"%.1f",distancia/1000)} km"else"${distancia.toInt()} m"
     val total=if(etapa.distanciaMetros>0)etapa.distanciaMetros else etapa.pontos.zipWithNext{a,b->MotorNavegacao.distancia(a,b)}.sum()
     val progresso=if(semGeometria || !gpsConfiavel)0f else if(restantes!=null && etapa.paradas.size>1)(nav.paradaAtual.toFloat()/(etapa.paradas.size-1)).coerceIn(0f,1f)else if(total>0)(1-distancia/total).toFloat().coerceIn(0f,1f)else 0f
-    Row(verticalAlignment=Alignment.CenterVertically){
-        Box(Modifier.size(7.dp).background(if(estado.precisaoMetros!=null && estado.precisaoMetros<=45)Verde else MaterialTheme.colorScheme.outline,CircleShape))
-        Spacer(Modifier.width(7.dp));Text(if(chegou)"DESTINO ALCANÇADO"else"VIAGEM EM ANDAMENTO",Modifier.weight(1f),fontSize=10.sp,letterSpacing=1.sp,fontWeight=FontWeight.Bold,color=cor)
-        TextButton(onClick=parar,contentPadding=PaddingValues(horizontal=8.dp,vertical=0.dp)){Text(if(chegou)"Concluir"else"Cancelar",fontSize=12.sp)}
-    }
+    val pontoAtual=etapa.paradas.getOrNull(nav?.paradaAtual?:0)
+    val proximoPonto=etapa.paradas.getOrNull((nav?.paradaAtual?:0)+1)
+    val localAtual=estado.posicao?.let{gps->
+        val maisProximo=listOfNotNull(pontoAtual,proximoPonto).minByOrNull{MotorNavegacao.distancia(gps,it.ponto)}
+        when{
+            maisProximo!=null && MotorNavegacao.distancia(gps,maisProximo.ponto)<=50 -> "Perto de ${maisProximo.nome}"
+            pontoAtual!=null && proximoPonto!=null && nav?.desvio!=true && restantes!=null -> "Entre ${pontoAtual.nome} e ${proximoPonto.nome}"
+            else -> "GPS ${String.format(Locale("pt","BR"),"%.4f, %.4f",gps.latitude,gps.longitude)}"
+        }
+    }?:"Aguardando localização"
     Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(12.dp)){
         Box(Modifier.size(46.dp).background(cor.copy(alpha=.10f),RoundedCornerShape(15.dp)),contentAlignment=Alignment.Center){Simbolo(if(caminhada)"andar"else"onibus",Modifier.size(26.dp),cor)}
         Column(Modifier.weight(1f)){
@@ -278,11 +287,15 @@ fun nomeModo(modo:String)=when(modo.uppercase()){ "WALK","FOOT","WALKING"->"A p�
             Text(if(caminhada)"Até ${etapa.destino}"else"Sentido ${etapa.sentido.ifBlank{etapa.destino}}",fontSize=12.sp,color=MaterialTheme.colorScheme.onSurfaceVariant,maxLines=1,overflow=TextOverflow.Ellipsis)
         }
         Column(horizontalAlignment=Alignment.End){Text(if(chegou)"✓"else if(restantes!=null)restantes.toString()else if(semGeometria || !gpsConfiavel)"—"else distanciaTexto,fontSize=26.sp,fontWeight=FontWeight.Bold,color=cor);Text(if(chegou)"chegamos"else if(restantes!=null)"pontos para descer"else if(semGeometria)"sem traçado"else if(!gpsConfiavel)"aguardando GPS"else"até esta etapa",fontSize=10.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)}
+        IconButton(onClick=parar,modifier=Modifier.size(32.dp)){Simbolo("fechar",Modifier.size(18.dp),descricao=if(chegou)"Concluir viagem"else"Cancelar")}
     }
     LinearProgressIndicator(progress={if(chegou)1f else progresso},modifier=Modifier.fillMaxWidth().height(5.dp).clip(CircleShape),color=cor,trackColor=cor.copy(alpha=.10f))
     Surface(shape=RoundedCornerShape(17.dp),color=cor.copy(alpha=.07f)){
         Column(Modifier.fillMaxWidth().padding(13.dp),verticalArrangement=Arrangement.spacedBy(3.dp)){
-            Text(if(chegou)"CHEGADA"else if(caminhada)"PRÓXIMO PASSO"else"PRÓXIMO PONTO",fontSize=9.sp,fontWeight=FontWeight.Bold,letterSpacing=1.sp,color=cor)
+            Text("LOCAL ATUAL",fontSize=9.sp,fontWeight=FontWeight.Bold,letterSpacing=1.sp,color=cor)
+            Text(localAtual,fontSize=12.sp,color=MaterialTheme.colorScheme.onSurface,maxLines=2,overflow=TextOverflow.Ellipsis)
+            HorizontalDivider(Modifier.padding(vertical=5.dp),color=cor.copy(alpha=.13f))
+            Text(if(chegou)"CHEGADA"else if(caminhada)"SIGA PARA"else"PRÓXIMO PONTO",fontSize=9.sp,fontWeight=FontWeight.Bold,letterSpacing=1.sp,color=cor)
             Text(if(chegou)rota.destino.nome else nav?.proximaParada?:etapa.destino,fontSize=16.sp,fontWeight=FontWeight.SemiBold,maxLines=2,overflow=TextOverflow.Ellipsis)
             if(semGeometria || !gpsConfiavel || nav?.desvio==true || nav?.mensagem?.startsWith("GPS impreciso")==true || chegou)Text(nav?.mensagem.orEmpty(),fontSize=12.sp,color=if(nav?.desvio==true)MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant)
             else Text(if(caminhada)"Siga o caminho indicado no mapa"else"Desembarque: ${etapa.destino}",fontSize=11.sp,color=MaterialTheme.colorScheme.onSurfaceVariant,maxLines=1,overflow=TextOverflow.Ellipsis)
@@ -311,7 +324,7 @@ fun nomeModo(modo:String)=when(modo.uppercase()){ "WALK","FOOT","WALKING"->"A p�
         val rota=estado.rotaSelecionada
         if(rota==null)Column(Modifier.padding(24.dp)){Text("Seu trajeto aparece aqui",fontWeight=FontWeight.Bold,fontSize=24.sp);Text("Escolha origem e destino e toque em Buscar rotas. Toque e segure no mapa para selecionar uma coordenada.",modifier=Modifier.padding(vertical=16.dp),fontSize=14.sp)}else{
             Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal=22.dp).padding(bottom=26.dp),verticalArrangement=Arrangement.spacedBy(13.dp)){
-                Row(verticalAlignment=Alignment.CenterVertically){Column(Modifier.weight(1f)){Text("Seu caminho",fontWeight=FontWeight.Bold,fontSize=25.sp);Text("${hora(rota.inicio)} — ${hora(rota.fim)} · ${rota.duracaoMinutos} min",fontSize=14.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)};IconButton(onClick=salvar){Simbolo("salvo",Modifier.size(24.dp))};IconButton(onClick={compartilhar(rota)}){Simbolo("compartilhar",Modifier.size(24.dp))}}
+                Row(verticalAlignment=Alignment.CenterVertically){Column(Modifier.weight(1f)){Text("Roteiro",fontWeight=FontWeight.Bold,fontSize=25.sp);Text("${hora(rota.inicio)} — ${hora(rota.fim)} · ${rota.duracaoMinutos} min",fontSize=14.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)};IconButton(onClick=salvar){Simbolo("salvo",Modifier.size(24.dp))};IconButton(onClick={compartilhar(rota)}){Simbolo("compartilhar",Modifier.size(24.dp))}}
                 Text("${rota.origem.nome} → ${rota.destino.nome}",fontSize=13.sp,fontWeight=FontWeight.Medium)
                 if(ruaAproximada(rota.origem)||ruaAproximada(rota.destino))Text("Número não localizado · ponto aproximado da rua. Confira no mapa; toque e segure para ajustar.",color=MaterialTheme.colorScheme.error,fontSize=12.sp)
                 Surface(shape=RoundedCornerShape(13.dp),color=MaterialTheme.colorScheme.background){Text(rota.aviso,fontSize=12.sp,color=MaterialTheme.colorScheme.onSurfaceVariant,modifier=Modifier.padding(13.dp))}
@@ -384,13 +397,17 @@ fun nomeModo(modo:String)=when(modo.uppercase()){ "WALK","FOOT","WALKING"->"A p�
         val u=size.minDimension/24f
         fun line(x1:Float,y1:Float,x2:Float,y2:Float)=drawLine(cor,Offset(x1*u,y1*u),Offset(x2*u,y2*u),1.8f*u,StrokeCap.Round)
         fun circle(x:Float,y:Float,r:Float)=drawCircle(cor,r*u,Offset(x*u,y*u),style=Stroke(1.8f*u))
-        fun path(vararg pts:Pair<Float,Float>,close:Boolean=false){val p=Path();pts.forEachIndexed{i,xy->if(i==0)p.moveTo(xy.first*u,xy.second*u)else p.lineTo(xy.first*u,xy.second*u)};if(close)p.close();drawPath(p,cor,style=Stroke(1.8f*u,cap=StrokeCap.Round))}
+        fun path(vararg pts:Pair<Float,Float>,close:Boolean=false){val p=Path();pts.forEachIndexed{i,xy->if(i==0)p.moveTo(xy.first*u,xy.second*u)else p.lineTo(xy.first*u,xy.second*u)};if(close)p.close();drawPath(p,cor,style=Stroke(1.8f*u,cap=StrokeCap.Round,join=StrokeJoin.Round))}
         when(nome){
+            "mais"->{line(5f,12f,19f,12f);line(12f,5f,12f,19f)}
+            "menos"->line(5f,12f,19f,12f)
+            "norte"->{circle(12f,12f,9f);val p=Path().apply{moveTo(12*u,4*u);lineTo(16*u,16*u);lineTo(12*u,13*u);lineTo(8*u,16*u);close()};drawPath(p,cor)}
+            "ajustes"->{line(4f,7f,20f,7f);line(4f,17f,20f,17f);circle(9f,7f,3f);circle(15f,17f,3f)}
             "busca"->{circle(10f,10f,6f);line(14.5f,14.5f,21f,21f)}
             "gps"->{circle(12f,12f,7f);circle(12f,12f,2f);line(12f,1f,12f,4f);line(12f,20f,12f,23f);line(1f,12f,4f,12f);line(20f,12f,23f,12f)}
             "origem"->{circle(12f,12f,6f);drawCircle(cor,2f*u,Offset(12*u,12*u))}
-            "destino"->{circle(12f,9f,5f);path(7f to 11f,12f to 22f,17f to 11f);drawCircle(cor,1.7f*u,Offset(12*u,9*u))}
-            "rota"->{circle(5f,18f,2.5f);circle(19f,5f,2.5f);path(5f to 15.5f,5f to 9f,15f to 9f,15f to 18f,19f to 18f,19f to 7.5f)}
+            "destino"->{val p=Path().apply{moveTo(12*u,22*u);cubicTo(9*u,18*u,5*u,13*u,5*u,9*u);cubicTo(5*u,-.5f*u,19*u,-.5f*u,19*u,9*u);cubicTo(19*u,13*u,15*u,18*u,12*u,22*u)};drawPath(p,cor,style=Stroke(1.8f*u,cap=StrokeCap.Round,join=StrokeJoin.Round));circle(12f,9f,2.5f)}
+            "rota"->{circle(5f,18f,2.4f);circle(19f,5f,2.4f);val p=Path().apply{moveTo(5*u,15.5f*u);lineTo(5*u,11*u);cubicTo(5*u,8*u,8*u,8*u,11*u,8*u);lineTo(13*u,8*u);cubicTo(17*u,8*u,17*u,16*u,13*u,16*u);lineTo(11*u,16*u);cubicTo(8*u,16*u,8*u,20*u,12*u,20*u);lineTo(16*u,20*u);cubicTo(19*u,20*u,19*u,18*u,19*u,15*u);lineTo(19*u,7.5f*u)};drawPath(p,cor,style=Stroke(1.8f*u,cap=StrokeCap.Round,join=StrokeJoin.Round))}
             "salvo"->path(12f to 2.5f,15f to 8.5f,21.5f to 9.5f,17f to 14f,18f to 21f,12f to 17.8f,6f to 21f,7f to 14f,2.5f to 9.5f,9f to 8.5f,close=true)
             "inverter"->{path(5f to 8f,9f to 4f,13f to 8f);line(9f,4f,9f,20f);path(11f to 16f,15f to 20f,19f to 16f);line(15f,20f,15f,4f)}
             "seta"->{line(3f,12f,20f,12f);path(14f to 6f,20f to 12f,14f to 18f)}
@@ -400,7 +417,7 @@ fun nomeModo(modo:String)=when(modo.uppercase()){ "WALK","FOOT","WALKING"->"A p�
             "sol"->{circle(12f,12f,4f);for(i in 0..7){val a=i*Math.PI/4;line((12+7*kotlin.math.cos(a)).toFloat(),(12+7*kotlin.math.sin(a)).toFloat(),(12+10*kotlin.math.cos(a)).toFloat(),(12+10*kotlin.math.sin(a)).toFloat())}}
             "lua"->path(20f to 15f,16f to 16f,11f to 14f,8f to 10f,8f to 4f,4f to 7f,3f to 12f,5f to 18f,11f to 21f,17f to 20f,20f to 15f)
             "mapa"->{path(3f to 5f,9f to 3f,15f to 6f,21f to 3f,21f to 19f,15f to 22f,9f to 19f,3f to 21f,close=true);line(9f,3f,9f,19f);line(15f,6f,15f,22f)}
-            "onibus"->{path(5f to 18f,5f to 5f,7f to 3f,17f to 3f,19f to 5f,19f to 18f,close=true);line(5f,11f,19f,11f);line(8f,18f,8f,21f);line(16f,18f,16f,21f);circle(8f,15f,1f);circle(16f,15f,1f)}
+            "onibus"->{drawRoundRect(cor,Offset(5*u,3*u),androidx.compose.ui.geometry.Size(14*u,16*u),CornerRadius(3*u),style=Stroke(1.8f*u));line(5f,11f,19f,11f);line(12f,4f,12f,10f);line(8f,19f,8f,21f);line(16f,19f,16f,21f);drawCircle(cor,1.1f*u,Offset(8*u,15*u));drawCircle(cor,1.1f*u,Offset(16*u,15*u))}
             "andar"->{circle(14f,4f,2f);path(5f to 13f,10f to 9f,14f to 10f,18f to 14f);path(13f to 9f,11f to 15f,6f to 21f);path(11f to 15f,16f to 18f,17f to 22f)}
             "compartilhar"->{circle(18f,4f,3f);circle(5f,12f,3f);circle(18f,20f,3f);line(8f,10.5f,15f,5.5f);line(8f,13.5f,15f,18.5f)}
             else->{circle(12f,12f,7f);circle(12f,12f,2f);line(12f,2f,12f,5f);line(12f,19f,12f,22f);line(2f,12f,5f,12f);line(19f,12f,22f,12f)}
