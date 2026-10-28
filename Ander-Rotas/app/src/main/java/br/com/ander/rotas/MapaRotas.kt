@@ -4,6 +4,10 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.view.MotionEvent
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -36,12 +40,12 @@ private var mapaConfigurado = false
     MapLibre.getInstance(context.applicationContext)
     if (mapaConfigurado) return
     val dispatcher = Dispatcher().apply { maxRequests = 4; maxRequestsPerHost = 4 }
-    HttpRequestUtil.setOkHttpClient(OkHttpClient.Builder().dispatcher(dispatcher).addInterceptor { chain -> chain.proceed(chain.request().newBuilder().header("User-Agent", "AnderRotas/1.1.0 (Android; native MapLibre)").build()) }.build())
+    HttpRequestUtil.setOkHttpClient(OkHttpClient.Builder().dispatcher(dispatcher).addInterceptor { chain -> chain.proceed(chain.request().newBuilder().header("User-Agent", "Rotas/1.2.0 (Android; native MapLibre)").build()) }.build())
     mapaConfigurado = true
 }
 
 @Composable
-fun MapaRotas(origem: Endereco, destino: Endereco, rota: Rota?, posicao: Ponto?, focoGps: Int, navegando: Boolean, rumo: Float? = null, navegacao: EstadoNavegacao? = null, modifier: Modifier = Modifier, onPonto: (Ponto) -> Unit, onEstado: (String?) -> Unit) {
+fun MapaRotas(origem: Endereco, destino: Endereco, rota: Rota?, posicao: Ponto?, focoGps: Int, navegando: Boolean, rumo: Float? = null, navegacao: EstadoNavegacao? = null, zoomComando: Int = 0, norteComando: Int = 0, modifier: Modifier = Modifier, onPonto: (Ponto) -> Unit, onEstado: (String?) -> Unit) {
     val context = LocalContext.current
     remember(context) { configurarMapLibre(context); true }
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -50,6 +54,8 @@ fun MapaRotas(origem: Endereco, destino: Endereco, rota: Rota?, posicao: Ponto?,
     var mapa by remember { mutableStateOf<MapLibreMap?>(null) }
     var pronto by remember { mutableStateOf(false) }
     var seguindoGps by remember { mutableStateOf(false) }
+    var zoomAtual by remember { mutableDoubleStateOf(10.0) }
+    var centroAtual by remember { mutableStateOf(Ponto(-23.43,-46.68)) }
     var marcadorGps by remember { mutableStateOf<Marker?>(null) }
     val density = context.resources.displayMetrics.density
     val icones = remember {
@@ -65,10 +71,18 @@ fun MapaRotas(origem: Endereco, destino: Endereco, rota: Rota?, posicao: Ponto?,
     val view = remember {
         MapView(context).apply {
             onCreate(null)
+            setOnTouchListener { view,event ->
+                when(event.actionMasked){
+                    MotionEvent.ACTION_DOWN->{seguindoGps=false;view.parent?.requestDisallowInterceptTouchEvent(true)}
+                    MotionEvent.ACTION_UP,MotionEvent.ACTION_CANCEL->view.parent?.requestDisallowInterceptTouchEvent(false)
+                }
+                false
+            }
             addOnDidFailLoadingMapListener { onEstadoAtual("Mapa indisponível. Verifique a conexão e tente novamente.") }
             getMapAsync { map ->
                 mapa = map
-                map.uiSettings.apply { isLogoEnabled = false; isAttributionEnabled = false; isCompassEnabled = true; setCompassMargins(16, 150, 16, 16) }
+                map.uiSettings.apply { setAllGesturesEnabled(true);isScrollGesturesEnabled=true;isZoomGesturesEnabled=true;isRotateGesturesEnabled=true;isTiltGesturesEnabled=true; isLogoEnabled = false; isAttributionEnabled = false; isCompassEnabled = true; setCompassMargins(16, 150, 16, 16) }
+                map.addOnCameraIdleListener { zoomAtual=map.cameraPosition.zoom;map.cameraPosition.target?.let{centroAtual=Ponto(it.latitude,it.longitude)} }
                 map.addOnMapLongClickListener { point -> onPontoAtual(Ponto(point.latitude, point.longitude)); true }
                 map.addOnCameraMoveStartedListener { reason -> if (reason == 1) seguindoGps = false }
                 map.cameraPosition = CameraPosition.Builder().target(LatLng(-23.43,-46.68)).zoom(10.0).build()
@@ -83,7 +97,19 @@ fun MapaRotas(origem: Endereco, destino: Endereco, rota: Rota?, posicao: Ponto?,
         lifecycle.addObserver(observer)
         onDispose { lifecycle.removeObserver(observer); view.onPause(); view.onStop(); view.onDestroy() }
     }
-    AndroidView(factory = { view }, modifier = modifier)
+    AndroidView(factory={view},modifier=modifier.semantics{
+        contentDescription="Mapa de rotas. Arraste com um dedo e use dois dedos para ampliar ou reduzir."
+        stateDescription="Zoom ${"%.1f".format(java.util.Locale.US,zoomAtual)} · centro ${"%.5f".format(java.util.Locale.US,centroAtual.latitude)}, ${"%.5f".format(java.util.Locale.US,centroAtual.longitude)}"
+    })
+    var ultimoZoomComando by remember{mutableIntStateOf(0)}
+    LaunchedEffect(pronto,zoomComando){
+        if(pronto && zoomComando!=ultimoZoomComando){
+            seguindoGps=false
+            mapa?.animateCamera(CameraUpdateFactory.zoomBy((zoomComando-ultimoZoomComando).toDouble()),250)
+            ultimoZoomComando=zoomComando
+        }
+    }
+    LaunchedEffect(pronto,norteComando){if(pronto && norteComando>0){seguindoGps=false;mapa?.animateCamera(CameraUpdateFactory.newCameraPosition(CameraPosition.Builder(mapa!!.cameraPosition).bearing(0.0).build()),250)}}
     LaunchedEffect(pronto,origem,destino,rota,navegando,navegacao?.etapaAtual,navegacao?.paradaAtual){
         val map = mapa ?: return@LaunchedEffect
         if (!pronto) return@LaunchedEffect

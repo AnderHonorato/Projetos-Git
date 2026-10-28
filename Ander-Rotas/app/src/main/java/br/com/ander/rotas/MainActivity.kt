@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         modelo = ViewModelProvider(this)[RotasViewModel::class.java]
-        setContent { InterfaceRotas(modelo, onGps = { solicitarGps(false) }, onIniciar = { solicitarGps(true) }, onParar = { modelo.solicitarCancelamento() }) }
+        setContent { InterfaceRotas(modelo, onGps = { solicitarGps(false) }, onIniciar = { solicitarGps(true) }, onParar = { if(modelo.estado.value.navegacao?.chegou==true)modelo.parar()else modelo.solicitarCancelamento() }) }
         tratarIntent(intent)
         if(savedInstanceState==null && !SessaoNavegacao.ativa.value)solicitarGps(false)
     }

@@ -165,7 +165,7 @@ class NavegacaoService : Service(), LocationListener {
             .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP)
             .putExtra("confirmar_cancelamento",true).putExtra("rota_id",rotaAtual?.id),PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         return Notification.Builder(this, CANAL).setSmallIcon(R.drawable.ic_launcher)
-            .setContentTitle("Ander Rotas · viagem em foco").setSubText(rotaAtual?.destino?.nome).setCategory(Notification.CATEGORY_NAVIGATION).setContentText(texto).setStyle(Notification.BigTextStyle().bigText(texto))
+            .setContentTitle("Rotas · viagem em foco").setSubText(rotaAtual?.destino?.nome).setCategory(Notification.CATEGORY_NAVIGATION).setContentText(texto).setStyle(Notification.BigTextStyle().bigText(texto))
             .setContentIntent(abrirApp()).setOngoing(true).setOnlyAlertOnce(true)
             .addAction(Notification.Action.Builder(null, "Cancelar viagem", parar).build()).build()
     }

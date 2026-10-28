@@ -1,6 +1,11 @@
 package br.com.ander.rotas
 
 import android.content.Context
+import android.location.Geocoder
+import android.location.Address
+import android.os.Build
+import kotlinx.coroutines.withTimeoutOrNull
+import java.util.Locale
 import android.os.SystemClock
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -30,37 +35,65 @@ import kotlin.coroutines.coroutineContext
 import kotlin.math.pow
 
 /** App-private persistence; no unselected search or GPS is written to disk. */
-class RepositorioRotas(context: Context) {
+class RepositorioRotas(context: Context, clienteBusca:OkHttpClient?=null,
+    fonteDispositivo:(suspend(String,Ponto?)->List<Endereco>)?=null) {
+    private val appContext=context.applicationContext
+    private val fonteAlternativa:suspend(String,Ponto?)->List<Endereco> = fonteDispositivo?:{texto,perto->buscarNoDispositivo(texto,perto)}
     private val prefs = context.applicationContext.getSharedPreferences("ander_dados_v1", Context.MODE_PRIVATE)
     private val savedFile = File(context.applicationContext.filesDir, "rotas_escolhidas_v1.json")
     private val client = OkHttpClient.Builder().connectTimeout(15, TimeUnit.SECONDS)
         .readTimeout(40, TimeUnit.SECONDS).callTimeout(50, TimeUnit.SECONDS)
         .followRedirects(false).followSslRedirects(false).build()
+    private val clienteSugestoes=clienteBusca?:client.newBuilder().connectTimeout(4,TimeUnit.SECONDS)
+        .readTimeout(5,TimeUnit.SECONDS).callTimeout(6,TimeUnit.SECONDS).build()
     private val geocodeMemory = LinkedHashMap<String, Pair<Long, List<Endereco>>>()
     private val planningMutex = Mutex()
 
-    suspend fun buscarEnderecos(texto: String, perto: Ponto? = null): List<Endereco> = withContext(Dispatchers.IO) {
-        val query=texto.trim().take(240)
-        if(query.length<3)return@withContext emptyList()
+    suspend fun buscarEnderecos(texto:String,perto:Ponto?=null):List<Endereco> = withContext(Dispatchers.IO){
+        val query=texto.trim().replace(Regex("\\s+")," ").take(240)
+        if(query.length<2)return@withContext emptyList()
         val chave="$query:${perto?.latitude}:${perto?.longitude}"
         synchronized(geocodeMemory){geocodeMemory[chave]?.takeIf{System.currentTimeMillis()-it.first<21_600_000}?.let{return@withContext it.second}}
-        try {
-            val raw=geocodeMutex.withLock {
-                val espera=650-(SystemClock.elapsedRealtime()-lastGeocodeAt)
-                if(espera>0)delay(espera)
+        val locais=(favoritos()+historico()).distinctBy{it.ponto}.filter{it.nome.contains(query,true)||it.detalhe.contains(query,true)}
+        var falha:IOException?=null
+        val photon=try{
+            val raw=geocodeMutex.withLock{
+                val espera=650-(SystemClock.elapsedRealtime()-lastGeocodeAt);if(espera>0)delay(espera)
                 coroutineContext.ensureActive();lastGeocodeAt=SystemClock.elapsedRealtime()
-                val url=obterGeocodificador().toHttpUrl().newBuilder().addQueryParameter("q",query).addQueryParameter("limit","6")
+                val url=obterGeocodificador().toHttpUrl().newBuilder().addQueryParameter("q",query).addQueryParameter("limit","8")
                 if(perto!=null && FormatoRotas.valido(perto))url.addQueryParameter("lat",perto.latitude.toString()).addQueryParameter("lon",perto.longitude.toString())
-                get(url.build(),600_000)
+                get(url.build(),600_000,clienteSugestoes)
             }
-            val encontrados=FormatoRotas.lerSugestoes(raw)
-            synchronized(geocodeMemory){geocodeMemory[chave]=System.currentTimeMillis() to encontrados;while(geocodeMemory.size>32)geocodeMemory.remove(geocodeMemory.keys.first())}
-            encontrados
-        }catch(e:CancellationException){throw e
-        }catch(e:IOException){
-            val local=(favoritos()+historico()).distinctBy{it.ponto}.filter{it.nome.contains(query,true)||it.detalhe.contains(query,true)}
-            if(local.isEmpty())throw IOException("Não foi possível buscar sugestões. Confira a internet ou escolha um ponto no mapa.",e)
-            local
+            FormatoRotas.lerSugestoes(raw)
+        }catch(e:CancellationException){throw e}catch(e:IOException){falha=e;emptyList()}
+        val alternativos=if(photon.isEmpty())try{withTimeoutOrNull(4_000){fonteAlternativa(query,perto)}.orEmpty()}catch(e:CancellationException){throw e}catch(_:Exception){emptyList()}else emptyList()
+        coroutineContext.ensureActive()
+        val encontrados=(locais+photon+alternativos).distinctBy{it.ponto}.take(8)
+        if(encontrados.isEmpty() && falha!=null)throw IOException("Não foi possível consultar endereços. Confira a internet e tente novamente.",falha)
+        if(photon.isNotEmpty() || alternativos.isNotEmpty())synchronized(geocodeMemory){geocodeMemory[chave]=System.currentTimeMillis() to encontrados;while(geocodeMemory.size>40)geocodeMemory.remove(geocodeMemory.keys.first())}
+        encontrados
+    }
+    private suspend fun buscarNoDispositivo(texto:String,perto:Ponto?):List<Endereco>{
+        if(Build.VERSION.SDK_INT<33 || !Geocoder.isPresent())return emptyList()
+        val geocoder=Geocoder(appContext,Locale("pt","BR"))
+        val enderecos=suspendCancellableCoroutine<List<Address>>{cont->
+            val listener=object:Geocoder.GeocodeListener{
+                override fun onGeocode(addresses:MutableList<Address>){if(cont.isActive)cont.resume(addresses)}
+                override fun onError(errorMessage:String?){if(cont.isActive)cont.resume(emptyList())}
+            }
+            try{
+                if(perto!=null && FormatoRotas.valido(perto))geocoder.getFromLocationName(texto,6,
+                    (perto.latitude-.5).coerceAtLeast(-90.0),(perto.longitude-.5).coerceAtLeast(-180.0),
+                    (perto.latitude+.5).coerceAtMost(90.0),(perto.longitude+.5).coerceAtMost(180.0),listener)
+                else geocoder.getFromLocationName(texto,6,listener)
+            }catch(_:Exception){if(cont.isActive)cont.resume(emptyList())}
+        }
+        return enderecos.mapNotNull{a->
+            if(!a.hasLatitude() || !a.hasLongitude())return@mapNotNull null
+            val ponto=Ponto(a.latitude,a.longitude);if(!FormatoRotas.valido(ponto))return@mapNotNull null
+            val linha=a.getAddressLine(0)?:return@mapNotNull null
+            val nome=listOfNotNull(a.thoroughfare,a.subThoroughfare).filter{it.isNotBlank()}.joinToString(", ").ifBlank{a.featureName?:linha}
+            Endereco(nome,ponto,"$linha · Confira a posição no mapa")
         }
     }
     fun obterGeocodificador():String=prefs.getString("autocomplete_photon",PHOTON)?:PHOTON
@@ -113,8 +146,8 @@ class RepositorioRotas(context: Context) {
             }
         }
 
-    private suspend fun get(url:HttpUrl,limit:Long):String=suspendCancellableCoroutine{cont->
-        val call=client.newCall(Request.Builder().url(url).header("User-Agent",USER_AGENT).header("Accept","application/json").build())
+    private suspend fun get(url:HttpUrl,limit:Long,cliente:OkHttpClient=client):String=suspendCancellableCoroutine{cont->
+        val call=cliente.newCall(Request.Builder().url(url).header("User-Agent",USER_AGENT).header("Accept","application/json").build())
         cont.invokeOnCancellation{call.cancel()}
         call.enqueue(object:Callback{
             override fun onFailure(call:Call,e:IOException){if(cont.isActive)cont.resumeWithException(e)}
@@ -180,7 +213,7 @@ class RepositorioRotas(context: Context) {
     companion object {
         const val PHOTON = "https://photon.komoot.io/api/"
         const val TRANSITOUS = "https://api.transitous.org/api/v6/plan"
-        const val USER_AGENT = "AnderRotas/1.1.0 (Android; contato: https://github.com/AnderHonorato)"
+        const val USER_AGENT = "Rotas/1.2.0 (Android; contato: https://github.com/AnderHonorato)"
         private val geocodeMutex = Mutex()
         private var lastGeocodeAt = 0L
     }

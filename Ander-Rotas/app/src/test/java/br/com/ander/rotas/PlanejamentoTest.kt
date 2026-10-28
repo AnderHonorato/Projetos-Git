@@ -5,6 +5,16 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModelStore
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
+import okhttp3.OkHttpClient
+import okhttp3.Response
+import okhttp3.Protocol
+import okhttp3.ResponseBody.Companion.toResponseBody
+import java.io.IOException
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -22,19 +32,20 @@ class PlanejamentoTest {
     private lateinit var vm:RotasViewModel
     private lateinit var app:AppTeste
     private val store=ViewModelStore()
+    private val dispatcher=UnconfinedTestDispatcher()
     private val a=Endereco("Origem",Ponto(-23.5,-46.6))
     private val b=Endereco("Destino",Ponto(-23.4,-46.5))
     private val c=Endereco("Parada C",Ponto(-23.45,-46.55))
     private val d=Endereco("Parada D",Ponto(-23.43,-46.53))
     private val rota=Rota("ativa",a,b,listOf(Etapa("BUS",origem=a.nome,destino=b.nome,inicio=0,fim=1000,pontos=listOf(a.ponto,b.ponto))),paradasDesejadas=listOf(c,d))
     @Before fun preparar(){
-        Dispatchers.setMain(UnconfinedTestDispatcher())
+        Dispatchers.setMain(dispatcher)
         SessaoNavegacao.ativa.value=false;SessaoNavegacao.rota=null;SessaoNavegacao.estado.value=null;SessaoNavegacao.erro.value=null
         app=AppTeste()
     }
-    private fun abrir(ativa:Boolean=false){
+    private fun abrir(ativa:Boolean=false, fonte:(suspend(String,Ponto?)->List<Endereco>)?=null){
         if(ativa){SessaoNavegacao.rota=rota;SessaoNavegacao.ativa.value=true;SessaoNavegacao.estado.value=MotorNavegacao().iniciar(rota)}
-        vm=RotasViewModel(app);store.put("vm",vm)
+        vm=RotasViewModel(app,fonte);store.put("vm",vm)
     }
     @After fun limpar(){store.clear();SessaoNavegacao.ativa.value=false;SessaoNavegacao.rota=null;SessaoNavegacao.estado.value=null;Dispatchers.resetMain();app.pasta.deleteRecursively()}
     @Test fun abreSemOrigemOuDestinoPredefinido(){abrir();assertEquals("",vm.estado.value.origem.nome);assertEquals("",vm.estado.value.destino.nome);assertNull(vm.estado.value.rotaSelecionada)}
@@ -69,6 +80,59 @@ class PlanejamentoTest {
         abrir(true);vm.solicitarCancelamento();assertTrue(vm.estado.value.confirmarCancelamento);assertTrue(vm.estado.value.navegando)
         vm.manterViagem();assertFalse(vm.estado.value.confirmarCancelamento);assertTrue(vm.estado.value.navegando)
         vm.solicitarCancelamento();vm.parar();assertFalse(vm.estado.value.navegando);assertNull(vm.estado.value.rotaSelecionada);assertFalse(vm.estado.value.confirmarCancelamento)
+    }
+    @Test fun comDoisCaracteresJaMostraSugestoes()=runTest(dispatcher){
+        abrir(fonte={_,_->listOf(c)})
+        vm.prepararBusca(false);vm.editarTexto("Lu",false)
+        advanceTimeBy(700);runCurrent()
+        assertEquals(listOf(c),vm.estado.value.resultadosBusca)
+    }
+    @Test fun listaNaoDesapareceEnquantoUsuarioContinuaDigitando()=runTest(dispatcher){
+        abrir(fonte={_,_->listOf(c)})
+        vm.prepararBusca(false);vm.editarTexto("Luz",false)
+        advanceTimeBy(700);runCurrent();assertEquals(listOf(c),vm.estado.value.resultadosBusca)
+        vm.editarTexto("Luzes",false)
+        assertEquals(listOf(c),vm.estado.value.resultadosBusca)
+        assertTrue(vm.estado.value.buscando)
+    }
+    @Test fun respostaAntigaNaoSobrescreveConsultaMaisRecente()=runTest(dispatcher){
+        abrir(fonte={texto,_->delay(if(texto=="Luz")2000 else 10);if(texto=="Luz")listOf(c)else listOf(d)})
+        vm.prepararBusca(false);vm.editarTexto("Luz",false);advanceTimeBy(600);runCurrent()
+        vm.editarTexto("Luzes",false);advanceTimeBy(3000);runCurrent()
+        assertEquals("Luzes",vm.estado.value.textoBusca);assertEquals(listOf(d),vm.estado.value.resultadosBusca)
+    }
+    @Test fun falhaApareceNoEstadoDaJanelaDeBusca()=runTest(dispatcher){
+        abrir(fonte={_,_->throw IOException("fonte indisponível")})
+        vm.prepararBusca(false);vm.editarTexto("Luz",false);advanceTimeBy(700);runCurrent()
+        assertNotNull(vm.estado.value.erroBusca);assertNull(vm.estado.value.erro);assertFalse(vm.estado.value.buscando)
+    }
+    @Test fun fonteAlternativaEncontraEnderecoQuandoPhotonFalha()=runBlocking{
+        val consultas=mutableListOf<String>()
+        val cliente=OkHttpClient.Builder().addInterceptor{throw IOException("sem resposta")}.build()
+        val r=RepositorioRotas(app,cliente){texto,_->consultas.add(texto);listOf(c)}
+        val encontrados=r.buscarEnderecos("  Rua   da Luz  ",a.ponto)
+        assertEquals(listOf(c),encontrados);assertEquals(listOf("Rua da Luz"),consultas)
+    }
+    @Test fun geocodificadorAlternativoTambemBuscaQuandoRespostaVemVazia()=runBlocking{
+        val cliente=OkHttpClient.Builder().addInterceptor{chain->Response.Builder().request(chain.request()).protocol(Protocol.HTTP_1_1).code(200).message("OK").body("{\"features\":[]}".toResponseBody()).build()}.build()
+        val r=RepositorioRotas(app,cliente){_,_->listOf(d)}
+        assertEquals(listOf(d),r.buscarEnderecos("Rua teste"))
+    }
+    @Test fun favoritosContinuamEncontraveisSeAsDuasFontesFalharem()=runBlocking{
+        val cliente=OkHttpClient.Builder().addInterceptor{throw IOException("sem rede")}.build()
+        val r=RepositorioRotas(app,cliente){_,_->emptyList()};r.salvarFavorito(c)
+        assertEquals(listOf(c),r.buscarEnderecos("Parada C"))
+    }
+    @Test fun buscarNovamenteConsultaAFonteDepoisDeFalhaMesmoHavendoFavorito()=runBlocking{
+        val chamadas=java.util.concurrent.atomic.AtomicInteger()
+        val cliente=OkHttpClient.Builder().addInterceptor{chain->
+            if(chamadas.incrementAndGet()==1)throw IOException("temporariamente indisponível")
+            Response.Builder().request(chain.request()).protocol(Protocol.HTTP_1_1).code(200).message("OK")
+                .body("{\"features\":[{\"geometry\":{\"coordinates\":[-46.53,-23.43]},\"properties\":{\"name\":\"Parada C Alternativa\"}}]}".toResponseBody()).build()
+        }.build()
+        val r=RepositorioRotas(app,cliente){_,_->emptyList()};r.salvarFavorito(c)
+        assertEquals(listOf(c),r.buscarEnderecos("Parada C"))
+        assertTrue(r.buscarEnderecos("Parada C").any{it.nome=="Parada C Alternativa"})
     }
     private class AppTeste:Application(){
         val pasta:File=Files.createTempDirectory("rotas-teste-").toFile()

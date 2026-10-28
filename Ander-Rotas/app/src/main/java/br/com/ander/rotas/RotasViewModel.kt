@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.*
 data class EstadoRotas(
     val origem: Endereco = ENDERECO_VAZIO, val destino: Endereco = ENDERECO_VAZIO,
     val textoOrigem: String = "", val textoDestino: String = "",
-    val textoBusca: String = "", val buscaParaParada: Boolean = false,
+    val textoBusca: String = "", val erroBusca: String? = null, val buscaConcluida: Boolean = false, val buscaParaParada: Boolean = false,
     val paradasDesejadas: List<Endereco> = emptyList(), val origemAutomatica: Boolean = true,
     val confirmarCancelamento: Boolean = false,
     val quando: Long = System.currentTimeMillis(), val horarioFuturo: Boolean = false,
@@ -25,7 +25,8 @@ data class EstadoRotas(
     val historico: List<Endereco> = emptyList(), val salvas: List<Rota> = emptyList(),
     val temaEscuro: Boolean = false, val erro: String? = null)
 
-class RotasViewModel(application: Application) : AndroidViewModel(application) {
+class RotasViewModel @JvmOverloads constructor(application: Application,
+    private val fonteSugestoes: (suspend (String,Ponto?) -> List<Endereco>)? = null) : AndroidViewModel(application) {
     private val repositorio = RepositorioRotas(application)
     private val preferencias = application.getSharedPreferences("aparencia", 0)
     private val motor = MotorNavegacao()
@@ -71,23 +72,38 @@ class RotasViewModel(application: Application) : AndroidViewModel(application) {
     }
     fun prepararBusca(paraOrigem:Boolean,parada:Boolean=false){
         if(!podePlanejar())return
-        busca?.cancel();_estado.update{it.copy(buscaParaOrigem=paraOrigem,buscaParaParada=parada,textoBusca="",resultadosBusca=emptyList(),buscando=false,erro=null)}
+        busca?.cancel();_estado.update{it.copy(buscaParaOrigem=paraOrigem,buscaParaParada=parada,textoBusca="",resultadosBusca=emptyList(),buscando=false,erro=null,erroBusca=null,buscaConcluida=false)}
     }
-    fun fecharBusca(){busca?.cancel();_estado.update{it.copy(buscando=false,resultadosBusca=emptyList(),buscaParaParada=false)}}
+    fun fecharBusca(){busca?.cancel();_estado.update{it.copy(buscando=false,resultadosBusca=emptyList(),buscaParaParada=false,erroBusca=null,buscaConcluida=false)}}
     fun editarTexto(texto:String,paraOrigem:Boolean){
         if(!podePlanejar())return
-        busca?.cancel();_estado.update{it.copy(textoBusca=texto.take(240),buscaParaOrigem=paraOrigem,buscando=false,resultadosBusca=emptyList(),erro=null)}
-        if(texto.trim().length>=3)buscar(texto,paraOrigem)
+        busca?.cancel();val consulta=texto.take(240);val locais=listaLocais(consulta)
+        _estado.update{it.copy(textoBusca=consulta,buscaParaOrigem=paraOrigem,buscando=consulta.trim().length>=2,
+            resultadosBusca=if(consulta.trim().length<2)locais else (locais+it.resultadosBusca).distinctBy{e->e.ponto}.take(8),
+            erro=null,erroBusca=null,buscaConcluida=false)}
+        if(consulta.trim().length>=2)buscar(consulta,paraOrigem)
+    }
+    private fun listaLocais(texto:String):List<Endereco>{
+        val e=_estado.value;val consulta=texto.trim()
+        return (e.favoritos+e.historico).distinctBy{it.ponto}.filter{consulta.isBlank()||it.nome.contains(consulta,true)||it.detalhe.contains(consulta,true)}.take(6)
     }
     fun buscar(texto:String,paraOrigem:Boolean){
         if(!podePlanejar())return
-        busca?.cancel();if(texto.trim().length<3)return
+        busca?.cancel();val consulta=texto.trim();if(consulta.length<2)return
         busca=viewModelScope.launch{
-            _estado.update{it.copy(buscando=true,buscaParaOrigem=paraOrigem)}
-            try{delay(450);val encontrados=repositorio.buscarEnderecos(texto.trim(),_estado.value.posicao);ensureActive()
-                _estado.update{it.copy(resultadosBusca=encontrados,buscando=false,erro=if(encontrados.isEmpty())"Nenhum endereço encontrado. Acrescente a cidade ou escolha no mapa." else null)}
+            _estado.update{it.copy(buscando=true,buscaParaOrigem=paraOrigem,erroBusca=null,buscaConcluida=false)}
+            try{
+                delay(300)
+                val encontrados=fonteSugestoes?.invoke(consulta,_estado.value.posicao)?:repositorio.buscarEnderecos(consulta,_estado.value.posicao)
+                ensureActive();val resultados=(listaLocais(consulta)+encontrados).distinctBy{it.ponto}.take(8)
+                _estado.update{it.copy(resultadosBusca=resultados,buscando=false,buscaConcluida=true,
+                    erroBusca=if(resultados.isEmpty())"Nenhum endereço encontrado. Tente rua e cidade ou escolha no mapa."else null)}
             }catch(e:CancellationException){throw e
-            }catch(e:Exception){_estado.update{it.copy(buscando=false,erro=e.message?:"Não foi possível buscar sugestões.")}}
+            }catch(e:Exception){
+                val locais=listaLocais(consulta)
+                _estado.update{it.copy(resultadosBusca=locais,buscando=false,buscaConcluida=true,
+                    erroBusca="Não foi possível consultar endereços agora. Verifique a internet e tente novamente.")}
+            }
         }
     }
     fun selecionarEndereco(endereco:Endereco,paraOrigem:Boolean){
