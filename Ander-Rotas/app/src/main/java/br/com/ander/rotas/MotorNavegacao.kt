@@ -3,9 +3,13 @@ package br.com.ander.rotas
 import kotlin.math.*
 
 /** Distâncias em metros da etapa atual; o usuário sempre confirma embarques e etapas. */
+enum class AvisoParada { NENHUM, TRES, DOIS, ULTIMO, DESEMBARCAR }
+
 data class EstadoNavegacao(val etapaAtual: Int = 0, val metrosAteFim: Double = 0.0,
     val desvio: Boolean = false, val mensagem: String = "Aguardando localização GPS.",
-    val chegou: Boolean = false, val alertar: Boolean = false)
+    val chegou: Boolean = false, val alertar: Boolean = false,
+    val paradaAtual: Int = 0, val pontosRestantes: Int? = null,
+    val proximaParada: String? = null, val avisoParada: AvisoParada = AvisoParada.NENHUM)
 
 /** Motor sem Android/rede; relógio injetável para reproduzir GPS e cooldown. */
 class MotorNavegacao(private val agora: () -> Long = System::currentTimeMillis) {
@@ -18,6 +22,10 @@ class MotorNavegacao(private val agora: () -> Long = System::currentTimeMillis) 
     private var avisouDescida = false
     private var ultimoAlerta: Long? = null
     private var estado = EstadoNavegacao()
+    private var paradaAtual = 0
+    private var candidatoParada = -1
+    private var repeticoesParada = 0
+    private val avisosParadas = mutableSetOf<AvisoParada>()
 
     fun iniciar(rota: Rota): EstadoNavegacao {
         rotaId = rota.id; etapa = 0; ultimoAlerta = null
@@ -38,6 +46,7 @@ class MotorNavegacao(private val agora: () -> Long = System::currentTimeMillis) 
     }
     private fun reiniciarEtapa(rota: Rota): EstadoNavegacao {
         fora = 0; dentro = 0; proximas = 0; emDesvio = false; avisouDescida = false
+        paradaAtual=0; candidatoParada=-1; repeticoesParada=0; avisosParadas.clear()
         val atual = rota.etapas.getOrNull(etapa)
         estado = EstadoNavegacao(etapa, atual?.let { comprimento(it.pontos) } ?: 0.0,
             mensagem = if (atual == null) "Rota sem etapas para acompanhar." else "Confirme o sentido e aguarde um GPS preciso.")
@@ -47,12 +56,12 @@ class MotorNavegacao(private val agora: () -> Long = System::currentTimeMillis) 
         if (rotaId != rota.id) iniciar(rota)
         val atual = rota.etapas.getOrNull(etapa) ?: return estado
         if (!valido(posicao) || !precisaoMetros.isFinite() || precisaoMetros <= 0f || precisaoMetros > 45f) {
-            fora = 0; dentro = 0; proximas = 0
-            estado = estado.copy(alertar = false, mensagem = "GPS impreciso. Aguarde um local com sinal melhor.")
+            fora = 0; dentro = 0; proximas = 0; repeticoesParada = 0
+            estado = estado.copy(alertar = false, avisoParada = AvisoParada.NENHUM, mensagem = "GPS impreciso. Aguarde um local com sinal melhor.")
             return estado
         }
         if (atual.pontos.size < 2 || atual.pontos.any { !valido(it) }) {
-            estado = estado.copy(alertar = false, mensagem = "Etapa sem geometria suficiente. Confira as paradas e avance manualmente.")
+            estado = estado.copy(alertar = false, avisoParada = AvisoParada.NENHUM, mensagem = "Etapa sem geometria suficiente. Confira as paradas e avance manualmente.")
             return estado
         }
         val projecao = projetar(posicao, atual.pontos)
@@ -61,25 +70,55 @@ class MotorNavegacao(private val agora: () -> Long = System::currentTimeMillis) 
         } else { dentro++; fora = 0 }
         if (fora >= 3) emDesvio = true
         if (dentro >= 2) emDesvio = false
-        val pertoFim = distancia(posicao, atual.pontos.last()) <= 40.0 && projecao.restante <= 65.0
+        val transporte = atual.modo.uppercase() !in setOf("WALK", "FOOT", "WALKING", "CAMINHADA", "A_PÉ", "A PE")
+        val pertoFim = if(transporte) precisaoMetros<=20f && distancia(posicao,atual.pontos.last())<=15.0 && projecao.restante<=20.0
+            else distancia(posicao, atual.pontos.last()) <= 40.0 && projecao.restante <= 65.0
         proximas = if (pertoFim && !emDesvio) proximas + 1 else 0
         val chegou = etapa == rota.etapas.lastIndex && proximas >= 3
-        val transporte = atual.modo.uppercase() !in setOf("WALK", "FOOT", "CAMINHADA", "A_PÉ", "A PE")
-        val descida = transporte && !avisouDescida && !emDesvio && dentro >= 2 && projecao.restante <= 350.0
+        // Não estimar número de paradas a partir dos metros: usar apenas a lista publicada.
+        val paradas = atual.paradas.takeIf { transporte && it.size >= 3 && it.all { e -> valido(e.ponto) } }
+        val distanciasParadas = paradas?.map { projetar(it.ponto, atual.pontos).restante }
+        val contagemValida = distanciasParadas != null && distanciasParadas.zipWithNext().all { (a,b) -> a > b }
+        var restantes: Int? = null
+        var proxima: String? = null
+        var avisoParada = AvisoParada.NENHUM
+        if (paradas != null && distanciasParadas != null && contagemValida) {
+            if (!emDesvio && dentro >= 1) {
+                val candidato = distanciasParadas.indexOfLast { it >= projecao.restante - 15.0 }.coerceAtLeast(0)
+                    .coerceAtMost(if (proximas >= 3) paradas.lastIndex else paradas.lastIndex - 1)
+                if (candidato == candidatoParada) repeticoesParada++ else { candidatoParada=candidato; repeticoesParada=1 }
+                if (repeticoesParada >= 2 || (pertoFim && proximas >= 3)) paradaAtual=max(paradaAtual,candidato)
+            } else repeticoesParada=0
+            restantes=paradas.lastIndex-paradaAtual
+            proxima=paradas.getOrNull(paradaAtual+1)?.nome
+            val marco=when {
+                !emDesvio && proximas>=3 -> AvisoParada.DESEMBARCAR
+                restantes==1 -> AvisoParada.ULTIMO
+                restantes==2 -> AvisoParada.DOIS
+                restantes==3 -> AvisoParada.TRES
+                else -> AvisoParada.NENHUM
+            }
+            if (!emDesvio && dentro>=2 && (repeticoesParada>=2 || proximas>=3) && marco!=AvisoParada.NENHUM && avisosParadas.add(marco)) avisoParada=marco
+        }
+        if(transporte && !emDesvio && proximas>=3 && avisosParadas.add(AvisoParada.DESEMBARCAR))avisoParada=AvisoParada.DESEMBARCAR
+        val descida = !contagemValida && transporte && !avisouDescida && !emDesvio && dentro >= 2 && projecao.restante <= 350.0
         val instante = agora()
         val podeAlertar = ultimoAlerta?.let { instante - it >= 90_000L } ?: true
         // Chegada é uma transição independente: o aviso anterior de descida não a silencia.
-        val alerta = (chegou && !estado.chegou) || ((emDesvio || descida) && podeAlertar)
+        val alerta = avisoParada != AvisoParada.NENHUM || (chegou && !estado.chegou) || ((emDesvio || descida) && podeAlertar)
         if (alerta) { ultimoAlerta = instante; if (descida) avisouDescida = true }
         val mensagem = when {
+            chegou && transporte -> "Você chegou a ${atual.destino}. Confira se o veículo parou neste ponto e desça com segurança."
             chegou -> "Você chegou ao destino. Confira o endereço ao redor."
             emDesvio -> "Você parece fora desta etapa. Confira o mapa e o sentido antes de continuar."
+            proximas>=3 && transporte -> "Você chegou a ${atual.destino}. Confira se o veículo parou neste ponto e desça com segurança."
+            restantes!=null && restantes>0 -> if(restantes==1) "Próximo ponto: ${atual.destino}. Prepare-se para descer." else "Faltam $restantes pontos para ${atual.destino}. Próximo: $proxima."
             pertoFim && transporte -> "Prepare-se para descer em ${atual.destino}. Confirme a próxima etapa."
             descida || (avisouDescida && projecao.restante <= 350.0) -> "Faltam cerca de ${projecao.restante.toInt()} m para ${atual.destino}. Prepare-se para descer."
             pertoFim -> "Você está perto de ${atual.destino}. Confirme a próxima etapa."
             else -> "Siga para ${atual.destino}. A troca de etapa é manual."
         }
-        estado = EstadoNavegacao(etapa, projecao.restante, emDesvio, mensagem, chegou, alerta)
+        estado = EstadoNavegacao(etapa, projecao.restante, emDesvio, mensagem, chegou, alerta, paradaAtual, restantes, proxima, avisoParada)
         return estado
     }
     private data class Projecao(val distancia: Double, val restante: Double)

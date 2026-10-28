@@ -4,6 +4,19 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.view.MotionEvent
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.animation.core.*
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -13,7 +26,6 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import org.maplibre.android.MapLibre
 import org.maplibre.android.annotations.IconFactory
-import org.maplibre.android.annotations.Marker
 import org.maplibre.android.annotations.MarkerOptions
 import org.maplibre.android.annotations.PolylineOptions
 import org.maplibre.android.camera.CameraPosition
@@ -36,12 +48,12 @@ private var mapaConfigurado = false
     MapLibre.getInstance(context.applicationContext)
     if (mapaConfigurado) return
     val dispatcher = Dispatcher().apply { maxRequests = 4; maxRequestsPerHost = 4 }
-    HttpRequestUtil.setOkHttpClient(OkHttpClient.Builder().dispatcher(dispatcher).addInterceptor { chain -> chain.proceed(chain.request().newBuilder().header("User-Agent", "AnderRotas/1.0.0 (Android; native MapLibre)").build()) }.build())
+    HttpRequestUtil.setOkHttpClient(OkHttpClient.Builder().dispatcher(dispatcher).addInterceptor { chain -> chain.proceed(chain.request().newBuilder().header("User-Agent", "Rotas/1.2.0 (Android; native MapLibre)").build()) }.build())
     mapaConfigurado = true
 }
 
 @Composable
-fun MapaRotas(origem: Endereco, destino: Endereco, rota: Rota?, posicao: Ponto?, focoGps: Int, navegando: Boolean, rumo: Float? = null, modifier: Modifier = Modifier, onPonto: (Ponto) -> Unit, onEstado: (String?) -> Unit) {
+fun MapaRotas(origem: Endereco, destino: Endereco, rota: Rota?, posicao: Ponto?, focoGps: Int, navegando: Boolean, rumo: Float? = null, navegacao: EstadoNavegacao? = null, zoomComando: Int = 0, norteComando: Int = 0, modifier: Modifier = Modifier, onPonto: (Ponto) -> Unit, onEstado: (String?) -> Unit) {
     val context = LocalContext.current
     remember(context) { configurarMapLibre(context); true }
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -50,7 +62,16 @@ fun MapaRotas(origem: Endereco, destino: Endereco, rota: Rota?, posicao: Ponto?,
     var mapa by remember { mutableStateOf<MapLibreMap?>(null) }
     var pronto by remember { mutableStateOf(false) }
     var seguindoGps by remember { mutableStateOf(false) }
-    var marcadorGps by remember { mutableStateOf<Marker?>(null) }
+    var zoomAtual by remember { mutableDoubleStateOf(10.0) }
+    var centroAtual by remember { mutableStateOf(Ponto(-23.43,-46.68)) }
+    var centroGpsTela by remember{mutableStateOf<Offset?>(null)}
+    var rotacaoMapa by remember{mutableFloatStateOf(0f)}
+    var animacaoAtiva by remember{mutableStateOf(lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED))}
+    val posicaoAtual by rememberUpdatedState(posicao)
+    fun atualizarMarcador(map:MapLibreMap){
+        rotacaoMapa=map.cameraPosition.bearing.toFloat()
+        centroGpsTela=posicaoAtual?.takeIf(MotorNavegacao::valido)?.let{p->map.projection.toScreenLocation(LatLng(p.latitude,p.longitude)).let{Offset(it.x,it.y)}}
+    }
     val density = context.resources.displayMetrics.density
     val icones = remember {
         listOf(0xFF8F2D4A.toInt(), 0xFF2D7668.toInt(), 0xFF3770D7.toInt()).map { cor ->
@@ -65,55 +86,110 @@ fun MapaRotas(origem: Endereco, destino: Endereco, rota: Rota?, posicao: Ponto?,
     val view = remember {
         MapView(context).apply {
             onCreate(null)
+            setOnTouchListener { view,event ->
+                when(event.actionMasked){
+                    MotionEvent.ACTION_DOWN->{seguindoGps=false;view.parent?.requestDisallowInterceptTouchEvent(true)}
+                    MotionEvent.ACTION_UP,MotionEvent.ACTION_CANCEL->view.parent?.requestDisallowInterceptTouchEvent(false)
+                }
+                false
+            }
             addOnDidFailLoadingMapListener { onEstadoAtual("Mapa indisponível. Verifique a conexão e tente novamente.") }
             getMapAsync { map ->
                 mapa = map
-                map.uiSettings.apply { isLogoEnabled = false; isAttributionEnabled = false; isCompassEnabled = true; setCompassMargins(16, 150, 16, 16) }
+                map.uiSettings.apply { setAllGesturesEnabled(true);isScrollGesturesEnabled=true;isZoomGesturesEnabled=true;isRotateGesturesEnabled=true;isTiltGesturesEnabled=true; isLogoEnabled = false; isAttributionEnabled = false; isCompassEnabled = true; setCompassMargins(16, 150, 16, 16) }
+                map.addOnCameraMoveListener{atualizarMarcador(map)}
+                map.addOnCameraIdleListener { atualizarMarcador(map);zoomAtual=map.cameraPosition.zoom;map.cameraPosition.target?.let{centroAtual=Ponto(it.latitude,it.longitude)} }
                 map.addOnMapLongClickListener { point -> onPontoAtual(Ponto(point.latitude, point.longitude)); true }
                 map.addOnCameraMoveStartedListener { reason -> if (reason == 1) seguindoGps = false }
                 map.cameraPosition = CameraPosition.Builder().target(LatLng(-23.43,-46.68)).zoom(10.0).build()
-                map.setStyle(Style.Builder().fromUri(ESTILO_MAPA)) { pronto = true; onEstadoAtual(null) }
+                map.setStyle(Style.Builder().fromUri(ESTILO_MAPA)){pronto=true;onEstadoAtual(null)}
             }
         }
     }
     DisposableEffect(view, lifecycle) {
         val observer = LifecycleEventObserver { _, event -> when(event) {
-            Lifecycle.Event.ON_START -> view.onStart(); Lifecycle.Event.ON_RESUME -> view.onResume(); Lifecycle.Event.ON_PAUSE -> view.onPause(); Lifecycle.Event.ON_STOP -> view.onStop(); else -> Unit
+            Lifecycle.Event.ON_START -> view.onStart(); Lifecycle.Event.ON_RESUME -> {animacaoAtiva=true;view.onResume()}; Lifecycle.Event.ON_PAUSE -> {animacaoAtiva=false;view.onPause()}; Lifecycle.Event.ON_STOP -> view.onStop(); else -> Unit
         } }
         lifecycle.addObserver(observer)
         onDispose { lifecycle.removeObserver(observer); view.onPause(); view.onStop(); view.onDestroy() }
     }
-    AndroidView(factory = { view }, modifier = modifier)
-    LaunchedEffect(pronto, origem, destino, rota) {
+    Box(modifier=modifier){
+    AndroidView(factory={view},modifier=Modifier.fillMaxSize().semantics{
+        contentDescription="Mapa de rotas. Arraste com um dedo e use dois dedos para ampliar ou reduzir."
+        stateDescription="Zoom ${"%.1f".format(java.util.Locale.US,zoomAtual)} · centro ${"%.5f".format(java.util.Locale.US,centroAtual.latitude)}, ${"%.5f".format(java.util.Locale.US,centroAtual.longitude)}"
+    })
+    if(pronto && animacaoAtiva)centroGpsTela?.let{centro->MarcadorLocalizacao(centro,rumo?.minus(rotacaoMapa))}
+    }
+    var ultimoZoomComando by remember{mutableIntStateOf(0)}
+    LaunchedEffect(pronto,zoomComando){
+        if(pronto && zoomComando!=ultimoZoomComando){
+            seguindoGps=false
+            mapa?.animateCamera(CameraUpdateFactory.zoomBy((zoomComando-ultimoZoomComando).toDouble()),250)
+            ultimoZoomComando=zoomComando
+        }
+    }
+    LaunchedEffect(pronto,norteComando){if(pronto && norteComando>0){seguindoGps=false;mapa?.animateCamera(CameraUpdateFactory.newCameraPosition(CameraPosition.Builder(mapa!!.cameraPosition).bearing(0.0).build()),250)}}
+    LaunchedEffect(pronto,origem,destino,rota,navegando,navegacao?.etapaAtual,navegacao?.paradaAtual){
         val map = mapa ?: return@LaunchedEffect
         if (!pronto) return@LaunchedEffect
-        map.clear(); marcadorGps = null
-        rota?.etapas?.forEach { etapa -> if (etapa.pontos.size >= 2) {
-            val points = etapa.pontos.map { LatLng(it.latitude,it.longitude) }
-            map.addPolyline(PolylineOptions().addAll(points).color(android.graphics.Color.WHITE).width(8f))
-            map.addPolyline(PolylineOptions().addAll(points).color(corModoAndroid(etapa.modo)).width(5f))
-        } }
-        map.addMarker(MarkerOptions().position(LatLng(origem.ponto.latitude,origem.ponto.longitude)).title("Origem · ${origem.nome}").icon(icones[0]))
-        map.addMarker(MarkerOptions().position(LatLng(destino.ponto.latitude,destino.ponto.longitude)).title("Destino · ${destino.nome}").icon(icones[1]))
+        map.clear()
+        val indiceAtual=navegacao?.etapaAtual?:0
+        rota?.etapas?.forEachIndexed{indice,etapa->
+            val passada=navegando && indice<indiceAtual
+            if(etapa.pontos.size>=2){
+                val points=etapa.pontos.map{LatLng(it.latitude,it.longitude)}
+                map.addPolyline(PolylineOptions().addAll(points).color(android.graphics.Color.WHITE).width(if(passada)4f else 8f))
+                map.addPolyline(PolylineOptions().addAll(points).color(if(passada)android.graphics.Color.LTGRAY else corModoAndroid(etapa.modo)).width(if(passada)2f else 5f))
+            }
+            if(!passada && etapa.modo.uppercase() !in setOf("WALK","FOOT","WALKING","CAMINHADA","A_PÉ","A PE")){
+                etapa.paradas.forEachIndexed{ordem,parada->
+                    val atual=navegando && indice==indiceAtual
+                    if(MotorNavegacao.valido(parada.ponto) && (!atual || ordem>(navegacao?.paradaAtual?:0))){
+                        val proxima=atual && ordem==(navegacao?.paradaAtual?:0)+1
+                        map.addMarker(MarkerOptions().position(LatLng(parada.ponto.latitude,parada.ponto.longitude))
+                            .title("${if(proxima)"Próximo ponto" else if(ordem==0)"Embarque" else if(ordem==etapa.paradas.lastIndex)"Desembarque" else "Parada"} · ${parada.nome}")
+                            .snippet("${etapa.linha} · ${etapa.sentido}").icon(icones[if(proxima)1 else 0]))
+                    }
+                }
+            }
+        }
+        rota?.paradasDesejadas?.forEachIndexed{i,e->if(MotorNavegacao.valido(e.ponto))map.addMarker(MarkerOptions().position(LatLng(e.ponto.latitude,e.ponto.longitude)).title("Parada desejada ${i+1} · ${e.nome}").icon(icones[1]))}
+        if(MotorNavegacao.valido(origem.ponto))map.addMarker(MarkerOptions().position(LatLng(origem.ponto.latitude,origem.ponto.longitude)).title("Origem · ${origem.nome}").icon(icones[0]))
+        if(MotorNavegacao.valido(destino.ponto))map.addMarker(MarkerOptions().position(LatLng(destino.ponto.latitude,destino.ponto.longitude)).title("Destino · ${destino.nome}").icon(icones[1]))
     }
-    LaunchedEffect(pronto,posicao,rota,origem.ponto,destino.ponto) {
-        val map = mapa ?: return@LaunchedEffect; val ponto = posicao ?: return@LaunchedEffect
-        if (!pronto) return@LaunchedEffect
-        val latLng = LatLng(ponto.latitude,ponto.longitude)
-        if (marcadorGps == null) marcadorGps = map.addMarker(MarkerOptions().position(latLng).title("Sua localização").icon(icones[2]))
-        else marcadorGps?.position = latLng
+    LaunchedEffect(pronto,posicao,rota,origem.ponto,destino.ponto,navegando,navegacao?.etapaAtual,navegacao?.paradaAtual){
+        if(pronto)mapa?.let{atualizarMarcador(it)}
     }
     LaunchedEffect(pronto,rota?.id,origem.ponto,destino.ponto) {
         val map = mapa ?: return@LaunchedEffect
         if (!pronto) return@LaunchedEffect
-        val points = rota?.etapas?.flatMap { it.pontos }.orEmpty().ifEmpty { listOf(origem.ponto,destino.ponto) }
+        val points = rota?.etapas?.flatMap { it.pontos }.orEmpty().ifEmpty { listOf(origem.ponto,destino.ponto).filter(MotorNavegacao::valido) }
+        if(points.size==1)map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(points[0].latitude,points[0].longitude),15.0),700)
         if (points.size > 1) runCatching { map.animateCamera(CameraUpdateFactory.newLatLngBounds(LatLngBounds.Builder().includes(points.map { LatLng(it.latitude,it.longitude) }).build(),80,100,80,70),900) }
     }
+    LaunchedEffect(navegando){if(navegando)seguindoGps=true}
     LaunchedEffect(focoGps) { if (focoGps > 0) seguindoGps = true }
     LaunchedEffect(seguindoGps,pronto,posicao,if(navegando) rumo else null) {
         if (seguindoGps && pronto && posicao != null) mapa?.animateCamera(CameraUpdateFactory.newCameraPosition(CameraPosition.Builder().target(LatLng(posicao.latitude,posicao.longitude)).zoom(15.5).tilt(0.0).bearing(if(navegando) rumo?.toDouble() ?: 0.0 else 0.0).build()),700)
     }
 }
+@Composable private fun MarcadorLocalizacao(centro:Offset,rumo:Float?){
+    val transicao=rememberInfiniteTransition(label="Localização")
+    val pulso by transicao.animateFloat(0f,1f,infiniteRepeatable(tween(1600,easing=LinearEasing),RepeatMode.Restart),label="Pulso GPS")
+    Canvas(Modifier.fillMaxSize().semantics{contentDescription="Sua localização"}){
+        val d=density;val azul=Color(0xFF2867D8)
+        drawCircle(azul.copy(alpha=.20f*(1-pulso)),(16+pulso*19)*d,centro)
+        drawCircle(azul.copy(alpha=.18f*(1-pulso)),(16+pulso*19)*d,centro,style=Stroke(1.5f*d))
+        drawCircle(Color.Black.copy(alpha=.10f),12.5f*d,centro+Offset(0f,1.5f*d))
+        drawCircle(Color.White,12f*d,centro)
+        drawCircle(azul,9f*d,centro)
+        if(rumo!=null)rotate(rumo,centro){
+            val seta=Path().apply{moveTo(centro.x,centro.y-6*d);lineTo(centro.x+5*d,centro.y+5*d);lineTo(centro.x,centro.y+2*d);lineTo(centro.x-5*d,centro.y+5*d);close()}
+            drawPath(seta,Color.White)
+        }else drawCircle(Color.White,3f*d,centro)
+    }
+}
+
 fun corModoAndroid(modo: String): Int = when(modo.uppercase()) {
     "WALK","FOOT","WALKING" -> android.graphics.Color.rgb(124,105,97)
     "SUBWAY","METRO","RAIL","TRAIN" -> android.graphics.Color.rgb(44,115,105)

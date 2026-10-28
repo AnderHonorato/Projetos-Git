@@ -79,7 +79,7 @@ private object StitchSprites {
         atlas.recycle();cached=result;return result
     }
 }
-private val stitchPhrases=listOf("Oi! Bora descobrir um caminho?","Um passo de cada vez. Eu vou junto!","Já conferiu o sentido do ônibus?","Nossa próxima aventura começa aqui!","Pode deixar: fico de olho no caminho.","Pausa para um sorriso… e seguimos!","Confere o horário antes de sair, combinado?")
+private val stitchPhrases=listOf("Arraste o mapa para mover.","Use dois dedos para ampliar ou reduzir.","Toque em Ir para iniciar a viagem.","Abra Roteiro para consultar as etapas.")
 private val StitchWine=Color(0xFF702B3F)
 private val StitchCream=Color(0xFFFFFAF0)
 
@@ -171,4 +171,21 @@ fun MascoteStitch(
 @Composable
 private fun StitchFrame(frame:SpriteFrame,modifier:Modifier=Modifier) {
     Canvas(modifier){drawImage(image=frame.bitmap,srcOffset=IntOffset.Zero,srcSize=IntSize(frame.width,frame.height),dstOffset=IntOffset.Zero,dstSize=IntSize(size.width.toInt(),size.height.toInt()),filterQuality=FilterQuality.None)}
+}
+
+@Composable
+fun IlustracaoMascote(acao:String,modifier:Modifier=Modifier){
+    val context=LocalContext.current
+    val lifecycle=LocalLifecycleOwner.current.lifecycle
+    val animacoes=remember(context.applicationContext){StitchSprites.load(context.applicationContext)}
+    val animacao=animacoes[acao]?:animacoes.getValue("idle")
+    var quadro by remember(acao){mutableIntStateOf(0)}
+    var ativo by remember{mutableStateOf(lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED))}
+    DisposableEffect(lifecycle){
+        val observador=LifecycleEventObserver{_,_->ativo=lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)}
+        lifecycle.addObserver(observador)
+        onDispose{lifecycle.removeObserver(observador)}
+    }
+    LaunchedEffect(acao,ativo){if(ativo)while(true){delay(animacao.durations[quadro]);quadro=(quadro+1)%animacao.frames.size}}
+    StitchFrame(animacao.frames[quadro],modifier.semantics{contentDescription="Mascote animado"})
 }

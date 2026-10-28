@@ -9,3 +9,7 @@ keystore.properties
 entrega/
 *.apk
 .idea/
+
+.kotlin/
+__pycache__/
+*.pyc
