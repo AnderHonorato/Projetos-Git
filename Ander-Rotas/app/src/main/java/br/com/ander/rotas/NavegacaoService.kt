@@ -10,6 +10,9 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.*
+import android.speech.tts.TextToSpeech
+import android.media.AudioAttributes
+import java.util.Locale
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -42,13 +45,27 @@ class NavegacaoService : Service(), LocationListener {
     private var ultimaNotificacao = 0L
     private var ultimoTexto = ""
     private var ultimoFixNanos = 0L
+    private var voz:TextToSpeech?=null
+    private var vozPronta=false
+    private var concluindo=false
+    private val handler=Handler(Looper.getMainLooper())
 
     override fun onCreate() {
         super.onCreate()
         localizador = getSystemService(LocationManager::class.java)
         avisos = getSystemService(NotificationManager::class.java)
         avisos.createNotificationChannel(NotificationChannel(CANAL, "Viagem em andamento", NotificationManager.IMPORTANCE_LOW))
-        avisos.createNotificationChannel(NotificationChannel(ALERTAS, "Desembarque e trajeto", NotificationManager.IMPORTANCE_HIGH))
+        avisos.createNotificationChannel(NotificationChannel(ALERTAS,"Desembarque e trajeto",NotificationManager.IMPORTANCE_HIGH).apply{enableVibration(true)})
+        if(getSharedPreferences("aparencia",0).getBoolean("voz_permitida",false)){
+            voz=TextToSpeech(this){status->
+                if(status==TextToSpeech.SUCCESS){
+                    val resultado=voz?.setLanguage(Locale("pt","BR"))
+                    vozPronta=resultado!=null && resultado!=TextToSpeech.LANG_MISSING_DATA && resultado!=TextToSpeech.LANG_NOT_SUPPORTED
+                    voz?.setAudioAttributes(AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ASSISTANCE_NAVIGATION_GUIDANCE).setContentType(AudioAttributes.CONTENT_TYPE_SPEECH).build())
+                    if(!vozPronta)SessaoNavegacao.erro.value="Voz em português indisponível. Ative uma voz nas configurações de texto para fala do Android. Os alertas visuais continuam."
+                }else SessaoNavegacao.erro.value="Não foi possível iniciar a voz. Os alertas visuais continuam."
+            }
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -61,6 +78,7 @@ class NavegacaoService : Service(), LocationListener {
             }
             return START_NOT_STICKY
         }
+        if(intent?.action==INICIAR && rotaAtual!=null)return START_NOT_STICKY
         if (intent?.action != INICIAR) { encerrar(); return START_NOT_STICKY }
         val rota = SessaoNavegacao.rota
         if (rota == null || !temPermissao(this)) {
@@ -99,6 +117,7 @@ class NavegacaoService : Service(), LocationListener {
     }
 
     override fun onLocationChanged(location: Location) {
+        if(concluindo)return
         val idade = (SystemClock.elapsedRealtimeNanos() - location.elapsedRealtimeNanos) / 1_000_000
         if (idade > 30_000 || idade < -1000 || !location.hasAccuracy() || location.accuracy <= 0) return
         val rota = rotaAtual ?: return
@@ -118,13 +137,22 @@ class NavegacaoService : Service(), LocationListener {
             ultimaNotificacao = agora
             ultimoTexto = estado.mensagem
         }
+        if(estado.avisoParada==AvisoParada.TRES){
+            @Suppress("DEPRECATION")
+            val vibrador=if(Build.VERSION.SDK_INT>=31)getSystemService(VibratorManager::class.java).defaultVibrator else getSystemService(Vibrator::class.java)
+            vibrador?.vibrate(VibrationEffect.createWaveform(longArrayOf(0,300,150,300),-1))
+        }
+        if(estado.avisoParada in setOf(AvisoParada.DOIS,AvisoParada.DESEMBARCAR) || (estado.chegou && estado.alertar))falar(estado.mensagem)
         if (estado.alertar && (Build.VERSION.SDK_INT < 33 || checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED)) {
             val titulo = when { estado.chegou -> "Você chegou!"; estado.desvio -> "Confira o caminho"; else -> "Prepare-se para a próxima etapa" }
             avisos.notify(ID_ALERTA, Notification.Builder(this, ALERTAS).setSmallIcon(R.drawable.ic_launcher)
                 .setContentTitle(titulo).setContentText(estado.mensagem).setStyle(Notification.BigTextStyle().bigText(estado.mensagem))
                 .setContentIntent(abrirApp()).setAutoCancel(true).build())
         }
-        if (estado.chegou) encerrar()
+        if(estado.chegou){
+            concluindo=true;localizador.removeUpdates(this)
+            if(vozPronta && getSharedPreferences("aparencia",0).getBoolean("voz_permitida",false))handler.postDelayed({encerrar()},8_000)else encerrar()
+        }
     }
     override fun onProviderDisabled(provider: String) { SessaoNavegacao.erro.value = "Sinal de localização indisponível. Seu roteiro continua salvo." }
     override fun onProviderEnabled(provider: String) { SessaoNavegacao.erro.value = null }
@@ -133,11 +161,16 @@ class NavegacaoService : Service(), LocationListener {
     override fun onBind(intent: Intent?): IBinder? = null
     private fun abrirApp() = PendingIntent.getActivity(this, 0, Intent(this, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
     private fun notificacao(texto: String): Notification {
-        val parar = PendingIntent.getService(this, 1, Intent(this, NavegacaoService::class.java).setAction(PARAR), PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+        val parar=PendingIntent.getActivity(this,1,Intent(this,MainActivity::class.java)
+            .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            .putExtra("confirmar_cancelamento",true).putExtra("rota_id",rotaAtual?.id),PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         return Notification.Builder(this, CANAL).setSmallIcon(R.drawable.ic_launcher)
-            .setContentTitle("Ander Rotas · acompanhando sua viagem").setContentText(texto).setStyle(Notification.BigTextStyle().bigText(texto))
+            .setContentTitle("Ander Rotas · viagem em foco").setSubText(rotaAtual?.destino?.nome).setCategory(Notification.CATEGORY_NAVIGATION).setContentText(texto).setStyle(Notification.BigTextStyle().bigText(texto))
             .setContentIntent(abrirApp()).setOngoing(true).setOnlyAlertOnce(true)
-            .addAction(Notification.Action.Builder(null, "Encerrar", parar).build()).build()
+            .addAction(Notification.Action.Builder(null, "Cancelar viagem", parar).build()).build()
+    }
+    private fun falar(texto:String){
+        if(vozPronta && getSharedPreferences("aparencia",0).getBoolean("voz_permitida",false))voz?.speak(texto,TextToSpeech.QUEUE_FLUSH,null,"aviso-${SystemClock.elapsedRealtime()}")
     }
     private fun encerrar() {
         ultimoFixNanos = 0L
@@ -148,8 +181,10 @@ class NavegacaoService : Service(), LocationListener {
         stopSelf()
     }
     override fun onDestroy() {
+        handler.removeCallbacksAndMessages(null);voz?.stop();voz?.shutdown();voz=null;vozPronta=false
         if (::localizador.isInitialized) localizador.removeUpdates(this)
         SessaoNavegacao.ativa.value = false
+        SessaoNavegacao.rota=null
         super.onDestroy()
     }
     companion object {
@@ -162,10 +197,12 @@ class NavegacaoService : Service(), LocationListener {
         private const val ID_ALERTA = 101
         fun temPermissao(context: Context) = context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || context.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
         fun iniciar(context: Context, rota: Rota) {
+            if(SessaoNavegacao.ativa.value || SessaoNavegacao.rota!=null)return
+            SessaoNavegacao.ativa.value=true;SessaoNavegacao.erro.value=null
             SessaoNavegacao.rota = rota
             context.startForegroundService(Intent(context, NavegacaoService::class.java).setAction(INICIAR))
         }
-        fun parar(context: Context) { context.stopService(Intent(context, NavegacaoService::class.java)); SessaoNavegacao.ativa.value = false; SessaoNavegacao.rota = null }
+        fun parar(context: Context) { context.stopService(Intent(context, NavegacaoService::class.java)); SessaoNavegacao.ativa.value = false; SessaoNavegacao.rota = null;context.getSystemService(NotificationManager::class.java).cancel(ID_ALERTA);SessaoNavegacao.estado.value=null }
         fun atualizarEtapa(context: Context, indice: Int) {
             if (SessaoNavegacao.ativa.value) context.startService(Intent(context, NavegacaoService::class.java).setAction(ETAPA).putExtra("etapa", indice))
         }
@@ -184,6 +221,7 @@ class NavegacaoService : Service(), LocationListener {
             }
             listener = object: LocationListener {
                 override fun onLocationChanged(location: Location) {
+        if(concluindo)return
                     val idade = (SystemClock.elapsedRealtimeNanos() - location.elapsedRealtimeNanos) / 1_000_000
                     if (idade > 30_000 || idade < -1000 || !location.hasAccuracy() || location.accuracy <= 0) return
                     concluir(LeituraLocalizacao(Ponto(location.latitude, location.longitude), location.accuracy, if(location.hasBearing()) location.bearing else null, if(location.hasSpeed()) location.speed else null, location.time))

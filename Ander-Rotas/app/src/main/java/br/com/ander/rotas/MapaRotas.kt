@@ -36,12 +36,12 @@ private var mapaConfigurado = false
     MapLibre.getInstance(context.applicationContext)
     if (mapaConfigurado) return
     val dispatcher = Dispatcher().apply { maxRequests = 4; maxRequestsPerHost = 4 }
-    HttpRequestUtil.setOkHttpClient(OkHttpClient.Builder().dispatcher(dispatcher).addInterceptor { chain -> chain.proceed(chain.request().newBuilder().header("User-Agent", "AnderRotas/1.0.0 (Android; native MapLibre)").build()) }.build())
+    HttpRequestUtil.setOkHttpClient(OkHttpClient.Builder().dispatcher(dispatcher).addInterceptor { chain -> chain.proceed(chain.request().newBuilder().header("User-Agent", "AnderRotas/1.1.0 (Android; native MapLibre)").build()) }.build())
     mapaConfigurado = true
 }
 
 @Composable
-fun MapaRotas(origem: Endereco, destino: Endereco, rota: Rota?, posicao: Ponto?, focoGps: Int, navegando: Boolean, rumo: Float? = null, modifier: Modifier = Modifier, onPonto: (Ponto) -> Unit, onEstado: (String?) -> Unit) {
+fun MapaRotas(origem: Endereco, destino: Endereco, rota: Rota?, posicao: Ponto?, focoGps: Int, navegando: Boolean, rumo: Float? = null, navegacao: EstadoNavegacao? = null, modifier: Modifier = Modifier, onPonto: (Ponto) -> Unit, onEstado: (String?) -> Unit) {
     val context = LocalContext.current
     remember(context) { configurarMapLibre(context); true }
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -84,19 +84,35 @@ fun MapaRotas(origem: Endereco, destino: Endereco, rota: Rota?, posicao: Ponto?,
         onDispose { lifecycle.removeObserver(observer); view.onPause(); view.onStop(); view.onDestroy() }
     }
     AndroidView(factory = { view }, modifier = modifier)
-    LaunchedEffect(pronto, origem, destino, rota) {
+    LaunchedEffect(pronto,origem,destino,rota,navegando,navegacao?.etapaAtual,navegacao?.paradaAtual){
         val map = mapa ?: return@LaunchedEffect
         if (!pronto) return@LaunchedEffect
         map.clear(); marcadorGps = null
-        rota?.etapas?.forEach { etapa -> if (etapa.pontos.size >= 2) {
-            val points = etapa.pontos.map { LatLng(it.latitude,it.longitude) }
-            map.addPolyline(PolylineOptions().addAll(points).color(android.graphics.Color.WHITE).width(8f))
-            map.addPolyline(PolylineOptions().addAll(points).color(corModoAndroid(etapa.modo)).width(5f))
-        } }
-        map.addMarker(MarkerOptions().position(LatLng(origem.ponto.latitude,origem.ponto.longitude)).title("Origem · ${origem.nome}").icon(icones[0]))
-        map.addMarker(MarkerOptions().position(LatLng(destino.ponto.latitude,destino.ponto.longitude)).title("Destino · ${destino.nome}").icon(icones[1]))
+        val indiceAtual=navegacao?.etapaAtual?:0
+        rota?.etapas?.forEachIndexed{indice,etapa->
+            val passada=navegando && indice<indiceAtual
+            if(etapa.pontos.size>=2){
+                val points=etapa.pontos.map{LatLng(it.latitude,it.longitude)}
+                map.addPolyline(PolylineOptions().addAll(points).color(android.graphics.Color.WHITE).width(if(passada)4f else 8f))
+                map.addPolyline(PolylineOptions().addAll(points).color(if(passada)android.graphics.Color.LTGRAY else corModoAndroid(etapa.modo)).width(if(passada)2f else 5f))
+            }
+            if(!passada && etapa.modo.uppercase() !in setOf("WALK","FOOT","WALKING","CAMINHADA","A_PÉ","A PE")){
+                etapa.paradas.forEachIndexed{ordem,parada->
+                    val atual=navegando && indice==indiceAtual
+                    if(MotorNavegacao.valido(parada.ponto) && (!atual || ordem>(navegacao?.paradaAtual?:0))){
+                        val proxima=atual && ordem==(navegacao?.paradaAtual?:0)+1
+                        map.addMarker(MarkerOptions().position(LatLng(parada.ponto.latitude,parada.ponto.longitude))
+                            .title("${if(proxima)"Próximo ponto" else if(ordem==0)"Embarque" else if(ordem==etapa.paradas.lastIndex)"Desembarque" else "Parada"} · ${parada.nome}")
+                            .snippet("${etapa.linha} · ${etapa.sentido}").icon(icones[if(proxima)1 else 0]))
+                    }
+                }
+            }
+        }
+        rota?.paradasDesejadas?.forEachIndexed{i,e->if(MotorNavegacao.valido(e.ponto))map.addMarker(MarkerOptions().position(LatLng(e.ponto.latitude,e.ponto.longitude)).title("Parada desejada ${i+1} · ${e.nome}").icon(icones[1]))}
+        if(MotorNavegacao.valido(origem.ponto))map.addMarker(MarkerOptions().position(LatLng(origem.ponto.latitude,origem.ponto.longitude)).title("Origem · ${origem.nome}").icon(icones[0]))
+        if(MotorNavegacao.valido(destino.ponto))map.addMarker(MarkerOptions().position(LatLng(destino.ponto.latitude,destino.ponto.longitude)).title("Destino · ${destino.nome}").icon(icones[1]))
     }
-    LaunchedEffect(pronto,posicao,rota,origem.ponto,destino.ponto) {
+    LaunchedEffect(pronto,posicao,rota,origem.ponto,destino.ponto,navegando,navegacao?.etapaAtual,navegacao?.paradaAtual) {
         val map = mapa ?: return@LaunchedEffect; val ponto = posicao ?: return@LaunchedEffect
         if (!pronto) return@LaunchedEffect
         val latLng = LatLng(ponto.latitude,ponto.longitude)
@@ -106,9 +122,11 @@ fun MapaRotas(origem: Endereco, destino: Endereco, rota: Rota?, posicao: Ponto?,
     LaunchedEffect(pronto,rota?.id,origem.ponto,destino.ponto) {
         val map = mapa ?: return@LaunchedEffect
         if (!pronto) return@LaunchedEffect
-        val points = rota?.etapas?.flatMap { it.pontos }.orEmpty().ifEmpty { listOf(origem.ponto,destino.ponto) }
+        val points = rota?.etapas?.flatMap { it.pontos }.orEmpty().ifEmpty { listOf(origem.ponto,destino.ponto).filter(MotorNavegacao::valido) }
+        if(points.size==1)map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(points[0].latitude,points[0].longitude),15.0),700)
         if (points.size > 1) runCatching { map.animateCamera(CameraUpdateFactory.newLatLngBounds(LatLngBounds.Builder().includes(points.map { LatLng(it.latitude,it.longitude) }).build(),80,100,80,70),900) }
     }
+    LaunchedEffect(navegando){if(navegando)seguindoGps=true}
     LaunchedEffect(focoGps) { if (focoGps > 0) seguindoGps = true }
     LaunchedEffect(seguindoGps,pronto,posicao,if(navegando) rumo else null) {
         if (seguindoGps && pronto && posicao != null) mapa?.animateCamera(CameraUpdateFactory.newCameraPosition(CameraPosition.Builder().target(LatLng(posicao.latitude,posicao.longitude)).zoom(15.5).tilt(0.0).bearing(if(navegando) rumo?.toDouble() ?: 0.0 else 0.0).build()),700)

@@ -6,6 +6,11 @@ import android.content.Intent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.CustomAccessibilityAction
+import androidx.compose.ui.semantics.customActions
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -65,6 +70,9 @@ fun nomeModo(modo:String)=when(modo.uppercase()){ "WALK","FOOT","WALKING"->"A p�
         var pagina by rememberSaveable { mutableIntStateOf(0) }; var buscaOrigem by rememberSaveable { mutableStateOf<Boolean?>(null) }; var detalhes by rememberSaveable { mutableStateOf(false) }
         var planejadorExpandido by rememberSaveable { mutableStateOf(true) }
         LaunchedEffect(estado.rotas) { if(estado.rotas.isNotEmpty()) planejadorExpandido=false }
+        LaunchedEffect(estado.navegando){if(estado.navegando){pagina=0;buscaOrigem=null;detalhes=false;planejadorExpandido=false}}
+        var vozPermitida by remember{mutableStateOf(context.getSharedPreferences("aparencia",0).getBoolean("voz_permitida",false))}
+        LaunchedEffect(pagina){vozPermitida=context.getSharedPreferences("aparencia",0).getBoolean("voz_permitida",false)}
         var focoGps by remember { mutableIntStateOf(0) }; var erroMapa by remember { mutableStateOf<String?>(null) }; var reiniciarMapa by remember { mutableIntStateOf(0) }; var pontoMarcado by remember { mutableStateOf<Ponto?>(null) }
         var aviso by remember { mutableStateOf<String?>(null) }; var mascoteMini by rememberSaveable { mutableStateOf(false) }; var mascoteMudo by rememberSaveable { mutableStateOf(false) }; var interagiuMascote by rememberSaveable { mutableStateOf(false) }
         var saltoEtapa by remember { mutableStateOf(false) }; var aberturaMascote by remember { mutableStateOf(true) }; var fraseIdle by remember { mutableIntStateOf(0) }
@@ -88,7 +96,7 @@ fun nomeModo(modo:String)=when(modo.uppercase()){ "WALK","FOOT","WALKING"->"A p�
                     Column(Modifier.fillMaxSize()){
                         Cabecalho(estado.navegando,estado.temaEscuro,vm::mudarTema)
                         Box(Modifier.weight(1f).fillMaxWidth()){
-                            key(reiniciarMapa){MapaRotas(estado.origem,estado.destino,estado.rotaSelecionada,estado.posicao,focoGps,estado.navegando,rumo=leituraGps?.rumo,modifier=Modifier.fillMaxSize(),onPonto={pontoMarcado=it},onEstado={erroMapa=it})}
+                            key(reiniciarMapa){MapaRotas(estado.origem,estado.destino,estado.rotaSelecionada,estado.posicao,focoGps,estado.navegando,rumo=leituraGps?.rumo,navegacao=estado.navegacao,modifier=Modifier.fillMaxSize(),onPonto={if(!estado.navegando)pontoMarcado=it},onEstado={erroMapa=it})}
                             Row(Modifier.align(Alignment.TopStart).padding(16.dp)){Etiqueta("MAPA INTERATIVO",Verde)}
                             Column(Modifier.align(Alignment.CenterEnd).padding(end=16.dp),verticalArrangement=Arrangement.spacedBy(9.dp)){
                                 FilledIconButton(onClick={onGps();focoGps++},modifier=Modifier.size(48.dp),colors=IconButtonDefaults.filledIconButtonColors(containerColor=MaterialTheme.colorScheme.surface,contentColor=MaterialTheme.colorScheme.primary)){Simbolo("gps",Modifier.size(23.dp))}
@@ -107,16 +115,19 @@ fun nomeModo(modo:String)=when(modo.uppercase()){ "WALK","FOOT","WALKING"->"A p�
                                         IconButton(onClick={planejadorExpandido=true}){Simbolo("busca",Modifier.size(21.dp),descricao="Editar origem e destino")}
                                         TextButton(onClick={if(estado.rotaSelecionada!=null)detalhes=true else vm.calcular()},enabled=!estado.calculando){Text(if(estado.rotaSelecionada!=null)"Detalhes" else "Buscar")}
                                     }
+                                    if(estado.rotaSelecionada!=null)Button(onClick={onIniciar();focoGps++},modifier=Modifier.fillMaxWidth(),shape=RoundedCornerShape(14.dp)){Text("Ir")}
                                     if(estado.rotas.isNotEmpty())Row(Modifier.horizontalScroll(rememberScrollState()),horizontalArrangement=Arrangement.spacedBy(8.dp)){estado.rotas.forEach{rota->FilterChip(selected=rota.id==estado.rotaSelecionada?.id,onClick={vm.selecionarRota(rota);detalhes=true},label={Text("${rota.duracaoMinutos} min · ${hora(rota.inicio)}")})}}
                                     if(!estado.conectado)Text("Sem internet · horários salvos sem atualização.",fontSize=11.sp,color=MaterialTheme.colorScheme.error)
                                 }else{
                                     Row(verticalAlignment=Alignment.CenterVertically){Text("Qual é o próximo destino?",Modifier.weight(1f),fontSize=21.sp,fontWeight=FontWeight.Bold,letterSpacing=(-.5).sp);IconButton(onClick=vm::inverter){Simbolo("inverter",Modifier.size(23.dp))}}
-                                    Row(verticalAlignment=Alignment.CenterVertically){Box(Modifier.weight(1f)){CampoEndereco("De",estado.origem.nome,"origem"){buscaOrigem=true}};IconButton(onClick={val ponto=estado.posicao;if(ponto!=null)vm.selecionarEndereco(Endereco("Minha localização",ponto,"GPS · precisão aproximada ±${estado.precisaoMetros?.toInt()?:0} m"),true)else{onGps();aviso="Obtendo sua localização. Depois toque novamente no GPS ao lado da origem para sair deste ponto."}}){Simbolo("gps",Modifier.size(21.dp),descricao="Usar minha localização como origem")}}
-                                    CampoEndereco("Para",estado.destino.nome,"destino"){buscaOrigem=false}
+                                    Row(verticalAlignment=Alignment.CenterVertically){Box(Modifier.weight(1f)){CampoEndereco("De",estado.origem.nome.ifBlank{"Sua localização · toque para editar"},"origem"){vm.prepararBusca(true);buscaOrigem=true}};IconButton(onClick={vm.usarLocalizacaoComoOrigem();onGps()}){Simbolo("gps",Modifier.size(21.dp),descricao="Usar minha localização como origem")}}
+                                    CampoEndereco("Para",estado.destino.nome.ifBlank{"Digite seu destino"},"destino"){vm.prepararBusca(false);buscaOrigem=false}
+                                    ParadasPlanejadas(estado.paradasDesejadas,vm::moverParada,vm::removerParada)
+                                    TextButton(onClick={vm.prepararBusca(false,true);buscaOrigem=false},enabled=estado.paradasDesejadas.size<8,contentPadding=PaddingValues(0.dp),modifier=Modifier.height(30.dp)){Text("+ Adicionar parada",fontSize=12.sp)}
                                     if(ruaAproximada(estado.origem)||ruaAproximada(estado.destino))Text("Ponto aproximado da rua · confirme a posição no mapa",color=MaterialTheme.colorScheme.onSurfaceVariant,fontSize=10.sp)
                                     Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween){
                                         TextButton(onClick={val calendario=Calendar.getInstance().apply{timeInMillis=estado.quando};DatePickerDialog(context,{_,ano,mes,dia->calendario.set(ano,mes,dia);TimePickerDialog(context,{_,h,m->calendario.set(Calendar.HOUR_OF_DAY,h);calendario.set(Calendar.MINUTE,m);vm.definirQuando(calendario.timeInMillis)},calendario.get(Calendar.HOUR_OF_DAY),calendario.get(Calendar.MINUTE),true).show()},calendario.get(Calendar.YEAR),calendario.get(Calendar.MONTH),calendario.get(Calendar.DAY_OF_MONTH)).show()},contentPadding=PaddingValues(0.dp)){Simbolo("relogio",Modifier.size(16.dp));Spacer(Modifier.width(6.dp));Text(if(estado.horarioFuturo)"Sair ${dataHora(estado.quando)}" else "Sair agora",fontSize=12.sp)}
-                                        Button(onClick=vm::calcular,enabled=!estado.calculando,shape=RoundedCornerShape(16.dp),contentPadding=PaddingValues(horizontal=20.dp,vertical=11.dp)){if(estado.calculando)CircularProgressIndicator(Modifier.size(18.dp),strokeWidth=2.dp,color=MaterialTheme.colorScheme.onPrimary)else{Text("Buscar rotas",fontWeight=FontWeight.Bold);Spacer(Modifier.width(8.dp));Simbolo("seta",Modifier.size(17.dp),MaterialTheme.colorScheme.onPrimary)}}
+                                        Button(onClick=vm::calcular,enabled=!estado.calculando && MotorNavegacao.valido(estado.origem.ponto) && MotorNavegacao.valido(estado.destino.ponto),shape=RoundedCornerShape(16.dp),contentPadding=PaddingValues(horizontal=20.dp,vertical=11.dp)){if(estado.calculando)CircularProgressIndicator(Modifier.size(18.dp),strokeWidth=2.dp,color=MaterialTheme.colorScheme.onPrimary)else{Text("Buscar rotas",fontWeight=FontWeight.Bold);Spacer(Modifier.width(8.dp));Simbolo("seta",Modifier.size(17.dp),MaterialTheme.colorScheme.onPrimary)}}
                                     }
                                     if(estado.horarioFuturo)TextButton(onClick=vm::sairAgora,contentPadding=PaddingValues(0.dp),modifier=Modifier.height(27.dp)){Text("Voltar para sair agora",fontSize=11.sp)}
                                     if(!estado.conectado)Text("Sem internet · use mapas e viagens salvas. Horários sem atualização.",color=MaterialTheme.colorScheme.error,fontSize=11.sp)
@@ -148,24 +159,26 @@ fun nomeModo(modo:String)=when(modo.uppercase()){ "WALK","FOOT","WALKING"->"A p�
                             HorizontalDivider(color=MaterialTheme.colorScheme.outline.copy(alpha=.5f))
                             Row(verticalAlignment=Alignment.CenterVertically){Column(Modifier.weight(1f)){Text("Companheiro silencioso",fontWeight=FontWeight.SemiBold);Text("Oculta as falas do mascote",fontSize=12.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)};Switch(checked=mascoteMudo,onCheckedChange={mascoteMudo=it})}
                         }}
+                        Row(verticalAlignment=Alignment.CenterVertically){Column(Modifier.weight(1f)){Text("Avisos por voz",fontWeight=FontWeight.SemiBold);Text("Dois pontos antes e ao desembarcar",fontSize=12.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)};Switch(checked=vozPermitida,onCheckedChange={vozPermitida=it;context.getSharedPreferences("aparencia",0).edit().putBoolean("voz_permitida",it).apply()})}
                         Secao("Mapas sem internet")
-                        Surface(shape=RoundedCornerShape(22.dp),color=MaterialTheme.colorScheme.surface){Column(Modifier.padding(18.dp),verticalArrangement=Arrangement.spacedBy(10.dp)){Simbolo("mapa",Modifier.size(29.dp));Text("Um pedaço da cidade com você",fontWeight=FontWeight.Bold,fontSize=18.sp);Text("Salve a região de 8 × 8 km em torno do destino atual. Mantém uma região por vez. O download acontece somente ao tocar no botão, até 50 MB. Busca e novos horários precisam de internet.",fontSize=13.sp,color=MaterialTheme.colorScheme.onSurfaceVariant);Text(mapaOffline.mensagem,fontSize=12.sp,fontWeight=FontWeight.Medium);Button(onClick={MapasOffline.salvar(context,estado.destino)},enabled=!mapaOffline.ocupado,shape=RoundedCornerShape(14.dp)){Text(if(mapaOffline.ocupado)"Salvando…" else "Salvar região do destino")};TextButton(onClick={MapasOffline.excluir(context)},enabled=!mapaOffline.ocupado){Text("Excluir mapas salvos")}}}
+                        Surface(shape=RoundedCornerShape(22.dp),color=MaterialTheme.colorScheme.surface){Column(Modifier.padding(18.dp),verticalArrangement=Arrangement.spacedBy(10.dp)){Simbolo("mapa",Modifier.size(29.dp));Text("Um pedaço da cidade com você",fontWeight=FontWeight.Bold,fontSize=18.sp);Text("Salve a região de 8 × 8 km em torno do destino atual. Mantém uma região por vez. O download acontece somente ao tocar no botão, até 50 MB. Busca e novos horários precisam de internet.",fontSize=13.sp,color=MaterialTheme.colorScheme.onSurfaceVariant);Text(mapaOffline.mensagem,fontSize=12.sp,fontWeight=FontWeight.Medium);Button(onClick={MapasOffline.salvar(context,estado.destino)},enabled=!mapaOffline.ocupado && MotorNavegacao.valido(estado.destino.ponto),shape=RoundedCornerShape(14.dp)){Text(if(mapaOffline.ocupado)"Salvando…" else "Salvar região do destino")};TextButton(onClick={MapasOffline.excluir(context)},enabled=!mapaOffline.ocupado){Text("Excluir mapas salvos")}}}
                         Secao("Busca de endereços")
-                        OutlinedTextField(value=geocodificador,onValueChange={geocodificador=it},modifier=Modifier.fillMaxWidth(),label={Text("Servidor Nominatim compatível")},supportingText={Text("URL HTTPS terminada em /search. Sem busca automática ao digitar.")},shape=RoundedCornerShape(16.dp),singleLine=true)
+                        OutlinedTextField(value=geocodificador,onValueChange={geocodificador=it},modifier=Modifier.fillMaxWidth(),label={Text("Servidor de sugestões compatível com Photon")},supportingText={Text("URL HTTPS da API de sugestões. Resultados aparecem ao digitar.")},shape=RoundedCornerShape(16.dp),singleLine=true)
                         OutlinedButton(onClick={runCatching{vm.configurarGeocodificador(geocodificador.trim())}.onSuccess{aviso="Servidor de busca atualizado."}.onFailure{aviso=it.message?:"Informe uma URL HTTPS válida."}}){Text("Salvar servidor de busca")}
                         Secao("Fontes e transparência")
-                        Text("Rotas: Transitous. Endereços: OpenStreetMap / Nominatim. Mapa: OpenFreeMap, OpenMapTiles e colaboradores do OpenStreetMap. A cobertura depende das fontes de cada região.",fontSize=13.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text("Rotas: Transitous. Endereços: OpenStreetMap / Photon. Mapa: OpenFreeMap, OpenMapTiles e colaboradores do OpenStreetMap. A cobertura depende das fontes de cada região.",fontSize=13.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)
                         Text("Horário programado é a tabela publicada. Previsão e tempo real são identificados apenas quando fornecidos pela fonte. Sempre confira o letreiro, o sentido e os avisos da operadora.",fontSize=13.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)
-                        Text("GPS funciona durante a navegação. Sua localização permanece neste aparelho; os pontos de origem e destino são enviados à fonte ao buscar rotas. Só acompanha após você iniciar; encerre pela notificação. Não solicita permissão permanente.",fontSize=13.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)
-                        Text("Ander Rotas · 1.0.0 · versão de teste",fontSize=12.sp,color=MaterialTheme.colorScheme.primary,modifier=Modifier.padding(bottom=22.dp))
+                        Text("Sua localização preenche a origem ao abrir. O acompanhamento contínuo começa ao tocar em Ir. Origem, destino e paradas são enviados à fonte de rotas; o GPS também pode orientar as sugestões. Cancele pelo app ou pela notificação, com confirmação.",fontSize=13.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text("Ander Rotas · 1.1.0 · versão de teste",fontSize=12.sp,color=MaterialTheme.colorScheme.primary,modifier=Modifier.padding(bottom=22.dp))
                     }
                 }
                 estado.erro?.let{erro->Surface(Modifier.align(Alignment.TopCenter).statusBarsPadding().padding(16.dp),shape=RoundedCornerShape(18.dp),color=MaterialTheme.colorScheme.errorContainer,shadowElevation=6.dp){Row(Modifier.padding(14.dp),verticalAlignment=Alignment.CenterVertically){Text(erro,Modifier.weight(1f),fontSize=13.sp,color=MaterialTheme.colorScheme.onErrorContainer);IconButton(onClick=vm::limparErro){Simbolo("fechar",Modifier.size(18.dp),MaterialTheme.colorScheme.onErrorContainer)}}}}
             }
         }
-        if(buscaOrigem!=null){val origem=buscaOrigem==true;BuscaEndereco(estado,origem,{vm.editarTexto(it,origem)},{vm.buscar(if(origem)estado.textoOrigem else estado.textoDestino,origem)},{vm.selecionarEndereco(it,origem);buscaOrigem=null},vm::salvarFavorito,{buscaOrigem=null})}
+        if(buscaOrigem!=null&&!estado.navegando){val origem=buscaOrigem==true;BuscaEndereco(estado,origem,{vm.editarTexto(it,origem)},{vm.buscar(estado.textoBusca,origem)},{vm.selecionarEndereco(it,origem);buscaOrigem=null},vm::salvarFavorito,{vm.fecharBusca();buscaOrigem=null})}
         if(detalhes)DetalhesViagem(estado,{detalhes=false},{detalhes=false;onIniciar();focoGps++},onParar,{vm.salvarViagem("${estado.origem.nome} → ${estado.destino.nome}");aviso="Viagem salva. Ida e volta disponíveis em Salvos."},{rota->val texto=buildString{append("Ander Rotas\n${rota.origem.nome} → ${rota.destino.nome}\n${hora(rota.inicio)}–${hora(rota.fim)} · ${rota.duracaoMinutos} min\n");rota.etapas.forEach{append("${nomeModo(it.modo)} ${it.linha} · ${it.origem} → ${it.destino}\n")};append("${rota.fonte}\nHorários consultados em ${dataHora(rota.consultadaEm)}. ${rota.aviso}")};context.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply{type="text/plain";putExtra(Intent.EXTRA_TEXT,texto)},"Compartilhar viagem"))})
-        pontoMarcado?.let{ponto->AlertDialog(onDismissRequest={pontoMarcado=null},title={Text("Usar este ponto")},text={Text("Ponto escolhido no mapa: %.5f, %.5f. Confira a rua e o lado da via antes de sair.".format(ponto.latitude,ponto.longitude))},confirmButton={TextButton(onClick={vm.selecionarEndereco(Endereco("Ponto escolhido no mapa",ponto,"Coordenada selecionada manualmente"),false);pontoMarcado=null}){Text("Como destino")}},dismissButton={TextButton(onClick={vm.selecionarEndereco(Endereco("Ponto escolhido no mapa",ponto,"Coordenada selecionada manualmente"),true);pontoMarcado=null}){Text("Como origem")}})}
+        if(estado.confirmarCancelamento)AlertDialog(onDismissRequest=vm::manterViagem,title={Text("Cancelar esta viagem?")},text={Text("O acompanhamento pelo GPS e a notificação de status serão encerrados.")},confirmButton={TextButton(onClick=vm::parar){Text("Cancelar viagem")}},dismissButton={TextButton(onClick=vm::manterViagem){Text("Continuar viagem")}})
+        pontoMarcado?.takeIf{!estado.navegando}?.let{ponto->AlertDialog(onDismissRequest={pontoMarcado=null},title={Text("Usar este ponto")},text={Text("Ponto escolhido no mapa: %.5f, %.5f. Confira a rua e o lado da via antes de sair.".format(ponto.latitude,ponto.longitude))},confirmButton={TextButton(onClick={vm.selecionarEndereco(Endereco("Ponto escolhido no mapa",ponto,"Coordenada selecionada manualmente"),false);pontoMarcado=null}){Text("Como destino")}},dismissButton={TextButton(onClick={vm.selecionarEndereco(Endereco("Ponto escolhido no mapa",ponto,"Coordenada selecionada manualmente"),true);pontoMarcado=null}){Text("Como origem")}})}
         aviso?.let{mensagem->AlertDialog(onDismissRequest={aviso=null},title={Text("Ander Rotas")},text={Text(mensagem)},confirmButton={TextButton(onClick={aviso=null}){Text("Entendi")}})}
     }
 }
@@ -182,10 +195,10 @@ fun nomeModo(modo:String)=when(modo.uppercase()){ "WALK","FOOT","WALKING"->"A p�
 @Composable private fun BuscaEndereco(estado:EstadoRotas,origem:Boolean,editar:(String)->Unit,buscar:()->Unit,selecionar:(Endereco)->Unit,favoritar:(Endereco)->Unit,fechar:()->Unit){
     ModalBottomSheet(onDismissRequest=fechar,sheetState=rememberModalBottomSheetState(skipPartiallyExpanded=true),containerColor=MaterialTheme.colorScheme.surface){
         Column(Modifier.fillMaxWidth().imePadding().verticalScroll(rememberScrollState()).padding(horizontal=22.dp).padding(bottom=24.dp),verticalArrangement=Arrangement.spacedBy(13.dp)){
-            Text(if(origem)"De onde vamos sair?" else "Para onde vamos?",fontSize=25.sp,fontWeight=FontWeight.Bold)
-            OutlinedTextField(value=if(origem)estado.textoOrigem else estado.textoDestino,onValueChange=editar,label={Text("Rua, número, bairro e cidade")},modifier=Modifier.fillMaxWidth(),shape=RoundedCornerShape(16.dp),singleLine=true,keyboardOptions=KeyboardOptions(imeAction=ImeAction.Search),keyboardActions=KeyboardActions(onSearch={buscar()}))
-            Button(onClick=buscar,enabled=!estado.buscando,modifier=Modifier.fillMaxWidth(),shape=RoundedCornerShape(15.dp)){if(estado.buscando)CircularProgressIndicator(Modifier.size(18.dp),strokeWidth=2.dp,color=MaterialTheme.colorScheme.onPrimary)else Text("Pesquisar endereço")}
-            Text("Pesquise qualquer endereço. Confira a cidade e a posição encontrada; alguns números podem não estar mapeados.",color=MaterialTheme.colorScheme.onSurfaceVariant,fontSize=12.sp)
+            Text(if(estado.buscaParaParada)"Onde deseja parar?" else if(origem)"De onde vamos sair?" else "Para onde vamos?",fontSize=25.sp,fontWeight=FontWeight.Bold)
+            OutlinedTextField(value=estado.textoBusca,onValueChange=editar,label={Text("Rua, número, bairro e cidade")},modifier=Modifier.fillMaxWidth(),shape=RoundedCornerShape(16.dp),singleLine=true,keyboardOptions=KeyboardOptions(imeAction=ImeAction.Search),keyboardActions=KeyboardActions(onSearch={buscar()}))
+            if(estado.buscando)LinearProgressIndicator(Modifier.fillMaxWidth())
+            Text("Sugestões a partir de três caracteres. Confira a cidade e a posição no mapa.",color=MaterialTheme.colorScheme.onSurfaceVariant,fontSize=12.sp)
             estado.resultadosBusca.forEach{endereco->Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){Column(Modifier.weight(1f).clickable{selecionar(endereco)}.padding(vertical=10.dp)){Text(endereco.nome,fontWeight=FontWeight.SemiBold,fontSize=14.sp);Text(endereco.detalhe,color=MaterialTheme.colorScheme.onSurfaceVariant,fontSize=11.sp)};IconButton(onClick={favoritar(endereco)}){Simbolo("salvo",Modifier.size(23.dp))}};HorizontalDivider(color=MaterialTheme.colorScheme.outline.copy(alpha=.5f))}
             if(estado.resultadosBusca.isEmpty()&&!estado.buscando){Secao("Seus favoritos");estado.favoritos.take(5).forEach{endereco->CartaoLinha(endereco.nome,endereco.detalhe,"salvo"){selecionar(endereco)}};Text("Dica: toque e segure o mapa para escolher um ponto exato.",fontSize=12.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)}
         }
@@ -193,13 +206,18 @@ fun nomeModo(modo:String)=when(modo.uppercase()){ "WALK","FOOT","WALKING"->"A p�
 }
 @Composable private fun PainelNavegacao(estado:EstadoRotas,proxima:()->Unit,anterior:()->Unit,detalhes:()->Unit,parar:()->Unit,recalcular:()->Unit){
     val nav=estado.navegacao;val etapa=estado.rotaSelecionada?.etapas?.getOrNull(nav?.etapaAtual?:0)
-    Row(verticalAlignment=Alignment.CenterVertically){Text(if(nav?.chegou==true)"Você chegou!" else "Seu próximo passo",Modifier.weight(1f),fontWeight=FontWeight.Bold,fontSize=22.sp);TextButton(onClick=parar){Text("Encerrar")}}
+    Row(verticalAlignment=Alignment.CenterVertically){Text(if(nav?.chegou==true)"Você chegou!" else "Seu próximo passo",Modifier.weight(1f),fontWeight=FontWeight.Bold,fontSize=22.sp);TextButton(onClick=parar){Text(if(nav?.chegou==true)"Concluir" else "Cancelar")}}
     Text(nav?.mensagem?:"Aguardando sua localização…",fontSize=14.sp,fontWeight=FontWeight.Medium)
     etapa?.let{Text("${nomeModo(it.modo)} ${it.linha} · ${it.sentido.ifBlank{it.destino}}",fontSize=12.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)}
+    nav?.pontosRestantes?.let{Text(if(it>0)"$it ponto(s) até o desembarque" else "Ponto de desembarque alcançado",fontWeight=FontWeight.Bold,color=MaterialTheme.colorScheme.primary,fontSize=15.sp)}
+    if(etapa!=null && nav!=null && etapa.paradas.size>=3 && nav.pontosRestantes!=null){
+        if(nav.paradaAtual>0)Text("✓ ${nav.paradaAtual} ponto(s) passados · recolhidos",fontSize=11.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)
+        etapa.paradas.drop(nav.paradaAtual+1).take(2).forEachIndexed{indice,parada->Text("${if(indice==0)"● Próximo" else "│ Depois"}: ${parada.nome}",fontSize=12.sp,color=if(indice==0)MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,fontWeight=if(indice==0)FontWeight.Bold else FontWeight.Normal)}
+    }else if(etapa!=null && nomeModo(etapa.modo)!="A pé")Text("Sem contagem de pontos disponível · acompanhe a distância e o mapa.",fontSize=11.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)
     estado.precisaoMetros?.let{Text("Precisão GPS: ±${it.toInt()} m${if(it>100)" · localização aproximada" else ""}",fontSize=11.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)}
     if(nav?.desvio==true)Text("Você pode estar fora do trajeto. Confira o mapa e seu sentido.",color=MaterialTheme.colorScheme.error,fontSize=12.sp)
     Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){TextButton(onClick=anterior){Text("Anterior")};Button(onClick=proxima,modifier=Modifier.weight(1f),shape=RoundedCornerShape(14.dp)){Text("Próxima etapa")};IconButton(onClick=detalhes){Simbolo("etapas",Modifier.size(22.dp))}}
-    Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){Text("Confirme a etapa ao embarcar e desembarcar.",Modifier.weight(1f),fontSize=10.sp,color=MaterialTheme.colorScheme.onSurfaceVariant);TextButton(onClick=recalcular,enabled=!estado.calculando&&estado.conectado){Text(if(estado.calculando)"Buscando…" else "Recalcular",fontSize=11.sp)}}
+    Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){Text("Confirme a etapa ao embarcar e desembarcar.",Modifier.weight(1f),fontSize=10.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)}
     if(!estado.conectado)Text("Sem internet · seguindo viagem salva; horários sem atualização.",fontSize=11.sp,color=MaterialTheme.colorScheme.error)
 }
 @OptIn(ExperimentalMaterial3Api::class)
@@ -212,21 +230,68 @@ fun nomeModo(modo:String)=when(modo.uppercase()){ "WALK","FOOT","WALKING"->"A p�
                 Text("${rota.origem.nome} → ${rota.destino.nome}",fontSize=13.sp,fontWeight=FontWeight.Medium)
                 if(ruaAproximada(rota.origem)||ruaAproximada(rota.destino))Text("Número não localizado · ponto aproximado da rua. Confira no mapa; toque e segure para ajustar.",color=MaterialTheme.colorScheme.error,fontSize=12.sp)
                 Surface(shape=RoundedCornerShape(13.dp),color=MaterialTheme.colorScheme.background){Text(rota.aviso,fontSize=12.sp,color=MaterialTheme.colorScheme.onSurfaceVariant,modifier=Modifier.padding(13.dp))}
-                rota.etapas.forEachIndexed{index,etapa->val cor=Color(corModoAndroid(etapa.modo));Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(13.dp)){
+                var mostrarPassadas by remember{mutableStateOf(false)}
+                val indiceAtual=estado.navegacao?.etapaAtual?:0
+                if(estado.navegando && indiceAtual>0)TextButton(onClick={mostrarPassadas=!mostrarPassadas}){Text(if(mostrarPassadas)"Recolher etapas concluídas" else "✓ $indiceAtual etapa(s) concluída(s) · mostrar")}
+                rota.etapas.forEachIndexed{index,etapa->if(estado.navegando && index<indiceAtual && !mostrarPassadas)return@forEachIndexed
+                    val ativa=estado.navegando && index==indiceAtual
+                    val cor=Color(corModoAndroid(etapa.modo));Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(13.dp)){
                     Column(horizontalAlignment=Alignment.CenterHorizontally){Box(Modifier.size(36.dp).background(cor,RoundedCornerShape(12.dp)),contentAlignment=Alignment.Center){Simbolo(if(nomeModo(etapa.modo)=="A pé")"andar" else "onibus",Modifier.size(20.dp),Color.White)};if(index<rota.etapas.lastIndex)Box(Modifier.width(2.dp).height(68.dp).background(cor.copy(alpha=.25f)))}
-                    Column(Modifier.weight(1f).padding(bottom=14.dp),verticalArrangement=Arrangement.spacedBy(4.dp)){
+                    Column(Modifier.weight(1f).background(if(ativa)MaterialTheme.colorScheme.primary.copy(alpha=.08f)else Color.Transparent,RoundedCornerShape(12.dp)).padding(8.dp),verticalArrangement=Arrangement.spacedBy(4.dp)){
                         Row{Text("${nomeModo(etapa.modo)} ${etapa.linha}",Modifier.weight(1f),fontSize=16.sp,fontWeight=FontWeight.Bold);Text(hora(etapa.inicio),fontSize=13.sp,fontWeight=FontWeight.SemiBold)}
+                        if(ativa)Text("AGORA · ETAPA EM FOCO",fontSize=10.sp,fontWeight=FontWeight.Bold,color=MaterialTheme.colorScheme.primary)
                         if(etapa.sentido.isNotBlank())Text("Sentido ${etapa.sentido}",fontSize=12.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)
                         Text("${etapa.origem} → ${etapa.destino}",fontSize=12.sp);Text("${((etapa.fim-etapa.inicio)/60000).coerceAtLeast(0)} min${if(etapa.distanciaMetros>0)" · ${etapa.distanciaMetros.toInt()} m" else ""}",color=MaterialTheme.colorScheme.onSurfaceVariant,fontSize=11.sp)
                         Text(when(etapa.tipoDado){TipoDado.PROGRAMADO->"HORÁRIO PROGRAMADO";TipoDado.PREVISAO->"PREVISÃO DA FONTE";TipoDado.TEMPO_REAL->"TEMPO REAL";TipoDado.INDISPONIVEL->"HORÁRIO INDISPONÍVEL"},fontSize=9.sp,fontWeight=FontWeight.Bold,letterSpacing=.4.sp,color=cor)
-                        if(etapa.paradas.isNotEmpty()){var expandir by remember{mutableStateOf(false)};TextButton(onClick={expandir=!expandir},contentPadding=PaddingValues(0.dp)){Text(if(expandir)"Ocultar paradas" else "Ver ${etapa.paradas.size} paradas",fontSize=11.sp)};AnimatedVisibility(expandir){Column{etapa.paradas.forEach{Text("• ${it.nome}",fontSize=11.sp,modifier=Modifier.padding(vertical=3.dp))}}}}
+                        if(etapa.paradas.isNotEmpty())LinhaParadas(etapa,if(ativa)estado.navegacao else null,ativa)
+
                     }
                 }}
                 Text("${rota.fonte} · consulta ${dataHora(rota.consultadaEm)}",fontSize=11.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)
-                Button(onClick=if(estado.navegando)parar else iniciar,modifier=Modifier.fillMaxWidth().height(52.dp),shape=RoundedCornerShape(16.dp)){Simbolo("gps",Modifier.size(20.dp),MaterialTheme.colorScheme.onPrimary);Spacer(Modifier.width(10.dp));Text(if(estado.navegando)"Encerrar navegação" else "Seguir viagem com GPS",fontWeight=FontWeight.Bold)}
+                Button(onClick=if(estado.navegando)parar else iniciar,modifier=Modifier.fillMaxWidth().height(52.dp),shape=RoundedCornerShape(16.dp)){Simbolo("gps",Modifier.size(20.dp),MaterialTheme.colorScheme.onPrimary);Spacer(Modifier.width(10.dp));Text(if(estado.navegando)"Cancelar viagem" else "Ir",fontWeight=FontWeight.Bold)}
             }
         }
     }
+}
+
+@Composable private fun ParadasPlanejadas(paradas:List<Endereco>,mover:(Int,Int)->Unit,remover:(Int)->Unit){
+    if(paradas.isEmpty())return
+    val altura=with(LocalDensity.current){60.dp.toPx()}
+    var arrastando by remember{mutableStateOf<Int?>(null)}
+    var deslocamento by remember{mutableFloatStateOf(0f)}
+    val moverAtual by rememberUpdatedState(mover)
+    val listaAtual by rememberUpdatedState(paradas)
+    Text("Paradas · segure ≡ e arraste para ordenar",fontSize=11.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)
+    Column(Modifier.heightIn(max=180.dp).verticalScroll(rememberScrollState())){
+        paradas.forEachIndexed{indice,endereco->
+            Row(Modifier.fillMaxWidth().height(60.dp).background(if(arrastando==indice)MaterialTheme.colorScheme.primary.copy(alpha=.12f)else Color.Transparent,RoundedCornerShape(12.dp)).semantics{
+                customActions=listOf(CustomAccessibilityAction("Mover para cima"){if(indice>0){mover(indice,indice-1);true}else false},CustomAccessibilityAction("Mover para baixo"){if(indice<paradas.lastIndex){mover(indice,indice+1);true}else false})
+            },verticalAlignment=Alignment.CenterVertically){
+                Box(Modifier.size(44.dp).pointerInput(Unit){detectDragGesturesAfterLongPress(
+                    onDragStart={arrastando=indice;deslocamento=0f},onDragEnd={arrastando=null},onDragCancel={arrastando=null},
+                    onDrag={change,amount->change.consume();deslocamento+=amount.y
+                        val atual=arrastando
+                        if(atual!=null && kotlin.math.abs(deslocamento)>=altura*.65f){val novo=(atual+if(deslocamento>0)1 else -1).coerceIn(0,listaAtual.lastIndex)
+                            if(novo!=atual){moverAtual(atual,novo);arrastando=novo;deslocamento=0f}}
+                    })}.semantics{contentDescription="Segure e arraste a parada ${indice+1}"},contentAlignment=Alignment.Center){Text("≡",fontSize=25.sp,color=MaterialTheme.colorScheme.primary)}
+                Text("${indice+1}. ${endereco.nome}",Modifier.weight(1f),fontSize=12.sp,maxLines=2,overflow=TextOverflow.Ellipsis)
+                IconButton(onClick={remover(indice)}){Simbolo("fechar",Modifier.size(16.dp),descricao="Remover parada ${indice+1}")}
+            }
+        }
+    }
+}
+@Composable private fun LinhaParadas(etapa:Etapa,nav:EstadoNavegacao?,ativa:Boolean){
+    var expandir by remember{mutableStateOf(ativa)}
+    var mostrarPassadas by remember{mutableStateOf(false)}
+    TextButton(onClick={expandir=!expandir},contentPadding=PaddingValues(0.dp)){Text(if(expandir)"Recolher paradas" else "Ver ${etapa.paradas.size} paradas",fontSize=11.sp)}
+    AnimatedVisibility(expandir){Column{
+        val atual=nav?.paradaAtual?:-1
+        if(ativa && atual>=0)TextButton(onClick={mostrarPassadas=!mostrarPassadas}){Text("✓ ${atual+1} ponto(s) alcançado(s) · ${if(mostrarPassadas)"recolher" else "mostrar"}",fontSize=10.sp)}
+        etapa.paradas.forEachIndexed{indice,parada->if(!ativa || indice>atual || mostrarPassadas){
+            val proxima=ativa && indice==atual+1
+            Text("${if(proxima)"● PRÓXIMO" else if(ativa && indice<=atual)"✓" else "│"} ${parada.nome}",fontSize=12.sp,fontWeight=if(proxima)FontWeight.Bold else FontWeight.Normal,color=if(proxima)MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,modifier=Modifier.padding(vertical=5.dp))
+        }}
+    }}
 }
 
 @Composable fun Simbolo(nome:String,modifier:Modifier=Modifier,cor:Color=MaterialTheme.colorScheme.primary,descricao:String?=null){
